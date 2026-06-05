@@ -19,24 +19,7 @@ export default function Home() {
     const onMove = (e: MouseEvent) => {
       mx = e.clientX; my = e.clientY;
       cd.style.left = mx + "px"; cd.style.top = my + "px";
-      // Interactive glow on nav logo
-      const logo = document.querySelector(".logo-text.sinhala") as HTMLElement;
-      if (logo) {
-        const rect = logo.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dx = (e.clientX - cx) / 80;
-        const dy = (e.clientY - cy) / 80;
-        const dist = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
-        if (dist < 300) {
-          logo.style.transform = `translateX(${dx}px) translateY(${dy * 0.5}px) rotate(${dx * 0.3}deg)`;
-          const glow = Math.max(0.2, 1 - dist / 300);
-          logo.style.textShadow = `0 0 ${18 + glow * 20}px rgba(120,192,245,${0.25 + glow * 0.35}), 0 0 ${40 + glow * 30}px rgba(120,192,245,${0.08 + glow * 0.15})`;
-        } else {
-          logo.style.transform = "";
-          logo.style.textShadow = "";
-        }
-      }
+      
     };
     const loop = () => {
       rx += (mx - rx) * 0.22;
@@ -230,35 +213,35 @@ export default function Home() {
 
             {showAllExp && (
             <>
-            <div className="ecard reveal">
+            <div className="ecard">
               <div className="etop"><div className="erole">Founding President — Eastern Music Club</div><span className="edate">Sep 2023 – Sep 2025</span></div>
               <div className="eorg">Lyceum International School, Nugegoda</div>
               <div className="ebody">Founded and led the Eastern Music Club, building it from the ground up into an active platform for classical and contemporary Eastern music performance within the school community.</div>
               <div className="etags"><span className="et">Start-up Leadership</span><span className="et">Music</span><span className="et">Club Management</span></div>
             </div>
 
-            <div className="ecard reveal">
+            <div className="ecard">
               <div className="etop"><div className="erole">Head of Logistics — Model UN</div><span className="edate">Dec 2023 – Dec 2024</span></div>
               <div className="eorg">LISMUN &amp; SLMUN Conferences</div>
               <div className="ebody">Managed end-to-end logistics for Model United Nations conferences, coordinating venue setup, delegate registration, resource allocation, and on-ground operations across multi-day events.</div>
               <div className="etags"><span className="et">Logistics</span><span className="et">Model UN</span><span className="et">Event Operations</span></div>
             </div>
 
-            <div className="ecard reveal">
+            <div className="ecard">
               <div className="etop"><div className="erole">News Reporter &amp; Voice Actor</div><span className="edate">Sep 2019 – Sep 2024</span></div>
               <div className="eorg">Institute of Media &amp; Performing Arts · Institute of Professional Development</div>
               <div className="ebody">Professional training in news reporting, voice acting, dubbing, and narration. Developed vocal control, character development, microphone techniques, and expressive storytelling across multiple genres.</div>
               <div className="etags"><span className="et">Voice Acting</span><span className="et">News Reporting</span><span className="et">Dubbing</span><span className="et">Narration</span></div>
             </div>
 
-            <div className="ecard reveal">
+            <div className="ecard">
               <div className="etop"><div className="erole">Aviator — Flight Training</div><span className="edate">Sep 2020 – Mar 2021</span></div>
               <div className="eorg">Sri Lanka Air Force · Ratmalana Air Force Base</div>
               <div className="ebody">Completed a comprehensive aviation program covering beginner, intermediate, and advanced levels — combining theoretical knowledge with hands-on flight training, aircraft operations, flight principles, and aviation protocols.</div>
               <div className="etags"><span className="et">Aviation</span><span className="et">Flight Training</span><span className="et">SLAF</span></div>
             </div>
 
-            <div className="ecard reveal">
+            <div className="ecard">
               <div className="etop"><div className="erole">Regional Relief Drive Lead</div><span className="edate">Ongoing</span></div>
               <div className="eorg">Kurunegala, Sri Lanka</div>
               <div className="ebody">Spearheads community relief initiatives in the Kurunegala district, coordinating volunteers and resources for on-the-ground impact. Combines logistical planning with grassroots community engagement.</div>
