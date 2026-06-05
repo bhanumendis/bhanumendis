@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 
-const SLIDES = ["/slide-5.jpg", "/slides/slide-8.jpg"];
+const SLIDES = ["/slides/slide-5.jpg", "/slides/slide-8.jpg"];
 
 export default function Home() {
   const [showAllExp, setShowAllExp] = useState(false);
