@@ -1,15 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+
+const SLIDES = ["/slides/slide-1.jpg","/slides/slide-2.jpg","/slides/slide-3.jpg","/slides/slide-4.jpg","/slides/slide-5.jpg","/slides/slide-6.jpg","/slides/slide-7.jpg","/slides/slide-8.jpg","/slides/slide-9.jpg"];
 
 export default function Home() {
   const [showAllExp, setShowAllExp] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.body.classList.toggle("light");
-  };
+  const toggleTheme = () => { setIsDark(!isDark); document.body.classList.toggle("light"); };
+
+  const nextSlide = useCallback(() => { setCurrentSlide((p) => (p + 1) % SLIDES.length); }, []);
+
+  // Auto-slide
+  useEffect(() => { const t = setInterval(nextSlide, 4500); return () => clearInterval(t); }, [nextSlide]);
 
   useEffect(() => {
     const cd = document.getElementById("cd");
@@ -19,23 +24,16 @@ export default function Home() {
     const scrollBtn = document.getElementById("scroll-top");
     if (!cd || !cr || !prog || !nav) return;
 
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    let frame: number;
+    let mx = 0, my = 0, rx = 0, ry = 0, frame: number;
 
     const onMove = (e: MouseEvent) => {
       mx = e.clientX; my = e.clientY;
       cd.style.left = mx + "px"; cd.style.top = my + "px";
-
-      // Parallax hero content - moves opposite to cursor
       const heroContent = document.getElementById("hero-content");
       if (heroContent) {
-        const cx = window.innerWidth / 2;
-        const cy = window.innerHeight / 2;
-        const dx = (e.clientX - cx) / cx;
-        const dy = (e.clientY - cy) / cy;
+        const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+        const dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
         heroContent.style.transform = `translate(${-dx * 18}px, ${-dy * 12}px)`;
-
-        // Glow on hero title
         const h1 = heroContent.querySelector(".h1") as HTMLElement;
         if (h1) {
           const dist = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
@@ -45,15 +43,9 @@ export default function Home() {
         }
       }
     };
-    const loop = () => {
-      rx += (mx - rx) * 0.22;
-      ry += (my - ry) * 0.22;
-      cr.style.left = rx + "px"; cr.style.top = ry + "px";
-      frame = requestAnimationFrame(loop);
-    };
+    const loop = () => { rx += (mx - rx) * 0.22; ry += (my - ry) * 0.22; cr.style.left = rx + "px"; cr.style.top = ry + "px"; frame = requestAnimationFrame(loop); };
     const onScroll = () => {
-      const s = window.scrollY;
-      const h = document.body.scrollHeight - window.innerHeight;
+      const s = window.scrollY, h = document.body.scrollHeight - window.innerHeight;
       prog.style.width = (s / h * 100) + "%";
       nav.classList.toggle("scrolled", s > 50);
       if (scrollBtn) scrollBtn.classList.toggle("visible", s > 400);
@@ -63,36 +55,25 @@ export default function Home() {
     window.addEventListener("scroll", onScroll);
     loop();
 
-    const hoverEls = document.querySelectorAll(
-      "a,button,.hsc,.srow,.acard,.ccard,.ecard,.sp,.soc-btn,.foot-link,.scroll-top,.show-more-btn,.theme-btn,.sidebar-right a"
-    );
+    const hoverEls = document.querySelectorAll("a,button,.hsc,.srow,.acard,.ccard,.ecard,.sp,.soc-btn,.foot-link,.scroll-top,.show-more-btn,.theme-btn,.sidebar-right a,.slide-dot");
     const onEnter = () => document.body.classList.add("cg");
     const onLeave = () => document.body.classList.remove("cg");
-    hoverEls.forEach((el) => {
-      el.addEventListener("mouseenter", onEnter);
-      el.addEventListener("mouseleave", onLeave);
-    });
+    hoverEls.forEach((el) => { el.addEventListener("mouseenter", onEnter); el.addEventListener("mouseleave", onLeave); });
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) { e.target.classList.add("in"); }
-          else { e.target.classList.remove("in"); }
-        });
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -60px 0px" }
-    );
+    const io = new IntersectionObserver((entries) => { entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); else e.target.classList.remove("in"); }); }, { threshold: 0.08, rootMargin: "0px 0px -60px 0px" });
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+    // Block right-click on slideshow
+    const gallery = document.getElementById("gallery");
+    const blockCtx = (e: Event) => e.preventDefault();
+    if (gallery) gallery.addEventListener("contextmenu", blockCtx);
 
     return () => {
       document.removeEventListener("mousemove", onMove);
       window.removeEventListener("scroll", onScroll);
-      hoverEls.forEach((el) => {
-        el.removeEventListener("mouseenter", onEnter);
-        el.removeEventListener("mouseleave", onLeave);
-      });
-      io.disconnect();
-      cancelAnimationFrame(frame);
+      hoverEls.forEach((el) => { el.removeEventListener("mouseenter", onEnter); el.removeEventListener("mouseleave", onLeave); });
+      io.disconnect(); cancelAnimationFrame(frame);
+      if (gallery) gallery.removeEventListener("contextmenu", blockCtx);
     };
   }, []);
 
@@ -102,7 +83,6 @@ export default function Home() {
       <div id="cr"></div>
       <div id="prog"></div>
 
-      {/* Right sidebar - Social links */}
       <div className="sidebar-right">
         <div className="sidebar-line"></div>
         <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer">Ig.</a>
@@ -111,7 +91,6 @@ export default function Home() {
         <div className="sidebar-line"></div>
       </div>
 
-      {/* Left sidebar - Theme toggle + scroll */}
       <div className="sidebar-left">
         <div className="theme-toggle">
           <button className={`theme-btn ${!isDark ? "active" : ""}`} onClick={toggleTheme} title="Light mode">☀</button>
@@ -122,10 +101,7 @@ export default function Home() {
       </div>
 
       <nav id="nav">
-        <a href="#" className="logo">
-          <span className="logo-dot"></span>
-          <span className="logo-text sinhala">භානු මෙන්ඩිස්</span>
-        </a>
+        <a href="#" className="logo"><span className="logo-dot"></span><span className="logo-text sinhala">භානු මෙන්ඩිස්</span></a>
         <ul className="nav-links">
           <li><a href="#about">About</a></li>
           <li><a href="#exp">Experience</a></li>
@@ -136,24 +112,17 @@ export default function Home() {
       </nav>
 
       <section id="hero">
-        <div className="orb oa"></div>
-        <div className="orb ob"></div>
-        <div className="orb oc"></div>
-
+        <img src="/hero-bg.jpg" alt="" className="hero-bg-img" />
+        <div className="hero-bg-overlay"></div>
+        <div className="orb oa"></div><div className="orb ob"></div><div className="orb oc"></div>
         <div id="hero-content" className="hero-content">
-          <div className="hero-ayubowan">ආයුබෝවන්</div>
           <h1 className="h1">BHANU<br /><span className="blue">MENDIS</span></h1>
           <p className="h-sub">Public Speaker · Audio Engineer · Artist · Educator · Visharadha</p>
           <p className="h-tagline">Break the Frame</p>
-
           <div className="h-actions">
             <a href="#contact" className="btn-fill">Contact</a>
-            <a href="#about" className="btn-out">
-              Explore
-              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
-            </a>
+            <a href="#about" className="btn-out">Explore<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7" /></svg></a>
           </div>
-
           <div className="h-stats">
             <div className="hsc"><div className="hsc-n">750+</div><div className="hsc-l">Performers led</div></div>
             <div className="hsc"><div className="hsc-n">12+</div><div className="hsc-l">National awards</div></div>
@@ -163,21 +132,22 @@ export default function Home() {
         </div>
       </section>
 
-      <a href="#" id="scroll-top" className="scroll-top">
-        <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
-      </a>
+      <a href="#" id="scroll-top" className="scroll-top"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" /></svg></a>
 
       <div className="rule"></div>
 
       <section id="about">
         <div className="sw">
-          <div className="eyebrow reveal">About me</div>
+          <div className="eyebrow reveal">About</div>
           <h2 className="sh reveal">A creative, a leader,<br />and a <em>builder.</em></h2>
           <div className="al">
-            <div className="atext reveal d1">
-              <p>I&apos;m <strong>Bhanu Mendis</strong> — a multi-disciplinary leader, performing artist, and audio engineer from <em>Colombo, Sri Lanka</em>. I operate at the rare intersection where creativity meets operational precision.</p>
-              <p>As the <strong>2024/2025 Senior Head Prefect</strong> at Lyceum International School, I directed landmark events including the <em>Elysium &apos;25 graduation</em> at Cinnamon Life — City of Dreams, orchestrating an entirely student-led event for over <strong>26,000 Lyceumers nationwide</strong>. I also overall coordinated <em>Maathra 14</em> at BMICH, managing operations for over <strong>750 performers</strong>.</p>
-              <p>I&apos;m a qualified <strong>Sangeetha Visharadha</strong> (First Division) with 6 years of classical music study at Bathkandhe Sangit Vidhyapith, a hands-on audio producer trained at <em>Pearl Bay Institute</em>, and an actively competing musician and dancer with multiple national and international titles. I also serve as a <strong>National Child Protection Ambassador</strong> and spearhead regional relief drives in Kurunegala — because real impact demands both technical excellence and genuine empathy.</p>
+            <div className="reveal d1">
+              <div className="ayubowan-about">ආයුබෝවන්</div>
+              <div className="atext">
+                <p><strong>Bhanu Mendis</strong> is a multi-disciplinary leader, performing artist, and audio engineer based in <em>Colombo, Sri Lanka</em> — operating at the intersection of creativity and operational precision.</p>
+                <p>As <strong>2024/2025 Senior Head Prefect</strong> at Lyceum International School, landmark events were directed including the <em>Elysium &apos;25 graduation</em> at Cinnamon Life — City of Dreams, an entirely student-led ceremony for over <strong>26,000 Lyceumers nationwide</strong>. <em>Maathra 14</em> at BMICH was overall coordinated, managing operations for <strong>750+ performers</strong>.</p>
+                <p>A qualified <strong>Sangeetha Visharadha</strong> (First Division) with 6 years of classical training at Bathkandhe Sangit Vidhyapith, and a certified audio engineer trained at <em>Pearl Bay Institute</em>. Multiple national and international titles in music and dance complement an active role as <strong>National Child Protection Ambassador</strong> and leader of regional relief drives in Kurunegala.</p>
+              </div>
             </div>
             <div className="about-right reveal d2">
               <img src="/favicon.png" alt="Bhanu Mendis" className="about-photo" />
@@ -194,8 +164,8 @@ export default function Home() {
 
       <section id="skills">
         <div className="sw">
-          <div className="eyebrow reveal">What I bring</div>
-          <h2 className="sh reveal">Skills &amp; <em>strengths</em></h2>
+          <div className="eyebrow reveal">Core Skills</div>
+          <h2 className="sh reveal">Skills &amp; <em>Strengths</em></h2>
           <div className="spills reveal d1">
             <span className="sp">Team Leadership</span><span className="sp">People Management</span>
             <span className="sp">Event Strategy</span><span className="sp">Event Production</span>
@@ -215,90 +185,98 @@ export default function Home() {
 
       <div className="rule"></div>
 
+      {/* Photo Gallery Slideshow */}
+      <section id="gallery">
+        <div className="slideshow" onContextMenu={(e) => e.preventDefault()}>
+          <div className="slide-overlay"></div>
+          {SLIDES.map((src, i) => (
+            <img key={i} src={src} alt={`Gallery ${i + 1}`} className={i === currentSlide ? "active" : ""} draggable={false} />
+          ))}
+          <div className="slide-dots">
+            {SLIDES.map((_, i) => (
+              <button key={i} className={`slide-dot ${i === currentSlide ? "active" : ""}`} onClick={() => setCurrentSlide(i)} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="rule"></div>
+
       <section id="exp">
         <div className="sw">
           <div className="eyebrow reveal">Experience</div>
-          <h2 className="sh reveal">Where I&apos;ve <em>led</em></h2>
+          <h2 className="sh reveal">Projects <em>Led</em></h2>
           <div className="ecards">
 
             <div className="ecard reveal d1">
               <div className="etop"><div className="erole">Educator</div><span className="edate">Sep 2025 – Present</span></div>
               <div className="eorg">The Science Brainery · Part-time · Boralesgamuwa</div>
-              <div className="ebody">Teaching Pearson International Edexcel Science, Mathematics, and Computer Science for Year 5, 6, 7 &amp; 8. Delivering curriculum-aligned lessons with a focus on conceptual clarity, practical application, and student engagement.</div>
+              <div className="ebody">Teaching Pearson International Edexcel Science, Mathematics, and Computer Science for Year 5, 6, 7 &amp; 8. Curriculum-aligned lessons focused on conceptual clarity, practical application, and student engagement.</div>
               <div className="etags"><span className="et">Education</span><span className="et">Teaching</span><span className="et">Edexcel</span><span className="et">Science</span><span className="et">Mathematics</span></div>
             </div>
 
             <div className="ecard reveal d2">
               <div className="etop"><div className="erole">Senior Head Prefect</div><span className="edate">Sep 2023 – Sep 2025</span></div>
               <div className="eorg">Lyceum International School, Nugegoda</div>
-              <div className="ebody">Led school-wide student governance as the highest-ranking prefect for two years. Directed the Elysium &apos;25 graduation ceremony at Cinnamon Life — City of Dreams, orchestrating an entirely student-led event for over 26,000 Lyceumers nationwide. Overall coordinated Maathra 14 at BMICH with 750+ performers. Served as National Child Protection Ambassador and primary liaison between the student body and senior administration.</div>
+              <div className="ebody">School-wide student governance as the highest-ranking prefect for two years. Directed the Elysium &apos;25 graduation ceremony at Cinnamon Life — City of Dreams for 26,000+ Lyceumers nationwide. Overall coordinated Maathra 14 at BMICH with 750+ performers. Appointed National Child Protection Ambassador. Primary liaison between student body and senior administration.</div>
               <div className="etags"><span className="et">Executive Leadership</span><span className="et">Event Direction</span><span className="et">26,000+ Audience</span><span className="et">BMICH · Cinnamon Life</span></div>
             </div>
 
             <div className="ecard reveal d3">
               <div className="etop"><div className="erole">Audio Engineer</div><span className="edate">Oct 2025 – Mar 2026</span></div>
               <div className="eorg">PEARLBAY® Holdings</div>
-              <div className="ebody">Advanced training in music production, DAW architecture, MIDI sequencing, and VST integration. Developed expertise in studio recording, microphone selection, gain staging, dynamic control, mixing, mastering, frequency balancing, stereo imaging, and final master delivery.</div>
+              <div className="ebody">Advanced training in music production, DAW architecture, MIDI sequencing, and VST integration. Expertise developed in studio recording, microphone selection, gain staging, dynamic control, mixing, mastering, frequency balancing, stereo imaging, and final master delivery.</div>
               <div className="etags"><span className="et">Audio Engineering</span><span className="et">Mixing &amp; Mastering</span><span className="et">DAW</span><span className="et">Recording</span></div>
             </div>
 
             <div className="ecard reveal d4">
               <div className="etop"><div className="erole">Founder — Swara Concert</div><span className="edate">Dec 2023 – Sep 2025</span></div>
               <div className="eorg">Lyceum International School</div>
-              <div className="ebody">Conceptualized and launched SWARA, the largest island-wide school-based Eastern music concert, uniting students from all branches of Lyceum International Schools and showcasing the talents of over 700 participants. Led all aspects — coordinating hundreds of performers, managing logistics, marketing, and audience engagement from conception to execution.</div>
+              <div className="ebody">Conceptualized and launched SWARA — the largest island-wide school-based Eastern music concert — uniting students from all branches of Lyceum International Schools, showcasing 700+ participants. All aspects led end-to-end: performer coordination, logistics, marketing, and audience engagement.</div>
               <div className="etags"><span className="et">Concert Production</span><span className="et">700+ Performers</span><span className="et">Island-wide</span><span className="et">Eastern Music</span></div>
             </div>
 
             <div className="ecard reveal d5">
               <div className="etop"><div className="erole">Founder — Padura Concert</div><span className="edate">Dec 2023 – Sep 2025</span></div>
               <div className="eorg">Lyceum International School</div>
-              <div className="ebody">Created and led an original instrumental music concert series showcasing student talent in Western and fusion traditions. Managed end-to-end production from creative direction through performer coordination and live execution.</div>
+              <div className="ebody">Created and led an original instrumental music concert series showcasing student talent in Western and fusion traditions. Full production managed from creative direction through performer coordination and live execution.</div>
               <div className="etags"><span className="et">Concert Production</span><span className="et">Instrumental Music</span><span className="et">Creative Direction</span></div>
             </div>
 
-            {showAllExp && (
-            <>
+            {showAllExp && (<>
             <div className="ecard">
               <div className="etop"><div className="erole">Founding President — Eastern Music Club</div><span className="edate">Sep 2023 – Sep 2025</span></div>
               <div className="eorg">Lyceum International School, Nugegoda</div>
-              <div className="ebody">Founded and led the Eastern Music Club, building it from the ground up into an active platform for classical and contemporary Eastern music performance within the school community.</div>
+              <div className="ebody">Founded and led the Eastern Music Club from the ground up into an active platform for classical and contemporary Eastern music performance within the school community.</div>
               <div className="etags"><span className="et">Start-up Leadership</span><span className="et">Music</span><span className="et">Club Management</span></div>
             </div>
-
             <div className="ecard">
               <div className="etop"><div className="erole">Head of Logistics — Model UN</div><span className="edate">Dec 2023 – Dec 2024</span></div>
               <div className="eorg">LISMUN &amp; SLMUN Conferences</div>
-              <div className="ebody">Managed end-to-end logistics for Model United Nations conferences, coordinating venue setup, delegate registration, resource allocation, and on-ground operations across multi-day events.</div>
+              <div className="ebody">End-to-end logistics managed for Model United Nations conferences — venue setup, delegate registration, resource allocation, and on-ground operations across multi-day events.</div>
               <div className="etags"><span className="et">Logistics</span><span className="et">Model UN</span><span className="et">Event Operations</span></div>
             </div>
-
             <div className="ecard">
               <div className="etop"><div className="erole">News Reporter &amp; Voice Actor</div><span className="edate">Sep 2019 – Sep 2024</span></div>
               <div className="eorg">Institute of Media &amp; Performing Arts · Institute of Professional Development</div>
-              <div className="ebody">Professional training in news reporting, voice acting, dubbing, and narration. Developed vocal control, character development, microphone techniques, and expressive storytelling across multiple genres.</div>
-              <div className="etags"><span className="et">Voice Acting</span><span className="et">News Reporting</span><span className="et">Dubbing</span><span className="et">Narration</span></div>
+              <div className="ebody">Professional training in news reporting, voice acting, dubbing, and narration. Vocal control, character development, microphone techniques, and expressive storytelling developed across multiple genres.</div>
+              <div className="etags"><span className="et">Voice Acting</span><span className="et">News Reporting</span><span className="et">Dubbing</span></div>
             </div>
-
             <div className="ecard">
               <div className="etop"><div className="erole">Aviator — Flight Training</div><span className="edate">Sep 2020 – Mar 2021</span></div>
               <div className="eorg">Sri Lanka Air Force · Ratmalana Air Force Base</div>
-              <div className="ebody">Completed a comprehensive aviation program covering beginner, intermediate, and advanced levels — combining theoretical knowledge with hands-on flight training, aircraft operations, flight principles, and aviation protocols.</div>
+              <div className="ebody">Comprehensive aviation program completed across beginner, intermediate, and advanced levels — combining theoretical knowledge with hands-on flight training, aircraft operations, and aviation protocols.</div>
               <div className="etags"><span className="et">Aviation</span><span className="et">Flight Training</span><span className="et">SLAF</span></div>
             </div>
-
             <div className="ecard">
               <div className="etop"><div className="erole">Regional Relief Drive Lead</div><span className="edate">Ongoing</span></div>
               <div className="eorg">Kurunegala, Sri Lanka</div>
-              <div className="ebody">Spearheads community relief initiatives in the Kurunegala district, coordinating volunteers and resources for on-the-ground impact. Combines logistical planning with grassroots community engagement.</div>
+              <div className="ebody">Community relief initiatives spearheaded in the Kurunegala district — coordinating volunteers and resources for on-the-ground impact. Logistical planning combined with grassroots community engagement.</div>
               <div className="etags"><span className="et">Community Service</span><span className="et">Volunteer Coordination</span><span className="et">Social Impact</span></div>
             </div>
-            </>
-            )}
+            </>)}
 
-            <button className="show-more-btn" onClick={() => setShowAllExp(!showAllExp)}>
-              {showAllExp ? "Show less ↑" : "Show more ↓"}
-            </button>
-
+            <button className="show-more-btn" onClick={() => setShowAllExp(!showAllExp)}>{showAllExp ? "Show less ↑" : "Show more ↓"}</button>
           </div>
         </div>
       </section>
@@ -308,7 +286,7 @@ export default function Home() {
       <section id="linkedin">
         <div className="sw">
           <div className="eyebrow reveal">From LinkedIn</div>
-          <h2 className="sh reveal">Latest <em>posts</em></h2>
+          <h2 className="sh reveal">Latest <em>Posts</em></h2>
           <div className="li-grid reveal d1">
             <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7467136600683073536?collapsed=1" height="622" frameBorder="0" allowFullScreen title="LinkedIn post 1"></iframe>
             <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7463987225429708800?collapsed=1" height="622" frameBorder="0" allowFullScreen title="LinkedIn post 2"></iframe>
@@ -323,14 +301,14 @@ export default function Home() {
       <section id="achieve">
         <div className="sw">
           <div className="eyebrow reveal">Honours &amp; Awards</div>
-          <h2 className="sh reveal">What I&apos;ve <em>won</em></h2>
+          <h2 className="sh reveal">Achievements <em>Earned</em></h2>
           <div className="agrid">
             <div className="acard reveal d1"><div className="amed">🏆</div><div className="atitle">All-Island Dancing Champion</div><div className="abadge">Island 1st · 2018, 2019, 2023</div><div className="abody">Three-time national champion in competitive dance at the All-Island level.</div></div>
-            <div className="acard reveal d2"><div className="amed">🎵</div><div className="atitle">All-Island Music Champion</div><div className="abadge">Island 1st · 2019, 2023, 2024</div><div className="abody">Three-time national music champion, consistently at the highest competitive level.</div></div>
-            <div className="acard reveal d3"><div className="amed">🌏</div><div className="atitle">Malaysian World Choral Competition</div><div className="abadge">1st Place · International</div><div className="abody">Represented Sri Lanka on the world stage, securing first place internationally.</div></div>
+            <div className="acard reveal d2"><div className="amed">🎵</div><div className="atitle">All-Island Music Champion</div><div className="abadge">Island 1st · 2019, 2023, 2024</div><div className="abody">Three-time national music champion at the highest competitive level.</div></div>
+            <div className="acard reveal d3"><div className="amed">🌏</div><div className="atitle">Malaysian World Choral Competition</div><div className="abadge">1st Place · International</div><div className="abody">Sri Lanka represented on the world stage — first place secured internationally.</div></div>
             <div className="acard reveal d4"><div className="amed">🎭</div><div className="atitle">British-Lanka Festival of Performing Arts</div><div className="abadge">First Place</div><div className="abody">Top honours at one of Sri Lanka&apos;s most prestigious cross-cultural performing arts competitions.</div></div>
             <div className="acard reveal d5"><div className="amed">🌐</div><div className="atitle">WWF · United Nations Resolution</div><div className="abadge">First Place</div><div className="abody">First place at a WWF-affiliated Model UN conference in international policy debate.</div></div>
-            <div className="acard reveal d6"><div className="amed">♟️</div><div className="atitle">National Chess Championship</div><div className="abadge">1st Place · 2016</div><div className="abody">National champion — proof that the strategic thinking extends well beyond the stage.</div></div>
+            <div className="acard reveal d6"><div className="amed">♟️</div><div className="atitle">National Chess Championship</div><div className="abadge">1st Place · 2016</div><div className="abody">National champion — strategic thinking that extends well beyond the stage.</div></div>
           </div>
         </div>
       </section>
@@ -340,7 +318,7 @@ export default function Home() {
       <section id="certs">
         <div className="sw">
           <div className="eyebrow reveal">Education &amp; Qualifications</div>
-          <h2 className="sh reveal">Certified &amp; <em>trained</em></h2>
+          <h2 className="sh reveal">Credentials <em>Earned</em></h2>
           <div className="cgrid">
             <div className="ccard reveal d1"><div className="cico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Sangeetha Visharadha</div><div className="cfrom">Bathkandhe Sangit Vidhyapith · 6 Years · First Division</div></div></div>
             <div className="ccard reveal d2"><div className="cico"><svg viewBox="0 0 24 24"><path d="M9 19V6l12-3v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="15" r="3"/></svg></div><div><div className="cname">Audio Engineering</div><div className="cfrom">PEARLBAY® Holdings · Pearl Bay Institute</div></div></div>
@@ -360,9 +338,9 @@ export default function Home() {
 
       <section id="contact">
         <div className="cc">
-          <div className="eyebrow reveal" style={{ justifyContent: "center" }}>Let&apos;s connect</div>
+          <div className="eyebrow reveal" style={{justifyContent:"center"}}>Get in Touch</div>
           <h2 className="cth reveal">Ready to<br /><em>talk?</em></h2>
-          <p className="ctsub reveal d1">Whether it&apos;s a collaboration, an opportunity, a performance, or simply a great conversation — my inbox is open.</p>
+          <p className="ctsub reveal d1">Whether a collaboration, an opportunity, a performance, or a great conversation — the inbox is always open.</p>
           <div className="cbtns reveal d2">
             <a href="mailto:bhanumendis@gmail.com" className="cb prim">Email</a>
             <a href="https://www.linkedin.com/in/bhanumendis" target="_blank" rel="noopener noreferrer" className="cb">LinkedIn</a>
