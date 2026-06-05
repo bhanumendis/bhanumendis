@@ -341,7 +341,14 @@ export default function Home() {
             <a href="tel:+94777124152" className="cb">Call</a>
           </div>
         </div>
+
+             <div className="foot-bottom">
+          <span className="foot-copy">© 2025 Bhanu Mendis. All rights reserved.</span>
+          <a href="https://forms.gle/N52vwAytUsJCt2df6" target="_blank" rel="noopener noreferrer" className="student-reg">Student Registration</a>
+          <span className="foot-copy">Bhanu Mendis</span>
+        </div>
       </section>
+
 
       <footer>
         <div className="foot-top">
@@ -375,12 +382,6 @@ export default function Home() {
               </a>
             </div>
           </div>
-
-                  <div className="foot-bottom">
-          <span className="foot-copy">© 2025 Bhanu Mendis. All rights reserved.</span>
-          <a href="https://forms.gle/N52vwAytUsJCt2df6" target="_blank" rel="noopener noreferrer" className="student-reg">Student Registration</a>
-          <span className="foot-copy">Bhanu Mendis</span>
-        </div>
 
           <div>
             <div className="foot-col-title">Navigate</div>
