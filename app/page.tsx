@@ -376,6 +376,12 @@ export default function Home() {
             </div>
           </div>
 
+                  <div className="foot-bottom">
+          <span className="foot-copy">© 2025 Bhanu Mendis. All rights reserved.</span>
+          <a href="https://forms.gle/N52vwAytUsJCt2df6" target="_blank" rel="noopener noreferrer" className="student-reg">Student Registration</a>
+          <span className="foot-copy">Bhanu Mendis</span>
+        </div>
+
           <div>
             <div className="foot-col-title">Navigate</div>
             <div className="foot-links">
@@ -399,12 +405,6 @@ export default function Home() {
               <a href="https://linktr.ee/bhanu_mendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot"></span>Linktree</a>
             </div>
           </div>
-        </div>
-
-        <div className="foot-bottom">
-          <span className="foot-copy">© 2025 Bhanu Mendis. All rights reserved.</span>
-          <a href="https://forms.gle/N52vwAytUsJCt2df6" target="_blank" rel="noopener noreferrer" className="student-reg">Student Registration</a>
-          <span className="foot-copy">Bhanu Mendis</span>
         </div>
       </footer>
     </>
