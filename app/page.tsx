@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [showAllExp, setShowAllExp] = useState(false);
   useEffect(() => {
     const cd = document.getElementById("cd");
     const cr = document.getElementById("cr");
@@ -84,7 +85,7 @@ export default function Home() {
       <nav id="nav">
         <a href="#" className="logo">
           <span className="logo-dot"></span>
-          <span className="logo-text">Bhanu Mendis</span>
+          <span className="logo-text sinhala">භානු මෙන්ඩිස්</span>
         </a>
         <ul className="nav-links">
           <li><a href="#about">About</a></li>
@@ -220,6 +221,13 @@ export default function Home() {
               <div className="etags"><span className="et">Concert Production</span><span className="et">Instrumental Music</span><span className="et">Creative Direction</span></div>
             </div>
 
+            
+
+            </div>
+
+            {showAllExp && (
+            <>
+
             <div className="ecard reveal d1">
               <div className="etop"><div className="erole">Founding President — Eastern Music Club</div><span className="edate">Sep 2023 – Sep 2025</span></div>
               <div className="eorg">Lyceum International School, Nugegoda</div>
@@ -255,8 +263,14 @@ export default function Home() {
               <div className="etags"><span className="et">Community Service</span><span className="et">Volunteer Coordination</span><span className="et">Social Impact</span></div>
             </div>
 
+            </>
+            )}
+
+            <button className="show-more-btn" onClick={() => setShowAllExp(!showAllExp)}>
+              {showAllExp ? "Show less" : "Show more"}
+            </button>
+
           </div>
-        </div>
       </section>
 
       <div className="rule"></div>
@@ -389,6 +403,7 @@ export default function Home() {
 
         <div className="foot-bottom">
           <span className="foot-copy">© 2025 Bhanu Mendis. All rights reserved.</span>
+          <a href="https://forms.gle/N52vwAytUsJCt2df6" target="_blank" rel="noopener noreferrer" className="student-reg">Student Registration</a>
           <span className="foot-copy">Bhanu Mendis</span>
         </div>
       </footer>

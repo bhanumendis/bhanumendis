@@ -45,6 +45,12 @@ nav.scrolled { padding: 15px 64px; background: rgba(6, 9, 14, 0.72); backdrop-fi
 .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
 .logo-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--skyg); box-shadow: 0 0 10px rgba(120, 192, 245, 0.7); flex-shrink: 0; }
 .logo-text { font-family: var(--display); font-size: 16px; font-weight: 800; letter-spacing: .01em; color: var(--white); }
+.logo-text.sinhala {
+  font-family: var(--sinhala);
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: .02em;
+}
 .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
 .nav-links a { font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--muted); text-decoration: none; letter-spacing: .04em; transition: color .2s; }
 .nav-links a:hover { color: var(--white); }
@@ -74,17 +80,36 @@ nav.scrolled { padding: 15px 64px; background: rgba(6, 9, 14, 0.72); backdrop-fi
 .oc { width: 380px; height: 380px; bottom: 0; right: -80px; background: radial-gradient(circle, rgba(110, 175, 245, 0.07) 0%, transparent 70%); }
 
 .hero-ayubowan {
-  font-family: var(--sinhala); font-size: clamp(28px, 4vw, 48px);
-  font-weight: 900; color: var(--white); margin-bottom: 20px;
+  font-family: var(--sinhala); font-size: clamp(18px, 2.5vw, 28px);
+  font-weight: 700; color: var(--white); margin-bottom: 16px;
   opacity: 0; animation: fu .7s .1s forwards;
-  text-shadow: 0 0 30px rgba(120, 192, 245, 0.15);
 }
 
 .h1 { font-family: var(--display); font-size: clamp(64px, 12vw, 148px); line-height: .93; font-weight: 900; letter-spacing: -.03em; margin-bottom: 14px; opacity: 0; animation: fu .9s .25s cubic-bezier(.16, 1, .3, 1) forwards; }
 .h1 .blue { color: var(--sky2); }
 
-.h-sub { font-family: var(--mono); font-size: clamp(11px, 1.4vw, 14px); font-weight: 300; color: var(--white); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 16px; opacity: 0; animation: fu .7s .5s forwards; }
-.h-tagline { font-family: var(--display); font-size: clamp(20px, 3vw, 32px); font-weight: 800; color: var(--soft); letter-spacing: .02em; margin-bottom: 48px; opacity: 0; animation: fu .7s .65s forwards; }
+.h-sub { font-family: var(--sans); font-size: clamp(11px, 1.4vw, 14px); font-weight: 300; color: var(--white); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 16px; opacity: 0; animation: fu .7s .5s forwards; }
+.h-tagline { font-family: var(--display); font-size: clamp(16px, 2vw, 22px); font-weight: 700; color: var(--soft); letter-spacing: .02em; margin-top: 12px; margin-bottom: 52px; opacity: 0; animation: fu .7s .65s forwards; }
+
+.show-more-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 20px; padding: 13px 32px; border-radius: 100px;
+  background: var(--card-bg); border: 1px solid var(--card-b);
+  font-family: var(--mono); font-size: 12px; font-weight: 400;
+  color: var(--soft); letter-spacing: .04em;
+  cursor: none; transition: all .25s; width: fit-content; margin-left: auto; margin-right: auto;
+}
+.show-more-btn:hover { background: var(--pill-bg); border-color: var(--pill-b); color: var(--sky2); }
+
+.student-reg {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 24px; padding: 13px 28px; border-radius: 100px;
+  background: var(--skyg); color: #06090e;
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  text-decoration: none; box-shadow: 0 4px 20px rgba(120, 192, 245, 0.25);
+  transition: box-shadow .3s, transform .2s;
+}
+.student-reg:hover { box-shadow: 0 6px 32px rgba(120, 192, 245, 0.4); transform: translateY(-2px); }
 
 .h-actions { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 72px; opacity: 0; animation: fu .7s .8s forwards; }
 .btn-fill { padding: 15px 36px; border-radius: 100px; background: var(--skyg); color: #06090e; font-family: var(--sans); font-size: 14px; font-weight: 600; text-decoration: none; box-shadow: 0 4px 28px rgba(120, 192, 245, 0.35); transition: box-shadow .3s, transform .2s; }
