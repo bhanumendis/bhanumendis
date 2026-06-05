@@ -87,9 +87,9 @@ nav.scrolled{padding:15px 64px;background:rgba(6,9,14,0.78);backdrop-filter:blur
 }
 .sidebar-right a{
   writing-mode:vertical-rl;text-orientation:mixed;
-  font-family:var(--mono);font-size:10px;font-weight:400;
+  font-family:var(--mono);font-size:13px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;
-  color:var(--sidebar-text);opacity:0.4;text-decoration:none;
+  color:var(--sidebar-text);opacity:0.65;text-decoration:none;
   transition:opacity .25s,color .25s;cursor:none;
 }
 .sidebar-right a:hover{opacity:1;color:var(--sky);}
@@ -111,18 +111,18 @@ nav.scrolled{padding:15px 64px;background:rgba(6,9,14,0.78);backdrop-filter:blur
   -webkit-backdrop-filter:blur(12px);
 }
 .theme-btn{
-  width:32px;height:32px;border-radius:50%;border:none;
-  background:transparent;color:var(--sidebar-text);opacity:0.4;
-  font-size:14px;cursor:none;transition:all .25s;
+  width:36px;height:36px;border-radius:50%;border:none;
+  background:transparent;color:var(--sidebar-text);opacity:0.65;
+  font-size:17px;cursor:none;transition:all .25s;
   display:flex;align-items:center;justify-content:center;
 }
 .theme-btn.active{opacity:1;background:var(--faint);}
 .theme-btn:hover{opacity:0.8;}
 .sidebar-left .scroll-label{
   writing-mode:vertical-rl;text-orientation:mixed;
-  font-family:var(--mono);font-size:9px;font-weight:400;
+  font-family:var(--mono);font-size:11px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;
-  color:var(--sidebar-text);opacity:0.3;margin-top:20px;
+  color:var(--sidebar-text);opacity:0.6;margin-top:20px;
   text-decoration:none;transition:opacity .2s;cursor:none;
 }
 .sidebar-left .scroll-label:hover{opacity:0.7;}
