@@ -140,7 +140,7 @@ section{position:relative;}
 .slideshow img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease;pointer-events:none;-webkit-user-drag:none;}
 .slideshow img.active{opacity:1;}
 .slide-dots{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:10;}
-.slide-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);border:none;cursor:none;transition:all .25s;}
+.slide-dot{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.35);border:none;cursor:none;transition:all .25s;min-width:44px;min-height:44px;padding:14px;}
 .slide-dot.active{background:var(--white);box-shadow:0 0 8px rgba(255,255,255,0.5);}
 .slide-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,var(--bg1) 0%,transparent 15%,transparent 85%,var(--bg1) 100%);pointer-events:none;z-index:5;}
 

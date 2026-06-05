@@ -132,7 +132,7 @@ export default function Home() {
         </div>
       </section>
 
-      <a href="#" id="scroll-top" className="scroll-top"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" /></svg></a>
+      <a href="#" id="scroll-top" className="scroll-top" aria-label="Scroll to top"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" /></svg></a>
 
       <div className="rule"></div>
 
@@ -194,7 +194,7 @@ export default function Home() {
           ))}
           <div className="slide-dots">
             {SLIDES.map((_, i) => (
-              <button key={i} className={`slide-dot ${i === currentSlide ? "active" : ""}`} onClick={() => setCurrentSlide(i)} />
+              <button key={i} className={`slide-dot ${i === currentSlide ? "active" : ""}`} onClick={() => setCurrentSlide(i)} aria-label={`Go to slide ${i + 1}`} />
             ))}
           </div>
         </div>
@@ -288,10 +288,10 @@ export default function Home() {
           <div className="eyebrow reveal">From LinkedIn</div>
           <h2 className="sh reveal">Latest <em>Posts</em></h2>
           <div className="li-grid reveal d1">
-            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7467136600683073536?collapsed=1" height="622" frameBorder="0" allowFullScreen title="LinkedIn post 1"></iframe>
-            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7463987225429708800?collapsed=1" height="622" frameBorder="0" allowFullScreen title="LinkedIn post 2"></iframe>
-            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7399673996285358080?collapsed=1" height="622" frameBorder="0" allowFullScreen title="LinkedIn post 3"></iframe>
-            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7434580059035848705?collapsed=1" height="622" frameBorder="0" allowFullScreen title="LinkedIn post 4"></iframe>
+            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7467136600683073536?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post 1"></iframe>
+            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7463987225429708800?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post 2"></iframe>
+            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7399673996285358080?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post 3"></iframe>
+            <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7434580059035848705?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post 4"></iframe>
           </div>
         </div>
       </section>
