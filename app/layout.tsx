@@ -73,7 +73,7 @@ const personSchema = {
 };
 
 export const metadata: Metadata = {
-  title: "Bhanu Mendis | Public Speaker & Audio Engineer",
+  title: "Bhanu Mendis",
   description:
     "Senior Head Prefect, Public Speaker, Audio Engineer, and Sangeetha Visharadha from Colombo, Sri Lanka. Leading events, music, and creative direction.",
   keywords: [
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
   },
   icons: { icon: "/favicon.png", apple: "/favicon.png" },
   openGraph: {
-    title: "Bhanu Mendis | Public Speaker & Audio Engineer",
+    title: "Bhanu Mendis",
     description:
       "Senior Head Prefect, Public Speaker, Audio Engineer, and Sangeetha Visharadha from Colombo, Sri Lanka.",
     url: "https://bhanumendis.com",
@@ -100,7 +100,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Bhanu Mendis | Public Speaker & Audio Engineer",
+    title: "Bhanu Mendis",
     description: "Public Speaker · Audio Engineer · Artist · Educator · Visharadha — Colombo, Sri Lanka.",
     images: ["/favicon.png"],
   },
