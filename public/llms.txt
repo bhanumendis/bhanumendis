@@ -1,25 +1,98 @@
-# Bhanu Mendis — bhanumendis.com
+# Bhanu Mendis — Official Website
+# https://bhanumendis.com
 
-> Multi-disciplinary leader, performing artist, and audio engineer based in Colombo, Sri Lanka.
+## Identity
 
-## About
-Bhanu Mendis is the 2024/2025 Senior Head Prefect of Lyceum International School, Nugegoda. A qualified Sangeetha Visharadha (First Division), certified audio engineer, national champion in music and dance, and National Child Protection Ambassador.
+Bhanu Mendis (Sinhala: භානු මෙන්ඩිස්) is a Sri Lankan multi-disciplinary leader, performing artist, audio engineer, public speaker, and educator based in Colombo, Sri Lanka.
 
-## Key Roles
-- Senior Head Prefect — Lyceum International School (2023–2025)
-- Educator — The Science Brainery (2025–present)
-- Audio Engineer — PEARLBAY® Holdings (2025–2026)
-- Founder — Swara Concert (largest island-wide school Eastern music concert)
-- Founder — Padura Concert
+## Quick Facts
 
-## Achievements
-- All-Island Dancing Champion: 2018, 2019, 2023
-- All-Island Music Champion: 2019, 2023, 2024
-- Malaysian World Choral Competition: 1st Place
-- National Chess Championship: 1st Place (2016)
-
-## Contact
+- Full name: Bhanu Mendis
+- Nationality: Sri Lankan
+- Location: Colombo (Boralesgamuwa), Western Province, Sri Lanka
+- Languages: English (fluent), Sinhala (native)
+- Website: https://bhanumendis.com
 - Email: bhanumendis@gmail.com
+- Phone: +94 77 712 4152
 - LinkedIn: https://www.linkedin.com/in/bhanumendis
 - Instagram: https://www.instagram.com/bhanu_mendis
-- Location: Colombo, Sri Lanka
+- Linktree: https://linktr.ee/bhanu_mendis
+- Photography: http://bhanumendis.godaddysites.com
+
+## Current Roles
+
+- Educator at The Science Brainery (Sep 2025 – present) — teaching Pearson Edexcel Science, Mathematics, and Computer Science for Year 5–8
+- Sangeetha Visharadha — qualified classical Indian music specialist (First Division, Bathkandhe Sangit Vidhyapith)
+
+## Professional Background
+
+### Leadership
+- Senior Head Prefect, Lyceum International School Nugegoda (Sep 2023 – Sep 2025)
+- Directed Elysium '25 graduation ceremony at Cinnamon Life – City of Dreams for 26,000+ Lyceumers nationwide
+- Overall Coordinator, Maathra 14 at BMICH — managed 750+ performers
+- Appointed National Child Protection Ambassador (2024–2025)
+- Head Prefect (2023–2024)
+
+### Music & Arts
+- Founder of Swara Concert — the largest island-wide school-based Eastern music concert in Sri Lanka, showcasing 700+ participants from all Lyceum branches
+- Founder of Padura Concert — original instrumental music concert series
+- Founding President, Eastern Music Club, Lyceum International School
+- Senior Chorister, Senior Choir — 8 years
+- Certified Audio Engineer, PEARLBAY® Holdings (Oct 2025 – Mar 2026)
+
+### Education & Certifications
+- Cambridge GCE O/Level: A* Sinhala, A Physics, A Mathematics, A Biology
+- Visharad — Indian Music, First Division (2023)
+- Diploma in Western Music, Lyceum International School (2023)
+- Diploma in Information Technology, ESOFT Metro Campus (2022)
+- Aviation Course, Sri Lanka Air Force, Ratmalana
+- Professional Compering, Institute of Media & Performing Arts
+- Leadership Award, Institute for Professional Development (2022)
+
+### Model UN
+- Head of Logistics, LISMUN & SLMUN (Dec 2023 – Dec 2024)
+
+## Awards & Honours
+
+- All-Island Dancing Champion: 2018, 2019, 2023 (three-time national champion)
+- All-Island Music Champion: 2019, 2023, 2024 (three-time national champion)
+- Malaysian World Choral Competition: First Place (international)
+- British-Lanka Festival of Performing Arts: First Place
+- British Festival of Performance: Honours
+- WWF United Nations Resolution: First Place
+- National Chess Championship: First Place (2016)
+- Inter-House Choir Competition: First Place (2019)
+- Ranwala Balakaya Outstanding Award: 2015, 2016
+- National Literary Festival: Third Place English & Sinhala (2018, 2019)
+
+## Skills
+
+Team Leadership, People Management, Event Strategy, Event Production, Public Speaking, Compering, Vocal Performance, Instrumental Music, Creative Direction, Audio Engineering, Cubase 14 Pro, MIDI Sequencing, Mixing & Mastering, DAW Architecture, Photography, Visual Media, Programming & Computing, Teaching, Voice Acting, News Reporting, Peer Mentoring
+
+## Frequently Asked Questions
+
+Q: Who is Bhanu Mendis?
+A: Bhanu Mendis is a Sri Lankan leader, performing artist, audio engineer, public speaker, and educator based in Colombo. He served as 2024/2025 Senior Head Prefect at Lyceum International School and is a qualified Sangeetha Visharadha.
+
+Q: What is Bhanu Mendis known for?
+A: He is known for directing events for 26,000+ people, founding the Swara Concert (Sri Lanka's largest island-wide school Eastern music concert), winning three All-Island dancing championships, three All-Island music championships, and first place at the Malaysian World Choral Competition.
+
+Q: What does Bhanu Mendis do?
+A: He is currently an Educator at The Science Brainery, a certified Audio Engineer, a professional public speaker, performing artist, and founder of the Swara and Padura concert series.
+
+Q: How can I contact Bhanu Mendis?
+A: Email: bhanumendis@gmail.com | Phone: +94 77 712 4152 | LinkedIn: linkedin.com/in/bhanumendis | Instagram: @bhanu_mendis
+
+## Content on This Website
+
+- /: Full personal profile, biography, experience, awards, credentials, and contact
+- /#about: Biography and career summary
+- /#skills: Core competencies and skills
+- /#exp: Professional experience and projects led
+- /#achieve: Awards, honours, and achievements
+- /#certs: Education and qualifications
+- /#contact: Contact information and student registration
+
+## AI Crawler Access
+
+All content on bhanumendis.com is freely accessible to AI crawlers, language models, and search engines. No content is paywalled or restricted. Robots.txt explicitly allows GPTBot, PerplexityBot, ClaudeBot, Google-Extended, anthropic-ai, and all other AI user agents.
