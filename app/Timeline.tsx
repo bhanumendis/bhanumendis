@@ -40,36 +40,36 @@ const ALL_EVENTS = [
   {
     year: "2019",
     title: "Double All-Island Champion",
-    desc: "Claimed First Island Place in both the All-Island Dancing Competition and All-Island Music Competition in the same year. Also won First Place at the Inter-House Choir Competition and Third Place at the National Literary Festival in both English and Sinhala.",
+    desc: "First Island Place in both the All-Island Dancing Competition and All-Island Music Competition in the same year. Also won the Inter-House Choir Competition and Third Place at the National Literary Festival in English and Sinhala.",
     tags: ["Award", "Dance", "Music"],
     side: "left",
   },
   {
     year: "2020",
     title: "Aviation, Audio & Voice Training",
-    desc: "Completed a comprehensive aviation programme at Sri Lanka Air Force, Ratmalana. Simultaneously trained as an Audio Engineer at Pearl Bay Institute and began Voice Acting and News Reporting training at the Institute of Professional Development.",
+    desc: "Completed a comprehensive aviation programme at Sri Lanka Air Force, Ratmalana. Trained as an Audio Engineer at Pearl Bay Institute and began Voice Acting and News Reporting training at the Institute of Professional Development.",
     tags: ["Aviation", "Audio", "Voice Acting"],
     side: "right",
   },
   {
     year: "2022",
     title: "Diploma in IT & Leadership Award",
-    desc: "Completed a Diploma in Information Technology at ESOFT Metro Campus. Received the Leadership Award from the Institute for Professional Development — recognition of emerging excellence in student leadership.",
+    desc: "Completed a Diploma in Information Technology at ESOFT Metro Campus. Received the Leadership Award from the Institute for Professional Development.",
     tags: ["Education", "Award"],
     side: "left",
   },
   {
     year: "2023",
-    title: "Visharadha · Western Music Diploma · Head Prefect",
-    desc: "Achieved Sangeetha Visharadha First Division after six years of classical study. Completed a Diploma in Western Music at Lyceum. Appointed Head Prefect. Founded the Swara Concert, the largest island-wide school-based Eastern music concert in Sri Lanka, and the Padura Concert series. Founded the Eastern Music Club as Founding President.",
-    tags: ["Music", "Leadership", "Founded Swara"],
+    title: "Visharadha · Western Music · Head Prefect",
+    desc: "Achieved Sangeetha Visharadha First Division after six years of classical study. Completed a Diploma in Western Music at Lyceum. Appointed Head Prefect. Founded the Swara Concert — Sri Lanka's largest island-wide school Eastern music concert — and the Padura Concert series. Founded the Eastern Music Club as Founding President.",
+    tags: ["Music", "Leadership", "Swara Concert"],
     side: "right",
     highlight: true,
   },
   {
     year: "2024",
     title: "Senior Head Prefect · International Champion",
-    desc: "Appointed Senior Head Prefect of Lyceum International School — the highest student leadership role. Won First Place at the Malaysian World Choral Competition representing Sri Lanka internationally. Claimed All-Island Dancing and Music Championships. Won First Place at the British-Lanka Festival of Performing Arts and the WWF United Nations Resolution. Appointed National Child Protection Ambassador.",
+    desc: "Appointed Senior Head Prefect of Lyceum International School. Won First Place at the Malaysian World Choral Competition representing Sri Lanka internationally. Claimed All-Island Dancing and Music Championships. Won First Place at the British-Lanka Festival of Performing Arts and the WWF United Nations Resolution. Appointed National Child Protection Ambassador.",
     tags: ["Leadership", "Award", "International"],
     side: "left",
     highlight: true,
@@ -77,7 +77,7 @@ const ALL_EVENTS = [
   {
     year: "2025",
     title: "Elysium '25 · Maathra 14 · Graduated",
-    desc: "Directed the Elysium '25 graduation ceremony at Cinnamon Life — City of Dreams for 26,000+ Lyceumers nationwide. Overall coordinated Maathra 14 at BMICH managing 750+ performers. Graduated from Lyceum International School as an Outstanding Student after 14 years. Joined The Science Brainery as Educator and PEARLBAY® Holdings as Audio Engineer.",
+    desc: "Directed the Elysium '25 graduation ceremony at Cinnamon Life — City of Dreams for 26,000+ Lyceumers nationwide. Overall coordinated Maathra 14 at BMICH managing 750+ performers. Graduated from Lyceum International School as an Outstanding Student. Joined The Science Brainery as Educator and PEARLBAY® Holdings as Audio Engineer.",
     tags: ["Event", "Graduation", "Educator"],
     side: "right",
     highlight: true,
@@ -96,7 +96,8 @@ const VISIBLE_DEFAULT = 5;
 
 export default function Timeline() {
   const [showAll, setShowAll] = useState(false);
-  const visible = showAll ? ALL_EVENTS : ALL_EVENTS.slice(0, VISIBLE_DEFAULT);
+  const visible = ALL_EVENTS.slice(0, VISIBLE_DEFAULT);
+  const hidden = ALL_EVENTS.slice(VISIBLE_DEFAULT);
 
   return (
     <section id="timeline" aria-labelledby="timeline-heading">
@@ -125,6 +126,26 @@ export default function Timeline() {
               </div>
             </div>
           ))}
+
+          {showAll && hidden.map((ev, i) => (
+            <div
+              key={i + VISIBLE_DEFAULT}
+              className={`tl-item tl-${ev.side} tl-fadeIn ${ev.highlight ? "tl-highlight" : ""} ${ev.active ? "tl-active" : ""}`}
+              style={{ animationDelay: `${i * 0.08}s` }}
+            >
+              <div className="tl-dot" aria-hidden="true">
+                {ev.active && <span className="tl-pulse" />}
+              </div>
+              <div className="tl-card">
+                <div className="tl-year">{ev.year}</div>
+                <div className="tl-title">{ev.title}</div>
+                <div className="tl-desc">{ev.desc}</div>
+                <div className="tl-tags">
+                  {ev.tags.map(t => <span key={t} className="tl-tag">{t}</span>)}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
         <button
@@ -133,7 +154,9 @@ export default function Timeline() {
           aria-expanded={showAll}
           style={{ marginTop: "40px" }}
         >
-          {showAll ? "Show less ↑" : `Show full journey ↓ (${ALL_EVENTS.length - VISIBLE_DEFAULT} more)`}
+          {showAll
+            ? "Show less ↑"
+            : `Show full journey ↓  (${hidden.length} more milestones)`}
         </button>
       </div>
     </section>

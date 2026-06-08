@@ -603,3 +603,21 @@ footer{background:var(--bg1);padding:52px 64px 32px;border-top:1px solid var(--f
   .tl-left .tl-tags { justify-content: flex-start; }
   .press-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Timeline show more fix ── */
+@keyframes tlFadeIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tl-fadeIn {
+  animation: tlFadeIn .55s cubic-bezier(.16,1,.3,1) both;
+}
+
+/* ── Press favicon logo ── */
+.press-logo-img {
+  background: var(--card-bg);
+  border: 1px solid var(--card-b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
