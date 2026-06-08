@@ -19,7 +19,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "ai",
-      text: "ආයුබෝවන්! I'm Bhanu's AI assistant. Ask me anything about his work, achievements, or how to get in touch.",
+      text: "ආයුබෝවන්! I'm AI. Ask me anything about his work, achievements, or how to get in touch.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -81,7 +81,7 @@ export default function Chatbot() {
           <div className="chat-header-dot"></div>
           <div>
             <div className="chat-header-title">Ask Bhanu&apos;s AI</div>
-            <div className="chat-header-sub">Powered by Gemini · Usually instant</div>
+            <div className="chat-header-sub">Powered by Gemini</div>
           </div>
           <button className="chat-close" onClick={() => setOpen(false)} aria-label="Close chat">×</button>
         </div>
