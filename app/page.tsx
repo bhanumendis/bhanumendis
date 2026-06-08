@@ -1,5 +1,4 @@
 "use client";
-import Chatbot from "./Chatbot";
 import { useEffect, useState, useCallback } from "react";
 
 const SLIDES = ["/slides/slide-5.jpg", "/slides/slide-8.jpg"];
@@ -441,7 +440,6 @@ export default function Home() {
           <span className="foot-copy">Colombo, Sri Lanka</span>
         </div>
       </footer>
-      <Chatbot />
     </>
   );
 }
