@@ -2,6 +2,8 @@
 import { useEffect, useState, useCallback } from "react";
 import Timeline from "./Timeline";
 import FeaturedIn from "./FeaturedIn";
+import Effects from "./Effects";
+import SkillsRadar from "./SkillsRadar";
 
 
 const SLIDES = ["/slides/slide-5.jpg", "/slides/slide-8.jpg"];
@@ -11,7 +13,26 @@ export default function Home() {
   const [isDark, setIsDark] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const toggleTheme = () => { setIsDark(!isDark); document.body.classList.toggle("light"); };
+  const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    const ripple = document.createElement("div");
+    ripple.className = "theme-ripple";
+    ripple.style.cssText = `
+      position:fixed;inset:0;width:100vw;height:100vh;
+      background:${isDark ? "#f4f6fa" : "#06090e"};
+      --rx:${x}px;--ry:${y}px;
+    `;
+    document.body.appendChild(ripple);
+
+    setTimeout(() => {
+      setIsDark(!isDark);
+      document.body.classList.toggle("light");
+      setTimeout(() => ripple.remove(), 100);
+    }, 550);
+  };
   const nextSlide = useCallback(() => { setCurrentSlide((p) => (p + 1) % SLIDES.length); }, []);
   useEffect(() => { const t = setInterval(nextSlide, 4500); return () => clearInterval(t); }, [nextSlide]);
 
@@ -213,6 +234,7 @@ export default function Home() {
               <span className="sp" role="listitem">News Reporting</span><span className="sp" role="listitem">MIDI Sequencing</span>
               <span className="sp" role="listitem">Mixing &amp; Mastering</span><span className="sp" role="listitem">DAW Architecture</span>
             </div>
+            <SkillsRadar />
           </div>
         </section>
 
@@ -447,6 +469,7 @@ export default function Home() {
           <span className="foot-copy">Colombo, Sri Lanka</span>
         </div>
       </footer>
+      <Effects />
     </>
   );
 }
