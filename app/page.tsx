@@ -1,5 +1,10 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import Chatbot from "./Chatbot";
+import ParticleCanvas from "./ParticleCanvas";
+import Timeline from "./Timeline";
+import FeaturedIn from "./FeaturedIn";
+
 
 const SLIDES = ["/slides/slide-5.jpg", "/slides/slide-8.jpg"];
 
@@ -135,6 +140,7 @@ export default function Home() {
 
       <main>
         <section id="hero" aria-labelledby="hero-name">
+          <ParticleCanvas />
           <img src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" />
           <div className="hero-bg-overlay" aria-hidden="true"></div>
           <div className="orb oa" aria-hidden="true"></div>
@@ -244,6 +250,10 @@ export default function Home() {
         </section>
 
         <div className="rule" aria-hidden="true"></div>
+
+        <Timeline />
+      <div className="rule" aria-hidden="true"></div>
+      <FeaturedIn />
 
         <section id="exp" aria-labelledby="exp-heading">
           <div className="sw">
@@ -440,6 +450,7 @@ export default function Home() {
           <span className="foot-copy">Colombo, Sri Lanka</span>
         </div>
       </footer>
+      <Chatbot />
     </>
   );
 }
