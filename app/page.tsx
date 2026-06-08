@@ -13,26 +13,7 @@ export default function Home() {
   const [isDark, setIsDark] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-
-    const ripple = document.createElement("div");
-    ripple.className = "theme-ripple";
-    ripple.style.cssText = `
-      position:fixed;inset:0;width:100vw;height:100vh;
-      background:${isDark ? "#f4f6fa" : "#06090e"};
-      --rx:${x}px;--ry:${y}px;
-    `;
-    document.body.appendChild(ripple);
-
-    setTimeout(() => {
-      setIsDark(!isDark);
-      document.body.classList.toggle("light");
-      setTimeout(() => ripple.remove(), 100);
-    }, 550);
-  };
+  const toggleTheme = () => { setIsDark(!isDark); document.body.classList.toggle("light"); };
   const nextSlide = useCallback(() => { setCurrentSlide((p) => (p + 1) % SLIDES.length); }, []);
   useEffect(() => { const t = setInterval(nextSlide, 4500); return () => clearInterval(t); }, [nextSlide]);
 
