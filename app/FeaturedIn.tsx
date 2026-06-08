@@ -7,7 +7,7 @@ const FEATURES = [
     section: "Education",
     desc: "Covered Elysium '25 — the A/L Graduation Ceremony of 2025 at Lyceum International School Nugegoda.",
     url: "https://edu.dailymirror.lk/home/schoolnews/1796/Elysium-25-The-AL-Graduation-Ceremony-of-2025-Lyceum-Nugegoda",
-    domain: "dailymirror.lk",
+    favicon: "/dm-favicon.avif",
     initials: "DM",
   },
   {
@@ -15,7 +15,7 @@ const FEATURES = [
     section: "Education",
     desc: "Featured Elysium '25 — the historic A/L Graduation Ceremony of 2025 at Lyceum International School Nugegoda.",
     url: "https://www.sundaytimes.lk/250914/education/elysium-25-the-al-graduation-ceremony-of-2025-lyceum-nugegoda-611593.html",
-    domain: "sundaytimes.lk",
+    favicon: "/st-favicon.avif",
     initials: "ST",
   },
   {
@@ -23,7 +23,7 @@ const FEATURES = [
     section: "Education",
     desc: "Announced Lyceum Nugegoda's Advanced Level Graduation Ceremony at Cinnamon Life — City of Dreams.",
     url: "https://www.sundaytimes.lk/250824/education/lyceum-nugegoda-to-host-advanced-level-graduation-ceremony-at-cinnamon-life-609469.html",
-    domain: "sundaytimes.lk",
+    favicon: "/st-favicon.avif",
     initials: "ST",
   },
   {
@@ -31,16 +31,17 @@ const FEATURES = [
     section: "Official",
     desc: "Official coverage of Elysium '25 — a grand celebration of the A/L graduation at Cinnamon Life City of Dreams.",
     url: "https://www.lyceum.lk/news/events/celebrations/elysium-25-a-grand-celebration-of-the-lyceum-international-school-al-graduation-at-cinnamon-life-city-of-dreams/",
+    favicon: null,
     domain: "lyceum.lk",
     initials: "LK",
   },
 ];
 
-function FaviconLogo({ domain, initials }: { domain: string; initials: string }) {
+function FaviconLogo({ favicon, domain, initials }: { favicon: string | null; domain?: string; initials: string }) {
   const [failed, setFailed] = useState(false);
-  const src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+  const src = favicon || (domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : null);
 
-  if (failed) {
+  if (!src || failed) {
     return <div className="press-logo">{initials}</div>;
   }
 
@@ -48,7 +49,7 @@ function FaviconLogo({ domain, initials }: { domain: string; initials: string })
     <div className="press-logo press-logo-img">
       <img
         src={src}
-        alt={domain}
+        alt={initials}
         width={28}
         height={28}
         onError={() => setFailed(true)}
@@ -77,7 +78,7 @@ export default function FeaturedIn() {
               className="press-card"
               aria-label={`${f.outlet} — ${f.desc}`}
             >
-              <FaviconLogo domain={f.domain} initials={f.initials} />
+              <FaviconLogo favicon={f.favicon ?? null} domain={(f as any).domain} initials={f.initials} />
               <div>
                 <div className="press-name">{f.outlet}</div>
                 <div className="press-country">{f.section}</div>
