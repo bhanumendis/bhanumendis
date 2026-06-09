@@ -1,12 +1,22 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import Timeline from "./Timeline";
 import FeaturedIn from "./FeaturedIn";
 import Effects from "./Effects";
 import SkillsRadar from "./SkillsRadar";
+import MagneticButton from "./MagneticButton";
+import Counter from "./Counter";
 
+const SLIDES = ["/slides/slide-5.jpg", "/slides/slide-8.jpg"] as const;
 
-const SLIDES = ["/slides/slide-5.jpg", "/slides/slide-8.jpg"];
+const SKILLS: readonly string[] = [
+  "Team Leadership", "People Management", "Event Strategy", "Event Production",
+  "Public Speaking", "Compering", "Vocal Performance", "Instrumental Music",
+  "Creative Direction", "Audio Engineering", "Cubase 14 Pro", "Photography",
+  "Visual Media", "Programming & Computing", "Cross-team Coordination",
+  "Execution Under Deadline", "Stage & Audience Presence", "Peer Mentoring",
+  "Teaching", "Voice Acting", "News Reporting", "MIDI Sequencing",
+  "Mixing & Mastering", "DAW Architecture",
+];
 
 export default function Home() {
   const [showAllExp, setShowAllExp] = useState(false);
@@ -23,35 +33,32 @@ export default function Home() {
       Math.hypot(x, window.innerHeight - y),
       Math.hypot(window.innerWidth - x, window.innerHeight - y)
     );
-
     const ripple = document.createElement("div");
     ripple.className = "theme-ripple";
     const size = maxDist * 2.2;
-    ripple.style.cssText = `
-      position:fixed;z-index:9999;pointer-events:none;border-radius:50%;
-      width:${size}px;height:${size}px;
-      left:${x - size / 2}px;top:${y - size / 2}px;
-      background:${isDark ? "#f4f6fa" : "#06090e"};
-      transform:scale(0);
-    `;
+    ripple.style.cssText = `position:fixed;z-index:9999;pointer-events:none;border-radius:50%;width:${size}px;height:${size}px;left:${x - size / 2}px;top:${y - size / 2}px;background:${isDark ? "#f4f6fa" : "#06090e"};transform:scale(0);`;
     document.body.appendChild(ripple);
-
     requestAnimationFrame(() => {
       ripple.style.transition = "transform .7s cubic-bezier(.2,.9,.3,1.05)";
       ripple.style.transform = "scale(1)";
     });
-
-    setTimeout(() => {
-      setIsDark(!isDark);
+    window.setTimeout(() => {
+      setIsDark((prev) => !prev);
       document.body.classList.toggle("light");
       ripple.style.transition = "opacity .3s ease";
       ripple.style.opacity = "0";
-      setTimeout(() => ripple.remove(), 350);
+      window.setTimeout(() => ripple.remove(), 350);
     }, 650);
   };
 
-  const nextSlide = useCallback(() => { setCurrentSlide((p) => (p + 1) % SLIDES.length); }, []);
-  useEffect(() => { const t = setInterval(nextSlide, 4500); return () => clearInterval(t); }, [nextSlide]);
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((p) => (p + 1) % SLIDES.length);
+  }, []);
+
+  useEffect(() => {
+    const t = window.setInterval(nextSlide, 4500);
+    return () => window.clearInterval(t);
+  }, [nextSlide]);
 
   useEffect(() => {
     const cd = document.getElementById("cd");
@@ -61,24 +68,29 @@ export default function Home() {
     const scrollBtn = document.getElementById("scroll-top");
     if (!cd || !cr || !prog || !nav) return;
 
-    let mx = 0, my = 0, rx = 0, ry = 0, frame: number;
+    let mx = 0, my = 0, rx = 0, ry = 0, frame = 0;
     let usingMouse = false;
 
-    // Show cursor only when actual mouse movement detected (not touch)
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      document.body.classList.remove("using-mouse");
+    } else {
+      usingMouse = true;
+      document.body.classList.add("using-mouse");
+    }
+
     const onMouseMove = (e: MouseEvent) => {
       if (!usingMouse) {
         usingMouse = true;
         document.body.classList.add("using-mouse");
       }
       mx = e.clientX; my = e.clientY;
-      cd.style.left = mx + "px"; cd.style.top = my + "px";
-
+      cd.style.left = `${mx}px`; cd.style.top = `${my}px`;
       const heroContent = document.getElementById("hero-content");
       if (heroContent) {
         const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
         const dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
         heroContent.style.transform = `translate(${-dx * 18}px, ${-dy * 12}px)`;
-        const h1 = heroContent.querySelector(".h1") as HTMLElement;
+        const h1 = heroContent.querySelector<HTMLElement>(".h1");
         if (h1) {
           const dist = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
           const maxDist = Math.sqrt(cx ** 2 + cy ** 2);
@@ -88,88 +100,111 @@ export default function Home() {
       }
     };
 
-    // Hide cursor on touch input
     const onTouchStart = () => {
       usingMouse = false;
       document.body.classList.remove("using-mouse");
     };
 
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.pointerType === "touch") {
+        usingMouse = false;
+        document.body.classList.remove("using-mouse");
+      } else if (e.pointerType === "mouse" || e.pointerType === "pen") {
+        usingMouse = true;
+        document.body.classList.add("using-mouse");
+      }
+    };
+
     const loop = () => {
       rx += (mx - rx) * 0.22; ry += (my - ry) * 0.22;
-      cr.style.left = rx + "px"; cr.style.top = ry + "px";
+      cr.style.left = `${rx}px`; cr.style.top = `${ry}px`;
       frame = requestAnimationFrame(loop);
     };
 
     const onScroll = () => {
-      const s = window.scrollY, h = document.body.scrollHeight - window.innerHeight;
-      prog.style.width = (s / h * 100) + "%";
+      const s = window.scrollY;
+      const h = document.body.scrollHeight - window.innerHeight;
+      prog.style.width = `${h > 0 ? (s / h) * 100 : 0}%`;
       nav.classList.toggle("scrolled", s > 50);
       if (scrollBtn) scrollBtn.classList.toggle("visible", s > 400);
     };
 
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("scroll", onScroll);
+    document.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("scroll", onScroll, { passive: true });
     loop();
 
-    const hoverEls = document.querySelectorAll("a,button,.hsc,.srow,.acard,.ccard,.ecard,.sp,.soc-btn,.foot-link,.scroll-top,.show-more-btn,.theme-btn,.sidebar-right a,.slide-dot");
+    const hoverEls = document.querySelectorAll<HTMLElement>(
+      "a,button,.hsc,.srow,.acard,.ccard,.ecard,.sp,.soc-btn,.foot-link,.scroll-top,.show-more-btn,.theme-btn,.sidebar-right a,.slide-dot"
+    );
     const onEnter = () => document.body.classList.add("cg");
     const onLeave = () => document.body.classList.remove("cg");
-    hoverEls.forEach((el) => { el.addEventListener("mouseenter", onEnter); el.addEventListener("mouseleave", onLeave); });
+    hoverEls.forEach((el) => {
+      el.addEventListener("mouseenter", onEnter);
+      el.addEventListener("mouseleave", onLeave);
+    });
 
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("in"); else e.target.classList.remove("in"); }),
+      (entries) => entries.forEach((entry) => {
+        entry.target.classList.toggle("in", entry.isIntersecting);
+      }),
       { threshold: 0.08, rootMargin: "0px 0px -60px 0px" }
     );
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
     const gallery = document.getElementById("gallery");
     const blockCtx = (e: Event) => e.preventDefault();
-    if (gallery) gallery.addEventListener("contextmenu", blockCtx);
+    gallery?.addEventListener("contextmenu", blockCtx);
 
     return () => {
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("touchstart", onTouchStart);
+      document.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("scroll", onScroll);
-      hoverEls.forEach((el) => { el.removeEventListener("mouseenter", onEnter); el.removeEventListener("mouseleave", onLeave); });
-      io.disconnect(); cancelAnimationFrame(frame);
-      if (gallery) gallery.removeEventListener("contextmenu", blockCtx);
+      hoverEls.forEach((el) => {
+        el.removeEventListener("mouseenter", onEnter);
+        el.removeEventListener("mouseleave", onLeave);
+      });
+      io.disconnect();
+      cancelAnimationFrame(frame);
+      gallery?.removeEventListener("contextmenu", blockCtx);
     };
   }, []);
 
   return (
     <>
-      <div id="cd" aria-hidden="true"></div>
-      <div id="cr" aria-hidden="true"></div>
-      <div id="prog" aria-hidden="true" role="progressbar" aria-label="Page scroll progress"></div>
+      <div id="cd" aria-hidden="true" />
+      <div id="cr" aria-hidden="true" />
+      <div id="prog" aria-hidden="true" role="progressbar" aria-label="Page scroll progress" />
 
       <div className="sidebar-right" aria-label="Social links">
-        <div className="sidebar-line" aria-hidden="true"></div>
+        <div className="sidebar-line" aria-hidden="true" />
         <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer" aria-label="Instagram profile">Ig.</a>
         <a href="https://linktr.ee/bhanu_mendis" target="_blank" rel="noopener noreferrer" aria-label="Facebook via Linktree">Fb.</a>
         <a href="https://www.linkedin.com/in/bhanumendis" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">In.</a>
-        <div className="sidebar-line" aria-hidden="true"></div>
+        <div className="sidebar-line" aria-hidden="true" />
       </div>
 
       <div className="sidebar-left" aria-label="Theme and navigation controls">
         <div className="theme-toggle" role="group" aria-label="Theme toggle">
-          <button className={`theme-btn ${!isDark ? "active" : ""}`} onClick={toggleTheme} aria-label="Switch to light mode" aria-pressed={!isDark}>☀</button>
-          <button className={`theme-btn ${isDark ? "active" : ""}`} onClick={toggleTheme} aria-label="Switch to dark mode" aria-pressed={isDark}>☾</button>
+          <button type="button" className={`theme-btn ${!isDark ? "active" : ""}`} onClick={toggleTheme} aria-label="Switch to light mode">☀</button>
+          <button type="button" className={`theme-btn ${isDark ? "active" : ""}`} onClick={toggleTheme} aria-label="Switch to dark mode">☾</button>
         </div>
         <a href="#" className="scroll-label" aria-label="Scroll to top of page">Scroll to top</a>
-        <div className="s-line" aria-hidden="true"></div>
+        <div className="s-line" aria-hidden="true" />
       </div>
 
       <nav id="nav" aria-label="Main navigation">
         <a href="#" className="logo" aria-label="Bhanu Mendis — home">
-          <span className="logo-dot" aria-hidden="true"></span>
+          <span className="logo-dot" aria-hidden="true" />
           <span className="logo-text sinhala">භානු මෙන්ඩිස්</span>
         </a>
         <ul className="nav-links" role="list">
           <li><a href="#about">About</a></li>
           <li><a href="#exp">Experience</a></li>
           <li><a href="#achieve">Awards</a></li>
-          <li><a href="#certs">Credentials</a></li>
+          <li><a href="/timeline">Timeline</a></li>
           <li><a href="#contact" className="nav-cta">Contact</a></li>
         </ul>
       </nav>
@@ -177,25 +212,29 @@ export default function Home() {
       <main>
         <section id="hero" aria-labelledby="hero-name">
           <img src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" />
-          <div className="hero-bg-overlay" aria-hidden="true"></div>
-          <div className="orb oa" aria-hidden="true"></div>
-          <div className="orb ob" aria-hidden="true"></div>
-          <div className="orb oc" aria-hidden="true"></div>
+          <div className="hero-bg-overlay" aria-hidden="true" />
+          <div className="orb oa" aria-hidden="true" />
+          <div className="orb ob" aria-hidden="true" />
+          <div className="orb oc" aria-hidden="true" />
           <div id="hero-content" className="hero-content">
             <h1 className="h1" id="hero-name">BHANU<br /><span className="blue">MENDIS</span></h1>
             <p className="h-sub">Public Speaker · Audio Engineer · Artist · Educator · Visharadha</p>
             <p className="h-tagline">Break the Frame</p>
             <div className="h-actions">
-              <a href="#contact" className="btn-fill">Contact</a>
-              <a href="#about" className="btn-out">
+              <MagneticButton href="#contact" className="btn-fill" ariaLabel="Go to contact section">Contact</MagneticButton>
+              <MagneticButton href="#about" className="btn-out" ariaLabel="Explore the site">
                 Explore
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
-              </a>
+              </MagneticButton>
+              <MagneticButton href="/timeline" className="btn-out" ariaLabel="View the timeline">
+                Timeline
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+              </MagneticButton>
             </div>
             <div className="h-stats" role="list" aria-label="Key statistics">
-              <div className="hsc" role="listitem"><div className="hsc-n">750+</div><div className="hsc-l">Performers led</div></div>
-              <div className="hsc" role="listitem"><div className="hsc-n">12+</div><div className="hsc-l">National awards</div></div>
-              <div className="hsc" role="listitem"><div className="hsc-n">6+</div><div className="hsc-l">Years leadership</div></div>
+              <div className="hsc" role="listitem"><div className="hsc-n"><Counter value={750} suffix="+" /></div><div className="hsc-l">Performers led</div></div>
+              <div className="hsc" role="listitem"><div className="hsc-n"><Counter value={12} suffix="+" /></div><div className="hsc-l">National awards</div></div>
+              <div className="hsc" role="listitem"><div className="hsc-n"><Counter value={6} suffix="+" /></div><div className="hsc-l">Years leadership</div></div>
               <div className="hsc" role="listitem"><div className="hsc-n">1st</div><div className="hsc-l">World choral rank</div></div>
             </div>
           </div>
@@ -205,7 +244,7 @@ export default function Home() {
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
         </a>
 
-        <div className="rule" aria-hidden="true"></div>
+        <div className="rule" aria-hidden="true" />
 
         <section id="about" aria-labelledby="about-heading">
           <div className="sw">
@@ -222,47 +261,38 @@ export default function Home() {
               </div>
               <div className="about-right reveal d2">
                 <img src="/favicon.png" alt="Bhanu Mendis — profile photo" className="about-photo" width={120} height={120} />
-                <div className="srow"><div className="sval">26K+</div><div className="sdesc">Lyceumers at Elysium &apos;25</div></div>
-                <div className="srow"><div className="sval">750+</div><div className="sdesc">Performers managed across productions</div></div>
-                <div className="srow"><div className="sval">14</div><div className="sdesc">Years at Lyceum International</div></div>
+                <div className="srow"><div className="sval"><Counter value={26} suffix="K+" /></div><div className="sdesc">Lyceumers at Elysium &apos;25</div></div>
+                <div className="srow"><div className="sval"><Counter value={750} suffix="+" /></div><div className="sdesc">Performers managed across productions</div></div>
+                <div className="srow"><div className="sval"><Counter value={14} /></div><div className="sdesc">Years at Lyceum International</div></div>
                 <div className="srow"><div className="sval">1st</div><div className="sdesc">Malaysian World Choral Competition</div></div>
               </div>
             </div>
           </div>
         </section>
 
-        <div className="rule" aria-hidden="true"></div>
+        <div className="rule" aria-hidden="true" />
 
         <section id="skills" aria-labelledby="skills-heading">
           <div className="sw">
             <div className="eyebrow reveal">Core Skills</div>
             <h2 className="sh reveal" id="skills-heading">Skills &amp; <em>Strengths</em></h2>
             <div className="spills reveal d1" role="list" aria-label="Skills list">
-              <span className="sp" role="listitem">Team Leadership</span><span className="sp" role="listitem">People Management</span>
-              <span className="sp" role="listitem">Event Strategy</span><span className="sp" role="listitem">Event Production</span>
-              <span className="sp" role="listitem">Public Speaking</span><span className="sp" role="listitem">Compering</span>
-              <span className="sp" role="listitem">Vocal Performance</span><span className="sp" role="listitem">Instrumental Music</span>
-              <span className="sp" role="listitem">Creative Direction</span><span className="sp" role="listitem">Audio Engineering</span>
-              <span className="sp" role="listitem">Cubase 14 Pro</span><span className="sp" role="listitem">Photography</span>
-              <span className="sp" role="listitem">Visual Media</span><span className="sp" role="listitem">Programming &amp; Computing</span>
-              <span className="sp" role="listitem">Cross-team Coordination</span><span className="sp" role="listitem">Execution Under Deadline</span>
-              <span className="sp" role="listitem">Stage &amp; Audience Presence</span><span className="sp" role="listitem">Peer Mentoring</span>
-              <span className="sp" role="listitem">Teaching</span><span className="sp" role="listitem">Voice Acting</span>
-              <span className="sp" role="listitem">News Reporting</span><span className="sp" role="listitem">MIDI Sequencing</span>
-              <span className="sp" role="listitem">Mixing &amp; Mastering</span><span className="sp" role="listitem">DAW Architecture</span>
+              {SKILLS.map((skill) => (
+                <span key={skill} className="sp" role="listitem">{skill}</span>
+              ))}
             </div>
             <SkillsRadar />
           </div>
         </section>
 
-        <div className="rule" aria-hidden="true"></div>
+        <div className="rule" aria-hidden="true" />
 
         <section id="gallery" aria-label="Photo gallery" onContextMenu={(e) => e.preventDefault()}>
           <div className="slideshow" role="region" aria-label="Automatic photo slideshow" aria-live="polite">
-            <div className="slide-overlay" aria-hidden="true"></div>
+            <div className="slide-overlay" aria-hidden="true" />
             {SLIDES.map((src, i) => (
               <img
-                key={i}
+                key={src}
                 src={src}
                 alt={`Gallery photo ${i + 1} — Bhanu Mendis`}
                 className={i === currentSlide ? "active" : ""}
@@ -271,13 +301,14 @@ export default function Home() {
               />
             ))}
             <div className="slide-dots" role="tablist" aria-label="Slideshow navigation">
-              {SLIDES.map((_, i) => (
+              {SLIDES.map((src, i) => (
                 <button
-                  key={i}
+                  key={src}
+                  type="button"
                   className={`slide-dot ${i === currentSlide ? "active" : ""}`}
                   onClick={() => setCurrentSlide(i)}
                   role="tab"
-                  aria-selected={i === currentSlide}
+                  aria-selected={i === currentSlide ? "true" : "false"}
                   aria-label={`Go to slide ${i + 1} of ${SLIDES.length}`}
                 />
               ))}
@@ -285,109 +316,104 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="rule" aria-hidden="true"></div>
+        <div className="rule" aria-hidden="true" />
 
-        <Timeline />
-      <div className="rule" aria-hidden="true"></div>
-      <FeaturedIn />
+        <FeaturedIn />
+
+        <div className="rule" aria-hidden="true" />
 
         <section id="exp" aria-labelledby="exp-heading">
           <div className="sw">
             <div className="eyebrow reveal">Experience</div>
             <h2 className="sh reveal" id="exp-heading">Projects <em>Led</em></h2>
             <div className="ecards">
-
               <div className="ecard reveal d1">
                 <div className="etop"><div className="erole">Educator</div><span className="edate">Sep 2025 – Present</span></div>
                 <div className="eorg">The Science Brainery · Part-time · Boralesgamuwa</div>
                 <div className="ebody">Teaching Pearson International Edexcel Science, Mathematics, and Computer Science for Year 5, 6, 7 &amp; 8. Curriculum-aligned lessons focused on conceptual clarity, practical application, and student engagement.</div>
                 <div className="etags"><span className="et">Education</span><span className="et">Teaching</span><span className="et">Edexcel</span><span className="et">Science</span><span className="et">Mathematics</span></div>
               </div>
-
               <div className="ecard reveal d2">
                 <div className="etop"><div className="erole">Senior Head Prefect</div><span className="edate">Sep 2023 – Sep 2025</span></div>
                 <div className="eorg">Lyceum International School, Nugegoda</div>
                 <div className="ebody">School-wide student governance as the highest-ranking prefect for two years. Directed Elysium &apos;25 at Cinnamon Life for 26,000+ Lyceumers nationwide. Overall coordinated Maathra 14 at BMICH with 750+ performers. Appointed National Child Protection Ambassador.</div>
                 <div className="etags"><span className="et">Executive Leadership</span><span className="et">Event Direction</span><span className="et">26,000+ Audience</span><span className="et">BMICH · Cinnamon Life</span></div>
               </div>
-
               <div className="ecard reveal d3">
                 <div className="etop"><div className="erole">Audio Engineer</div><span className="edate">Oct 2025 – Mar 2026</span></div>
                 <div className="eorg">PEARLBAY® Holdings</div>
                 <div className="ebody">Advanced training in music production, DAW architecture, MIDI sequencing, and VST integration. Expertise in studio recording, gain staging, mixing, mastering, frequency balancing, and final master delivery.</div>
                 <div className="etags"><span className="et">Audio Engineering</span><span className="et">Mixing &amp; Mastering</span><span className="et">DAW</span><span className="et">Recording</span></div>
               </div>
-
               <div className="ecard reveal d4">
                 <div className="etop"><div className="erole">Founder — Swara Concert</div><span className="edate">Dec 2023 – Sep 2025</span></div>
                 <div className="eorg">Lyceum International School</div>
                 <div className="ebody">Conceptualized and launched SWARA — the largest island-wide school-based Eastern music concert — uniting students from all Lyceum branches, showcasing 700+ participants. All aspects led end-to-end: coordination, logistics, marketing, and audience engagement.</div>
                 <div className="etags"><span className="et">Concert Production</span><span className="et">700+ Performers</span><span className="et">Island-wide</span><span className="et">Eastern Music</span></div>
               </div>
-
               <div className="ecard reveal d5">
                 <div className="etop"><div className="erole">Founder — Padura Concert</div><span className="edate">Dec 2023 – Sep 2025</span></div>
                 <div className="eorg">Lyceum International School</div>
                 <div className="ebody">Created and led an original instrumental music concert series showcasing student talent in Western and fusion traditions. Full production managed from creative direction through performer coordination and live execution.</div>
                 <div className="etags"><span className="et">Concert Production</span><span className="et">Instrumental Music</span><span className="et">Creative Direction</span></div>
               </div>
-
-              {showAllExp && (<>
-              <div className="ecard">
-                <div className="etop"><div className="erole">Founding President — Eastern Music Club</div><span className="edate">Sep 2023 – Sep 2025</span></div>
-                <div className="eorg">Lyceum International School, Nugegoda</div>
-                <div className="ebody">Founded and built the Eastern Music Club from the ground up into an active platform for classical and contemporary Eastern music performance within the school community.</div>
-                <div className="etags"><span className="et">Start-up Leadership</span><span className="et">Music</span><span className="et">Club Management</span></div>
-              </div>
-              <div className="ecard">
-                <div className="etop"><div className="erole">Head of Logistics — Model UN</div><span className="edate">Dec 2023 – Dec 2024</span></div>
-                <div className="eorg">LISMUN &amp; SLMUN Conferences</div>
-                <div className="ebody">End-to-end logistics managed for Model United Nations conferences — venue setup, delegate registration, resource allocation, and on-ground operations across multi-day events.</div>
-                <div className="etags"><span className="et">Logistics</span><span className="et">Model UN</span><span className="et">Event Operations</span></div>
-              </div>
-              <div className="ecard">
-                <div className="etop"><div className="erole">News Reporter &amp; Voice Actor</div><span className="edate">Sep 2019 – Sep 2024</span></div>
-                <div className="eorg">Institute of Media &amp; Performing Arts · Institute of Professional Development</div>
-                <div className="ebody">Professional training in news reporting, voice acting, dubbing, and narration. Vocal control, character development, and expressive storytelling developed across multiple genres.</div>
-                <div className="etags"><span className="et">Voice Acting</span><span className="et">News Reporting</span><span className="et">Dubbing</span></div>
-              </div>
-              <div className="ecard">
-                <div className="etop"><div className="erole">Aviator — Flight Training</div><span className="edate">Sep 2020 – Mar 2021</span></div>
-                <div className="eorg">Sri Lanka Air Force · Ratmalana Air Force Base</div>
-                <div className="ebody">Comprehensive aviation program completed across beginner, intermediate, and advanced levels — combining theoretical knowledge with hands-on flight training, aircraft operations, and aviation protocols.</div>
-                <div className="etags"><span className="et">Aviation</span><span className="et">Flight Training</span><span className="et">SLAF</span></div>
-              </div>
-              <div className="ecard">
-                <div className="etop"><div className="erole">Regional Relief Drive Lead</div><span className="edate">Ongoing</span></div>
-                <div className="eorg">Kurunegala, Sri Lanka</div>
-                <div className="ebody">Community relief initiatives spearheaded in the Kurunegala district — coordinating volunteers and resources for on-the-ground impact. Logistical planning combined with grassroots community engagement.</div>
-                <div className="etags"><span className="et">Community Service</span><span className="et">Volunteer Coordination</span><span className="et">Social Impact</span></div>
-              </div>
-              </>)}
-
-              <button className="show-more-btn" onClick={() => setShowAllExp(!showAllExp)} aria-expanded={showAllExp} aria-controls="exp">
+              {showAllExp && (
+                <>
+                  <div className="ecard">
+                    <div className="etop"><div className="erole">Founding President — Eastern Music Club</div><span className="edate">Sep 2023 – Sep 2025</span></div>
+                    <div className="eorg">Lyceum International School, Nugegoda</div>
+                    <div className="ebody">Founded and built the Eastern Music Club from the ground up into an active platform for classical and contemporary Eastern music performance within the school community.</div>
+                    <div className="etags"><span className="et">Start-up Leadership</span><span className="et">Music</span><span className="et">Club Management</span></div>
+                  </div>
+                  <div className="ecard">
+                    <div className="etop"><div className="erole">Head of Logistics — Model UN</div><span className="edate">Dec 2023 – Dec 2024</span></div>
+                    <div className="eorg">LISMUN &amp; SLMUN Conferences</div>
+                    <div className="ebody">End-to-end logistics managed for Model United Nations conferences — venue setup, delegate registration, resource allocation, and on-ground operations across multi-day events.</div>
+                    <div className="etags"><span className="et">Logistics</span><span className="et">Model UN</span><span className="et">Event Operations</span></div>
+                  </div>
+                  <div className="ecard">
+                    <div className="etop"><div className="erole">News Reporter &amp; Voice Actor</div><span className="edate">Sep 2019 – Sep 2024</span></div>
+                    <div className="eorg">Institute of Media &amp; Performing Arts · Institute of Professional Development</div>
+                    <div className="ebody">Professional training in news reporting, voice acting, dubbing, and narration. Vocal control, character development, and expressive storytelling developed across multiple genres.</div>
+                    <div className="etags"><span className="et">Voice Acting</span><span className="et">News Reporting</span><span className="et">Dubbing</span></div>
+                  </div>
+                  <div className="ecard">
+                    <div className="etop"><div className="erole">Aviator — Flight Training</div><span className="edate">Sep 2020 – Mar 2021</span></div>
+                    <div className="eorg">Sri Lanka Air Force · Ratmalana Air Force Base</div>
+                    <div className="ebody">Comprehensive aviation program completed across beginner, intermediate, and advanced levels — combining theoretical knowledge with hands-on flight training, aircraft operations, and aviation protocols.</div>
+                    <div className="etags"><span className="et">Aviation</span><span className="et">Flight Training</span><span className="et">SLAF</span></div>
+                  </div>
+                  <div className="ecard">
+                    <div className="etop"><div className="erole">Regional Relief Drive Lead</div><span className="edate">Ongoing</span></div>
+                    <div className="eorg">Kurunegala, Sri Lanka</div>
+                    <div className="ebody">Community relief initiatives spearheaded in the Kurunegala district — coordinating volunteers and resources for on-the-ground impact. Logistical planning combined with grassroots community engagement.</div>
+                    <div className="etags"><span className="et">Community Service</span><span className="et">Volunteer Coordination</span><span className="et">Social Impact</span></div>
+                  </div>
+                </>
+              )}
+              <button type="button" className="show-more-btn" onClick={() => setShowAllExp((s) => !s)} aria-expanded={showAllExp} aria-controls="exp">
                 {showAllExp ? "Show less ↑" : "Show more ↓"}
               </button>
             </div>
           </div>
         </section>
 
-        <div className="rule" aria-hidden="true"></div>
+        <div className="rule" aria-hidden="true" />
 
         <section id="linkedin" aria-labelledby="li-heading">
           <div className="sw">
             <div className="eyebrow reveal">From LinkedIn</div>
             <h2 className="sh reveal" id="li-heading">Latest <em>Posts</em></h2>
             <div className="li-grid reveal d1">
-              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7467136600683073536?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 1" referrerPolicy="no-referrer-when-downgrade"></iframe>
-              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7463987225429708800?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 2" referrerPolicy="no-referrer-when-downgrade"></iframe>
-              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7399673996285358080?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 3" referrerPolicy="no-referrer-when-downgrade"></iframe>
-              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7434580059035848705?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 4" referrerPolicy="no-referrer-when-downgrade"></iframe>
+              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7467136600683073536?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 1" referrerPolicy="no-referrer-when-downgrade" />
+              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7463987225429708800?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 2" referrerPolicy="no-referrer-when-downgrade" />
+              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7399673996285358080?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 3" referrerPolicy="no-referrer-when-downgrade" />
+              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7434580059035848705?collapsed=1" height="622" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 4" referrerPolicy="no-referrer-when-downgrade" />
             </div>
           </div>
         </section>
 
-        <div className="rule" aria-hidden="true"></div>
+        <div className="rule" aria-hidden="true" />
 
         <section id="achieve" aria-labelledby="achieve-heading">
           <div className="sw">
@@ -404,7 +430,7 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="rule" aria-hidden="true"></div>
+        <div className="rule" aria-hidden="true" />
 
         <section id="certs" aria-labelledby="certs-heading">
           <div className="sw">
@@ -425,11 +451,11 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="rule" aria-hidden="true"></div>
+        <div className="rule" aria-hidden="true" />
 
         <section id="contact" aria-labelledby="contact-heading">
           <div className="cc">
-            <div className="eyebrow reveal" style={{justifyContent:"center"}}>Get in Touch</div>
+            <div className="eyebrow reveal" style={{ justifyContent: "center" }}>Get in Touch</div>
             <h2 className="cth reveal" id="contact-heading">Ready to<br /><em>talk?</em></h2>
             <p className="ctsub reveal d1">Whether a collaboration, an opportunity, a performance, or a great conversation — the inbox is always open.</p>
             <div className="cbtns reveal d2">
@@ -438,7 +464,9 @@ export default function Home() {
               <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer" className="cb">Instagram</a>
               <a href="tel:+94777124152" className="cb">Call</a>
             </div>
-            <a href="https://forms.gle/N52vwAytUsJCt2df6" target="_blank" rel="noopener noreferrer" className="student-reg reveal d3">Student Registration →</a>
+            <MagneticButton href="https://forms.gle/N52vwAytUsJCt2df6" external className="student-reg reveal d3" ariaLabel="Student registration form">
+              Student Registration →
+            </MagneticButton>
           </div>
         </section>
       </main>
@@ -446,7 +474,7 @@ export default function Home() {
       <footer aria-label="Site footer">
         <div className="foot-top">
           <div>
-            <div className="foot-logo"><span className="foot-logo-dot" aria-hidden="true"></span><span className="foot-logo-text">Bhanu Mendis</span></div>
+            <div className="foot-logo"><span className="foot-logo-dot" aria-hidden="true" /><span className="foot-logo-text">Bhanu Mendis</span></div>
             <p className="foot-tagline">Break the Frame.<br />Colombo, Sri Lanka · 2025</p>
             <div className="socials-row" aria-label="Social media links">
               <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer" className="soc-btn" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
@@ -458,26 +486,27 @@ export default function Home() {
               <a href="https://www.linkedin.com/in/bhanumendis" target="_blank" rel="noopener noreferrer" className="soc-btn" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
             </div>
           </div>
-          <div role="navigation" aria-label="Footer navigation">
+          <nav aria-label="Footer navigation">
             <div className="foot-col-title">Navigate</div>
             <div className="foot-links">
-              <a href="#about" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>About</a>
-              <a href="#skills" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>Skills</a>
-              <a href="#exp" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>Experience</a>
-              <a href="#achieve" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>Awards</a>
-              <a href="#certs" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>Credentials</a>
-              <a href="#contact" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>Contact</a>
+              <a href="#about" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />About</a>
+              <a href="#skills" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Skills</a>
+              <a href="/timeline" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Timeline</a>
+              <a href="#exp" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Experience</a>
+              <a href="#achieve" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Awards</a>
+              <a href="#certs" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Credentials</a>
+              <a href="#contact" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Contact</a>
             </div>
-          </div>
-          <address style={{fontStyle:"normal"}}>
+          </nav>
+          <address style={{ fontStyle: "normal" }}>
             <div className="foot-col-title">Connect</div>
             <div className="foot-links">
-              <a href="mailto:bhanumendis@gmail.com" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>bhanumendis@gmail.com</a>
-              <a href="tel:+94777124152" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>+94 77 712 4152</a>
-              <a href="https://www.linkedin.com/in/bhanumendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>LinkedIn</a>
-              <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>Instagram</a>
-              <a href="http://bhanumendis.godaddysites.com" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>Photography Portfolio</a>
-              <a href="https://linktr.ee/bhanu_mendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true"></span>Linktree</a>
+              <a href="mailto:bhanumendis@gmail.com" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />bhanumendis@gmail.com</a>
+              <a href="tel:+94777124152" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />+94 77 712 4152</a>
+              <a href="https://www.linkedin.com/in/bhanumendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />LinkedIn</a>
+              <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Instagram</a>
+              <a href="http://bhanumendis.godaddysites.com" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Photography Portfolio</a>
+              <a href="https://linktr.ee/bhanu_mendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Linktree</a>
             </div>
           </address>
         </div>
@@ -486,6 +515,7 @@ export default function Home() {
           <span className="foot-copy">Colombo, Sri Lanka</span>
         </div>
       </footer>
+
       <Effects />
     </>
   );
