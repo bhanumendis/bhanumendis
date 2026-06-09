@@ -515,6 +515,9 @@ footer{background:var(--bg1);padding:52px 64px 32px;border-top:1px solid var(--f
   letter-spacing: .04em; font-weight: 400;
 }
 
+/* ── Theme Ripple ── */
+.theme-ripple { will-change: transform, opacity; }
+
 /* ── Text Scramble ── */
 .h1-scramble { display: inline; }
 .h1-scramble .char {

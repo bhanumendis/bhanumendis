@@ -13,7 +13,43 @@ export default function Home() {
   const [isDark, setIsDark] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const toggleTheme = () => { setIsDark(!isDark); document.body.classList.toggle("light"); };
+  const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const maxDist = Math.max(
+      Math.hypot(x, y),
+      Math.hypot(window.innerWidth - x, y),
+      Math.hypot(x, window.innerHeight - y),
+      Math.hypot(window.innerWidth - x, window.innerHeight - y)
+    );
+
+    const ripple = document.createElement("div");
+    ripple.className = "theme-ripple";
+    const size = maxDist * 2.2;
+    ripple.style.cssText = `
+      position:fixed;z-index:9999;pointer-events:none;border-radius:50%;
+      width:${size}px;height:${size}px;
+      left:${x - size / 2}px;top:${y - size / 2}px;
+      background:${isDark ? "#f4f6fa" : "#06090e"};
+      transform:scale(0);
+    `;
+    document.body.appendChild(ripple);
+
+    requestAnimationFrame(() => {
+      ripple.style.transition = "transform .7s cubic-bezier(.2,.9,.3,1.05)";
+      ripple.style.transform = "scale(1)";
+    });
+
+    setTimeout(() => {
+      setIsDark(!isDark);
+      document.body.classList.toggle("light");
+      ripple.style.transition = "opacity .3s ease";
+      ripple.style.opacity = "0";
+      setTimeout(() => ripple.remove(), 350);
+    }, 650);
+  };
+
   const nextSlide = useCallback(() => { setCurrentSlide((p) => (p + 1) % SLIDES.length); }, []);
   useEffect(() => { const t = setInterval(nextSlide, 4500); return () => clearInterval(t); }, [nextSlide]);
 
