@@ -1,7 +1,14 @@
-"use client";
-import { useState } from "react";
+type TimelineEvent = {
+  year: string;
+  title: string;
+  desc: string;
+  tags: readonly string[];
+  side: "left" | "right";
+  highlight?: boolean;
+  active?: boolean;
+};
 
-const ALL_EVENTS = [
+const ALL_EVENTS: readonly TimelineEvent[] = [
   {
     year: "2011",
     title: "Joined Lyceum International School",
@@ -92,46 +99,21 @@ const ALL_EVENTS = [
   },
 ];
 
-const VISIBLE_DEFAULT = 5;
-
 export default function Timeline() {
-  const [showAll, setShowAll] = useState(false);
-  const visible = ALL_EVENTS.slice(0, VISIBLE_DEFAULT);
-  const hidden = ALL_EVENTS.slice(VISIBLE_DEFAULT);
-
   return (
     <section id="timeline" aria-labelledby="timeline-heading">
       <div className="sw">
-        <div className="eyebrow reveal">The Journey</div>
-        <h2 className="sh reveal" id="timeline-heading">14 Years in the <em>Making</em></h2>
+        <div className="eyebrow">The Journey</div>
+        <h2 className="sh" id="timeline-heading">14 Years in the <em>Making</em></h2>
 
         <div className="tl-wrap">
-          <div className="tl-line" aria-hidden="true"></div>
+          <div className="tl-line" aria-hidden="true" />
 
-          {visible.map((ev, i) => (
+          {ALL_EVENTS.map((ev, i) => (
             <div
-              key={i}
-              className={`tl-item tl-${ev.side} reveal ${i % 2 === 0 ? "d1" : "d2"} ${ev.highlight ? "tl-highlight" : ""} ${ev.active ? "tl-active" : ""}`}
-            >
-              <div className="tl-dot" aria-hidden="true">
-                {ev.active && <span className="tl-pulse" />}
-              </div>
-              <div className="tl-card">
-                <div className="tl-year">{ev.year}</div>
-                <div className="tl-title">{ev.title}</div>
-                <div className="tl-desc">{ev.desc}</div>
-                <div className="tl-tags">
-                  {ev.tags.map(t => <span key={t} className="tl-tag">{t}</span>)}
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {showAll && hidden.map((ev, i) => (
-            <div
-              key={i + VISIBLE_DEFAULT}
+              key={ev.year}
               className={`tl-item tl-${ev.side} tl-fadeIn ${ev.highlight ? "tl-highlight" : ""} ${ev.active ? "tl-active" : ""}`}
-              style={{ animationDelay: `${i * 0.08}s` }}
+              style={{ animationDelay: `${i * 0.06}s` }}
             >
               <div className="tl-dot" aria-hidden="true">
                 {ev.active && <span className="tl-pulse" />}
@@ -141,23 +123,12 @@ export default function Timeline() {
                 <div className="tl-title">{ev.title}</div>
                 <div className="tl-desc">{ev.desc}</div>
                 <div className="tl-tags">
-                  {ev.tags.map(t => <span key={t} className="tl-tag">{t}</span>)}
+                  {ev.tags.map((t) => <span key={t} className="tl-tag">{t}</span>)}
                 </div>
               </div>
             </div>
           ))}
         </div>
-
-        <button
-          className="show-more-btn"
-          onClick={() => setShowAll(s => !s)}
-          aria-expanded={showAll}
-          style={{ marginTop: "40px" }}
-        >
-          {showAll
-            ? "Show less ↑"
-            : `Show full journey ↓  (${hidden.length} more milestones)`}
-        </button>
       </div>
     </section>
   );

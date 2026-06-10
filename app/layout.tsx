@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Raleway, Poppins, Inconsolata, Noto_Serif_Sinhala } from "next/font/google";
 import "./globals.css";
+import Footer from "./Footer";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -80,6 +81,24 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  category: "Personal Portfolio",
+  formatDetection: { email: false, address: false, telephone: false },
+  other: {
+    "geo.region": "LK-1",
+    "geo.placename": "Colombo, Sri Lanka",
+    "geo.position": "6.9271;79.8612",
+    ICBM: "6.9271, 79.8612",
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  colorScheme: "dark light",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#06090e" },
+    { media: "(prefers-color-scheme: light)", color: "#f4f6fa" },
+  ],
 };
 
 const personSchema = {
@@ -122,17 +141,16 @@ export default function RootLayout({
       <head>
         <script
           type="application/ld+json"
-          // Static, developer-controlled JSON-LD — safe to serialize.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+          // Static, developer-controlled JSON-LD. `<` is escaped per Next.js guidance to prevent XSS.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema).replace(/</g, "\\u003c") }}
         />
-        <meta name="geo.region" content="LK-1" />
-        <meta name="geo.placename" content="Colombo, Sri Lanka" />
-        <meta name="geo.position" content="6.9271;79.8612" />
-        <meta name="ICBM" content="6.9271, 79.8612" />
         <link rel="me" href="https://www.linkedin.com/in/bhanumendis" />
         <link rel="me" href="https://www.instagram.com/bhanu_mendis" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

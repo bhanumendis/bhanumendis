@@ -1,7 +1,17 @@
 "use client";
 import { useState } from "react";
 
-const FEATURES = [
+interface Feature {
+  outlet: string;
+  section: string;
+  desc: string;
+  url: string;
+  favicon: string | null;
+  domain?: string;
+  initials: string;
+}
+
+const FEATURES: readonly Feature[] = [
   {
     outlet: "Daily Mirror",
     section: "Education",
@@ -69,16 +79,16 @@ export default function FeaturedIn() {
           Recognised by leading Sri Lankan media for leadership, cultural achievements, and landmark event productions.
         </p>
         <div className="press-grid reveal d2">
-          {FEATURES.map((f, i) => (
+          {FEATURES.map((f) => (
             <a
-              key={i}
+              key={f.url}
               href={f.url}
               target="_blank"
               rel="noopener noreferrer"
               className="press-card"
               aria-label={`${f.outlet} — ${f.desc}`}
             >
-              <FaviconLogo favicon={f.favicon ?? null} domain={(f as any).domain} initials={f.initials} />
+              <FaviconLogo favicon={f.favicon} domain={f.domain} initials={f.initials} />
               <div>
                 <div className="press-name">{f.outlet}</div>
                 <div className="press-country">{f.section}</div>

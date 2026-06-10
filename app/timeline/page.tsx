@@ -19,10 +19,10 @@ export const metadata: Metadata = {
 
 export default function TimelinePage() {
   return (
-    <main>
+    <>
       <nav id="nav" className="scrolled" aria-label="Main navigation">
         <Link href="/" className="logo" aria-label="Bhanu Mendis — home">
-          <span className="logo-dot" aria-hidden="true"></span>
+          <span className="logo-dot" aria-hidden="true" />
           <span className="logo-text sinhala">භානු මෙන්ඩිස්</span>
         </Link>
         <ul className="nav-links" role="list">
@@ -33,21 +33,16 @@ export default function TimelinePage() {
         </ul>
       </nav>
 
-      <div style={{ paddingTop: "80px" }}>
-        <Timeline />
-      </div>
-
-      <div className="sw" style={{ paddingTop: 0, textAlign: "center" }}>
-        <Link href="/" className="btn-out" style={{ display: "inline-flex" }}>
-          ← Back to home
-        </Link>
-      </div>
-
-      <footer aria-label="Site footer" style={{ marginTop: "40px" }}>
-        <div className="foot-bottom" style={{ borderTop: "none", justifyContent: "center" }}>
-          <span className="foot-copy">© 2025 Bhanu Mendis · Colombo, Sri Lanka</span>
+      <main>
+        <div className="tl-topbar">
+          <Link href="/" className="btn-out btn-back" aria-label="Back to home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+            Back to home
+          </Link>
         </div>
-      </footer>
-    </main>
+
+        <Timeline />
+      </main>
+    </>
   );
 }

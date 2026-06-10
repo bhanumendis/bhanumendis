@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { useInView, useSpring, useMotionValueEvent } from "framer-motion";
+import { useInView, useSpring, useMotionValueEvent, useReducedMotion } from "framer-motion";
 
 interface CounterProps {
   value: number;
@@ -12,28 +12,27 @@ interface CounterProps {
 export default function Counter({ value, suffix = "", prefix = "", className = "" }: CounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "0px 0px -80px 0px" });
+  const reduceMotion = useReducedMotion();
 
-  const spring = useSpring(0, {
-    stiffness: 60,
-    damping: 18,
-    mass: 1,
-  });
+  const spring = useSpring(0, { stiffness: 60, damping: 18, mass: 1 });
+
+  const format = (n: number) =>
+    prefix + (value >= 1000 ? n.toLocaleString() : String(n)) + suffix;
 
   useEffect(() => {
-    if (inView) spring.set(value);
-  }, [inView, value, spring]);
+    if (!inView) return;
+    // Honour reduced-motion: snap to the final value instead of animating.
+    if (reduceMotion) spring.jump(value);
+    else spring.set(value);
+  }, [inView, value, spring, reduceMotion]);
 
   useMotionValueEvent(spring, "change", (latest) => {
-    if (ref.current) {
-      const rounded = Math.round(latest);
-      ref.current.textContent =
-        prefix + (value >= 1000 ? rounded.toLocaleString() : String(rounded)) + suffix;
-    }
+    if (ref.current) ref.current.textContent = format(Math.round(latest));
   });
 
   return (
     <span ref={ref} className={className}>
-      {prefix}0{suffix}
+      {format(0)}
     </span>
   );
 }
