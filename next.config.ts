@@ -3,6 +3,21 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async headers() {
     return [
+      // Long-lived caching for static media in /public (Lighthouse: efficient cache policy).
+      // These photos never change in place — new images get new filenames.
+      {
+        source: "/slides/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        source: "/:asset(hero-bg\\.jpg|bhanumendis\\.jpg|dm-favicon\\.avif|st-favicon\\.avif)",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        // Favicon may be replaced in place — cache for 30 days, not immutable.
+        source: "/favicon.png",
+        headers: [{ key: "Cache-Control", value: "public, max-age=2592000" }],
+      },
       {
         source: "/(.*)",
         headers: [
@@ -35,9 +50,12 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    formats: ["image/webp", "image/avif"],
+    // AVIF first — smaller than WebP for photos; encode cost is paid once, then cached.
+    formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Optimized variants of these static photos can be cached long (31 days).
+    minimumCacheTTL: 2678400,
   },
   compress: true,
   poweredByHeader: false,

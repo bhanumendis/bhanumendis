@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Raleway, Poppins, Inconsolata, Noto_Serif_Sinhala } from "next/font/google";
 import "./globals.css";
 import Footer from "./Footer";
+import EasterEgg from "./EasterEgg";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -150,6 +151,7 @@ export default function RootLayout({
       <body>
         {children}
         <Footer />
+        <EasterEgg />
       </body>
     </html>
   );

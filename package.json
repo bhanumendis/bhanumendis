@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "preview:prod": "next build && next start -p 3100",
     "lint": "eslint"
   },
   "dependencies": {

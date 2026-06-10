@@ -57,11 +57,16 @@ function FaviconLogo({ favicon, domain, initials }: { favicon: string | null; do
 
   return (
     <div className="press-logo press-logo-img">
+      {/* Plain <img> on purpose: these are 28px ~8KB AVIFs (already optimal) and the
+          remote Google-favicon fallback would otherwise need remotePatterns config. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
         alt={initials}
         width={28}
         height={28}
+        loading="lazy"
+        decoding="async"
         onError={() => setFailed(true)}
         style={{ width: 28, height: 28, objectFit: "contain", borderRadius: 4 }}
       />

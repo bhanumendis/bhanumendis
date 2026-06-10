@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import Image from "next/image";
 import FeaturedIn from "./FeaturedIn";
 import MagneticButton from "./MagneticButton";
 import Counter from "./Counter";
@@ -76,6 +77,11 @@ export default function Home() {
       document.body.classList.add("using-mouse");
     }
 
+    // Hoisted out of the mousemove handler — DOM lookups per event were
+    // wasted main-thread work (these nodes never change while mounted).
+    const heroContent = document.getElementById("hero-content");
+    const heroH1 = heroContent?.querySelector<HTMLElement>(".h1") ?? null;
+
     const onMouseMove = (e: MouseEvent) => {
       if (!usingMouse) {
         usingMouse = true;
@@ -83,17 +89,15 @@ export default function Home() {
       }
       mx = e.clientX; my = e.clientY;
       cd.style.left = `${mx}px`; cd.style.top = `${my}px`;
-      const heroContent = document.getElementById("hero-content");
       if (heroContent) {
         const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
         const dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
         heroContent.style.transform = `translate(${-dx * 18}px, ${-dy * 12}px)`;
-        const h1 = heroContent.querySelector<HTMLElement>(".h1");
-        if (h1) {
+        if (heroH1) {
           const dist = Math.sqrt((e.clientX - cx) ** 2 + (e.clientY - cy) ** 2);
           const maxDist = Math.sqrt(cx ** 2 + cy ** 2);
           const glow = Math.max(0, 1 - dist / maxDist);
-          h1.style.textShadow = `0 0 ${20 + glow * 35}px rgba(120,192,245,${0.1 + glow * 0.25}), 0 0 ${50 + glow * 50}px rgba(120,192,245,${0.03 + glow * 0.1})`;
+          heroH1.style.textShadow = `0 0 ${20 + glow * 35}px rgba(120,192,245,${0.1 + glow * 0.25}), 0 0 ${50 + glow * 50}px rgba(120,192,245,${0.03 + glow * 0.1})`;
         }
       }
     };
@@ -151,10 +155,6 @@ export default function Home() {
     );
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
-    const gallery = document.getElementById("gallery");
-    const blockCtx = (e: Event) => e.preventDefault();
-    gallery?.addEventListener("contextmenu", blockCtx);
-
     return () => {
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("touchstart", onTouchStart);
@@ -166,7 +166,6 @@ export default function Home() {
       });
       io.disconnect();
       cancelAnimationFrame(frame);
-      gallery?.removeEventListener("contextmenu", blockCtx);
     };
   }, []);
 
@@ -186,8 +185,8 @@ export default function Home() {
 
       <div className="sidebar-left" aria-label="Theme and navigation controls">
         <div className="theme-toggle" role="group" aria-label="Theme toggle">
-          <button type="button" className={`theme-btn ${!isDark ? "active" : ""}`} onClick={toggleTheme} aria-label="Switch to light mode">☀</button>
-          <button type="button" className={`theme-btn ${isDark ? "active" : ""}`} onClick={toggleTheme} aria-label="Switch to dark mode">☾</button>
+          <button type="button" className={`theme-btn ${!isDark ? "active" : ""}`} onClick={(e) => { if (isDark) toggleTheme(e); }} aria-pressed={!isDark} aria-label="Switch to light mode">☀</button>
+          <button type="button" className={`theme-btn ${isDark ? "active" : ""}`} onClick={(e) => { if (!isDark) toggleTheme(e); }} aria-pressed={isDark} aria-label="Switch to dark mode">☾</button>
         </div>
         <a href="#" className="scroll-label" aria-label="Scroll to top of page">Scroll to top</a>
         <div className="s-line" aria-hidden="true" />
@@ -209,7 +208,7 @@ export default function Home() {
 
       <main>
         <section id="hero" aria-labelledby="hero-name">
-          <img src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" />
+          <Image src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" fill sizes="100vw" preload />
           <div className="hero-bg-overlay" aria-hidden="true" />
           <div className="orb oa" aria-hidden="true" />
           <div className="orb ob" aria-hidden="true" />
@@ -258,7 +257,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="about-right reveal d2">
-                <img src="/favicon.png" alt="Bhanu Mendis — profile photo" className="about-photo" width={120} height={120} />
+                <Image src="/favicon.png" alt="Bhanu Mendis — profile photo" className="about-photo" width={120} height={120} />
                 <div className="srow"><div className="sval"><Counter value={26} suffix="K+" /></div><div className="sdesc">Lyceumers at Elysium &apos;25</div></div>
                 <div className="srow"><div className="sval"><Counter value={750} suffix="+" /></div><div className="sdesc">Performers managed across productions</div></div>
                 <div className="srow"><div className="sval"><Counter value={14} /></div><div className="sdesc">Years at Lyceum International</div></div>
@@ -288,13 +287,14 @@ export default function Home() {
           <div className="slideshow" role="region" aria-label="Automatic photo slideshow" aria-live="polite">
             <div className="slide-overlay" aria-hidden="true" />
             {SLIDES.map((src, i) => (
-              <img
+              <Image
                 key={src}
                 src={src}
                 alt={`Gallery photo ${i + 1} — Bhanu Mendis`}
                 className={i === currentSlide ? "active" : ""}
                 draggable={false}
-                loading={i === 0 ? "eager" : "lazy"}
+                fill
+                sizes="100vw"
               />
             ))}
             <div className="slide-dots" role="tablist" aria-label="Slideshow navigation">
