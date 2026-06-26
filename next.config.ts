@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://www.google.com https://t2.gstatic.com",
               "font-src 'self'",
-              "frame-src https://www.linkedin.com",
+              "frame-src https://www.linkedin.com https://maps.google.com https://www.google.com https://maps.gstatic.com",
               "connect-src 'self' https://static.cloudflareinsights.com",
               "media-src 'self'",
               "object-src 'none'",

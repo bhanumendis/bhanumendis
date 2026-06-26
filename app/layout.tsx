@@ -129,6 +129,21 @@ const personSchema = {
     "@type": "EducationalOrganization",
     name: "Lyceum International School",
   },
+  worksFor: {
+    "@type": "Organization",
+    name: "The Science Brainery",
+  },
+  knowsAbout: [
+    "Public Speaking", "Audio Engineering", "Event Production", "Music Production",
+    "Eastern Music", "Choral Music", "Leadership", "Education", "Compering", "DAW Architecture",
+  ],
+  award: [
+    "All-Island Dancing Champion (2018, 2019, 2023)",
+    "All-Island Music Champion (2019, 2023, 2024)",
+    "Malaysian World Choral Competition - First Place",
+    "British-Lanka Festival of Performing Arts - First Place",
+    "National Chess Championship - First Place (2016)",
+  ],
 } as const;
 
 export default function RootLayout({

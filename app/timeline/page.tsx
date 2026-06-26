@@ -34,13 +34,6 @@ export default function TimelinePage() {
       </nav>
 
       <main>
-        <div className="tl-topbar">
-          <Link href="/" className="btn-out btn-back" aria-label="Back to home">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-            Back to home
-          </Link>
-        </div>
-
         <Timeline />
       </main>
     </>

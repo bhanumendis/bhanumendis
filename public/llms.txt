@@ -92,6 +92,8 @@ A: Email: bhanumendis@gmail.com | Phone: +94 77 712 4152 | LinkedIn: linkedin.co
 - /#achieve: Awards, honours, and achievements
 - /#certs: Education and qualifications
 - /#contact: Contact information and student registration
+- /#findus: Location — The Science Brainery, No. 2 Malani Bulathsinghala Mawatha, Boralesgamuwa
+- /timeline: Chronological timeline of career milestones and achievements
 
 ## AI Crawler Access
 
