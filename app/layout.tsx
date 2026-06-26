@@ -104,45 +104,62 @@ export const viewport: Viewport = {
 
 const personSchema = {
   "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": "https://bhanumendis.com/#person",
-  name: "Bhanu Mendis",
-  alternateName: ["භානු මෙන්ඩිස්", "Bhanu"],
-  url: "https://bhanumendis.com",
-  image: "https://bhanumendis.com/favicon.png",
-  jobTitle: "Public Speaker, Audio Engineer & Educator",
-  description:
-    "Senior Head Prefect, Public Speaker, Audio Engineer, Artist, Educator and Sangeetha Visharadha based in Colombo, Sri Lanka.",
-  nationality: { "@type": "Country", name: "Sri Lanka" },
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Colombo",
-    addressRegion: "Western Province",
-    addressCountry: "LK",
-  },
-  sameAs: [
-    "https://www.linkedin.com/in/bhanumendis",
-    "https://www.instagram.com/bhanu_mendis",
-    "https://linktr.ee/bhanu_mendis",
-  ],
-  alumniOf: {
-    "@type": "EducationalOrganization",
-    name: "Lyceum International School",
-  },
-  worksFor: {
-    "@type": "Organization",
-    name: "The Science Brainery",
-  },
-  knowsAbout: [
-    "Public Speaking", "Audio Engineering", "Event Production", "Music Production",
-    "Eastern Music", "Choral Music", "Leadership", "Education", "Compering", "DAW Architecture",
-  ],
-  award: [
-    "All-Island Dancing Champion (2018, 2019, 2023)",
-    "All-Island Music Champion (2019, 2023, 2024)",
-    "Malaysian World Choral Competition - First Place",
-    "British-Lanka Festival of Performing Arts - First Place",
-    "National Chess Championship - First Place (2016)",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://bhanumendis.com/#person",
+      name: "Bhanu Mendis",
+      alternateName: ["භානු මෙන්ඩිස්", "Bhanu"],
+      url: "https://bhanumendis.com",
+      image: "https://bhanumendis.com/favicon.png",
+      jobTitle: "Public Speaker, Audio Engineer, Educator & Founder",
+      description:
+        "Bhanu Mendis — Senior Head Prefect, Public Speaker, Audio Engineer, performing Artist, Educator and Sangeetha Visharadha from Colombo, Sri Lanka. Founder of the Swara and Padura concerts.",
+      nationality: { "@type": "Country", name: "Sri Lanka" },
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Colombo",
+        addressRegion: "Western Province",
+        addressCountry: "LK",
+      },
+      sameAs: [
+        "https://www.linkedin.com/in/bhanumendis",
+        "https://www.instagram.com/bhanu_mendis",
+        "https://linktr.ee/bhanu_mendis",
+      ],
+      alumniOf: { "@type": "EducationalOrganization", name: "Lyceum International School" },
+      worksFor: { "@type": "Organization", name: "The Science Brainery" },
+      knowsAbout: [
+        "Public Speaking", "Audio Engineering", "Event Production", "Music Production",
+        "Eastern Music", "Choral Music", "Leadership", "Education", "Compering", "DAW Architecture",
+      ],
+      award: [
+        "All-Island Dancing Champion (2018, 2019, 2023)",
+        "All-Island Music Champion (2019, 2023, 2024)",
+        "Malaysian World Choral Competition - First Place",
+        "British-Lanka Festival of Performing Arts - First Place",
+        "National Chess Championship - First Place (2016)",
+      ],
+      founder: [{ "@id": "https://bhanumendis.com/#swara" }, { "@id": "https://bhanumendis.com/#padura" }],
+    },
+    {
+      "@type": ["Organization", "MusicGroup"],
+      "@id": "https://bhanumendis.com/#swara",
+      name: "Swara Concert",
+      description:
+        "The largest island-wide school-based Eastern music concert in Sri Lanka, founded by Bhanu Mendis, uniting 700+ student performers from all Lyceum International School branches.",
+      foundingDate: "2023",
+      founder: { "@id": "https://bhanumendis.com/#person" },
+    },
+    {
+      "@type": ["Organization", "MusicGroup"],
+      "@id": "https://bhanumendis.com/#padura",
+      name: "Padura Concert",
+      description:
+        "An original instrumental music concert series founded by Bhanu Mendis at Lyceum International School, showcasing student talent in Western and fusion traditions.",
+      foundingDate: "2023",
+      founder: { "@id": "https://bhanumendis.com/#person" },
+    },
   ],
 } as const;
 

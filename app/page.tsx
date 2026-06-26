@@ -176,7 +176,7 @@ export default function Home() {
     };
 
     const tick = () => {
-      current += (target - current) * 0.12;
+      current += (target - current) * 0.2;
       if (Math.abs(target - current) < 0.08) current = target;
       paint();
       if (current !== target) raf = requestAnimationFrame(tick);
