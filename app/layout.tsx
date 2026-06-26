@@ -3,6 +3,7 @@ import { Raleway, Poppins, Inconsolata, Noto_Serif_Sinhala } from "next/font/goo
 import "./globals.css";
 import Footer from "./Footer";
 import EasterEgg from "./EasterEgg";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -167,6 +168,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <EasterEgg />
+        <SpeedInsights />
       </body>
     </html>
   );
