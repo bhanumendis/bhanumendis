@@ -8,11 +8,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 **bhanumendis.com** is the official website of **Bhanu Mendis** (Sinhala: භානු මෙන්ඩිස්) — a Sri Lankan multi-disciplinary leader, performing artist, audio engineer, public speaker, and educator based in Colombo (Boralesgamuwa), Sri Lanka.
 
-Primary entity: `Person` — Bhanu Mendis. Key facts: 2024/2025 Senior Head Prefect of Lyceum International School Nugegoda; Sangeetha Visharadha (First Division); certified Audio Engineer; founder of the Swara and Padura concerts; three-time All-Island Dancing and Music champion; first place at the Malaysian World Choral Competition; currently an Educator at The Science Brainery.
+Primary entity: `Person` — Bhanu Mendis. Key facts: currently an Educator at The Science Brainery — tutoring Science, Mathematics & Computing (Pearson Edexcel, Grades 5–8, group & individual); 2024/2025 Senior Head Prefect of Lyceum International School Nugegoda; Sangeetha Visharadha (First Division); certified Audio Engineer; founder of the Swara and Padura concerts; three-time All-Island Dancing and Music champion; first place at the Malaysian World Choral Competition. O/L & A/L past papers are linked out to hiroshmendis.com.
 
 ## SEO / discoverability assets (where on-page indexing actually lives)
 
-- `app/layout.tsx` — canonical metadata, Open Graph, Twitter card, and JSON-LD `Person` structured data (jobTitle, alumniOf, worksFor, knowsAbout, award, sameAs).
+- `app/layout.tsx` — canonical metadata, Open Graph, Twitter card, and a JSON-LD `@graph`: `Person` (jobTitle, hasOccupation, alumniOf, worksFor, knowsAbout, award, makesOffer, sameAs) + the tutoring `Service`/`EducationalOccupationalProgram` + `The Science Brainery` + the Swara/Padura `MusicGroup`s.
 - `public/llms.txt` — plain-language profile and FAQ for LLM crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, etc.).
 - `app/robots.ts` — allows all user agents; points to the sitemap.
 - `app/sitemap.ts` — lists `/` and `/timeline`.
@@ -21,6 +21,7 @@ When updating facts about Bhanu, keep `layout.tsx` (metadata + JSON-LD), `public
 
 ## House rules
 
-- Reuse CSS variables in `app/globals.css`; never hardcode theme colors.
-- Keep the CSP in `next.config.ts` in step with any new embedded origin (iframes, fonts, scripts).
-- Preserve accessibility: skip link, focus-visible rings, keyboard navigation, reduced-motion.
+- Reuse CSS variables in `app/globals.css` (`:root` light / `:root.dark`); never hardcode theme colors.
+- Fonts are self-hosted in `app/fonts/` via `next/font/local` — do not reintroduce a `next/font/google` build-time dependency.
+- Keep the CSP in `next.config.ts` in step with any new embedded origin (iframes, scripts).
+- Preserve accessibility: skip link, focus-visible rings, and reduced-motion (disables parallax + reveals).

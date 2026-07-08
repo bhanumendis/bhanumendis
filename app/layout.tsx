@@ -1,38 +1,54 @@
 import type { Metadata, Viewport } from "next";
-import { Raleway, Poppins, Inconsolata, Noto_Serif_Sinhala } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "./Footer";
 import EasterEgg from "./EasterEgg";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const raleway = Raleway({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700", "800", "900"],
-  style: ["normal", "italic"],
+// ── Self-hosted fonts (next/font/local) ──────────────────────────────
+// Vendored in app/fonts to remove the build-time Google Fonts dependency:
+// faster first paint, no third-party fetch, and a clean font-src 'self' CSP.
+// The original type system: Raleway (display) + Poppins (body/UI) +
+// Inconsolata (mono) + Noto Serif Sinhala (signature).
+const display = localFont({
+  src: [
+    { path: "./fonts/Raleway-Variable.woff2", weight: "100 900", style: "normal" },
+    { path: "./fonts/Raleway-Italic-Variable.woff2", weight: "100 900", style: "italic" },
+  ],
   variable: "--font-display",
   display: "swap",
   preload: true,
+  fallback: ["Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
 });
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+const sans = localFont({
+  src: [
+    { path: "./fonts/Poppins-300.woff2", weight: "300", style: "normal" },
+    { path: "./fonts/Poppins-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/Poppins-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/Poppins-600.woff2", weight: "600", style: "normal" },
+  ],
   variable: "--font-sans",
   display: "swap",
   preload: true,
+  fallback: ["system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
 });
-const inconsolata = Inconsolata({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
+const mono = localFont({
+  src: [{ path: "./fonts/Inconsolata-Variable.woff2", weight: "200 900", style: "normal" }],
   variable: "--font-mono",
   display: "swap",
   preload: false,
+  fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
 });
-const sinhala = Noto_Serif_Sinhala({
-  subsets: ["sinhala"],
-  weight: ["400", "600", "700", "800", "900"],
+const sinhala = localFont({
+  src: [
+    { path: "./fonts/NotoSerifSinhala-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/NotoSerifSinhala-700.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/NotoSerifSinhala-900.woff2", weight: "900", style: "normal" },
+  ],
   variable: "--font-sinhala",
   display: "swap",
   preload: false,
+  fallback: ["serif"],
 });
 
 export const metadata: Metadata = {
@@ -42,13 +58,14 @@ export const metadata: Metadata = {
     template: "%s | Bhanu Mendis",
   },
   description:
-    "Bhanu Mendis — Senior Head Prefect, Public Speaker, Audio Engineer, Performing Artist, Educator and Sangeetha Visharadha from Colombo, Sri Lanka. Founder of Swara Concert. Three-time All-Island champion.",
+    "Bhanu Mendis — Educator and tutor of Science, Mathematics & Computing (Pearson Edexcel, Grades 5–8) at The Science Brainery, Boralesgamuwa. Also a public speaker, audio engineer, Sangeetha Visharadha and three-time All-Island champion from Colombo, Sri Lanka.",
   keywords: [
-    "Bhanu Mendis", "Colombo", "Sri Lanka", "Public Speaker", "Audio Engineer",
-    "Visharadha", "Sangeetha Visharadha", "Lyceum International School",
-    "Senior Head Prefect", "Educator", "Performing Artist", "Swara Concert",
-    "Padura Concert", "All-Island Champion", "Event Production", "bhanumendis.com",
-    "භානු මෙන්ඩිස්",
+    "Bhanu Mendis", "Bhanu Mendis tutor", "Science Maths Computing tutor Sri Lanka",
+    "Pearson Edexcel tutor Colombo", "The Science Brainery", "Boralesgamuwa tutor",
+    "Colombo", "Sri Lanka", "Educator", "Public Speaker", "Audio Engineer",
+    "Sangeetha Visharadha", "Lyceum International School", "Senior Head Prefect",
+    "Performing Artist", "Swara Concert", "Padura Concert", "All-Island Champion",
+    "Grade 5 6 7 8 tuition", "bhanumendis.com", "භානු මෙන්ඩිස්",
   ],
   authors: [{ name: "Bhanu Mendis", url: "https://bhanumendis.com" }],
   creator: "Bhanu Mendis",
@@ -56,9 +73,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://bhanumendis.com" },
   icons: { icon: "/favicon.png", apple: "/favicon.png" },
   openGraph: {
-    title: "Bhanu Mendis — Public Speaker, Audio Engineer & Artist",
+    title: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer",
     description:
-      "Senior Head Prefect, Public Speaker, Audio Engineer, and Sangeetha Visharadha from Colombo, Sri Lanka. Three-time All-Island champion and founder of the Swara Concert.",
+      "Tutoring Science, Maths & Computing (Pearson Edexcel, Grades 5–8) at The Science Brainery. Public speaker, audio engineer, Sangeetha Visharadha and three-time All-Island champion from Colombo, Sri Lanka.",
     url: "https://bhanumendis.com",
     siteName: "Bhanu Mendis",
     locale: "en_US",
@@ -67,9 +84,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Bhanu Mendis — Public Speaker, Audio Engineer & Artist",
+    title: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer",
     description:
-      "Public Speaker · Audio Engineer · Artist · Educator · Visharadha — Colombo, Sri Lanka.",
+      "Educator · Tutor (Science · Maths · Computing) · Public Speaker · Audio Engineer · Visharadha — Colombo, Sri Lanka.",
     images: ["/favicon.png"],
   },
   robots: {
@@ -96,14 +113,18 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  colorScheme: "dark light",
+  colorScheme: "light dark",
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#06090e" },
-    { media: "(prefers-color-scheme: light)", color: "#f4f6fa" },
+    { media: "(prefers-color-scheme: dark)", color: "#05070c" },
+    { media: "(prefers-color-scheme: light)", color: "#f5f7fb" },
   ],
 };
 
-const personSchema = {
+// ── Structured data (JSON-LD) ────────────────────────────────────────
+// Person + the tutoring service (EducationalOccupationalProgram / Service)
+// + the two founded concerts, all cross-linked so LLMs and search agents
+// can resolve the entity graph cleanly.
+const graph = {
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -113,13 +134,16 @@ const personSchema = {
       alternateName: ["භානු මෙන්ඩිස්", "Bhanu"],
       url: "https://bhanumendis.com",
       image: "https://bhanumendis.com/favicon.png",
-      jobTitle: "Public Speaker, Audio Engineer, Educator & Founder",
+      jobTitle: "Educator, Public Speaker, Audio Engineer & Founder",
       description:
-        "Bhanu Mendis — Senior Head Prefect, Public Speaker, Audio Engineer, performing Artist, Educator and Sangeetha Visharadha from Colombo, Sri Lanka. Founder of the Swara and Padura concerts.",
+        "Bhanu Mendis — Educator and private tutor of Science, Mathematics and Computing (Pearson Edexcel, Grades 5–8) at The Science Brainery in Boralesgamuwa. Also a public speaker, audio engineer, performing artist and Sangeetha Visharadha from Colombo, Sri Lanka; founder of the Swara and Padura concerts.",
       nationality: { "@type": "Country", name: "Sri Lanka" },
+      telephone: "+94-77-712-4152",
+      email: "bhanumendis@gmail.com",
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Colombo",
+        streetAddress: "No. 2, Malani Bulathsinghala Mawatha",
+        addressLocality: "Boralesgamuwa",
         addressRegion: "Western Province",
         addressCountry: "LK",
       },
@@ -129,10 +153,17 @@ const personSchema = {
         "https://linktr.ee/bhanu_mendis",
       ],
       alumniOf: { "@type": "EducationalOrganization", name: "Lyceum International School" },
-      worksFor: { "@type": "Organization", name: "The Science Brainery" },
+      worksFor: { "@id": "https://bhanumendis.com/#brainery" },
+      hasOccupation: {
+        "@type": "Occupation",
+        name: "Tutor / Educator",
+        occupationLocation: { "@type": "City", name: "Colombo, Sri Lanka" },
+        skills: "Science, Mathematics, Computing, Pearson Edexcel curriculum, Grades 5–8",
+      },
       knowsAbout: [
+        "Teaching", "Science Education", "Mathematics", "Computing", "Pearson Edexcel",
         "Public Speaking", "Audio Engineering", "Event Production", "Music Production",
-        "Eastern Music", "Choral Music", "Leadership", "Education", "Compering", "DAW Architecture",
+        "Eastern Music", "Choral Music", "Leadership", "Compering", "DAW Architecture",
       ],
       award: [
         "All-Island Dancing Champion (2018, 2019, 2023)",
@@ -141,7 +172,41 @@ const personSchema = {
         "British-Lanka Festival of Performing Arts - First Place",
         "National Chess Championship - First Place (2016)",
       ],
+      makesOffer: { "@id": "https://bhanumendis.com/#tutoring" },
       founder: [{ "@id": "https://bhanumendis.com/#swara" }, { "@id": "https://bhanumendis.com/#padura" }],
+    },
+    {
+      "@type": "EducationalOrganization",
+      "@id": "https://bhanumendis.com/#brainery",
+      name: "The Science Brainery",
+      url: "https://bhanumendis.com/#tutoring",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "No. 2, Malani Bulathsinghala Mawatha",
+        addressLocality: "Boralesgamuwa",
+        addressCountry: "LK",
+      },
+      telephone: "+94-77-712-4152",
+    },
+    {
+      "@type": ["Service", "EducationalOccupationalProgram"],
+      "@id": "https://bhanumendis.com/#tutoring",
+      name: "Private Tutoring — Science, Mathematics & Computing",
+      serviceType: "Private tuition (Group & Individual)",
+      description:
+        "Pearson Edexcel Science, Mathematics and Computing tuition for Grades 5, 6, 7 and 8, delivered as group and individual classes at The Science Brainery, Boralesgamuwa.",
+      educationalProgramMode: ["onsite", "In-person group classes", "Individual classes"],
+      occupationalCategory: "Tutoring",
+      provider: { "@id": "https://bhanumendis.com/#person" },
+      areaServed: { "@type": "Place", name: "Colombo, Sri Lanka" },
+      audience: { "@type": "EducationalAudience", educationalRole: "student" },
+      teaches: ["Science", "Mathematics", "Computing / ICT"],
+      offers: {
+        "@type": "Offer",
+        category: "Pearson Edexcel · Grades 5–8",
+        availability: "https://schema.org/InStock",
+        areaServed: "Boralesgamuwa, Sri Lanka",
+      },
     },
     {
       "@type": ["Organization", "MusicGroup"],
@@ -164,22 +229,32 @@ const personSchema = {
   ],
 } as const;
 
+// Runs before paint: applies the saved theme so there is no flash.
+// Default is the light theme; only an explicit prior choice of "dark" opts in.
+const themeInit = `(function(){try{var t=localStorage.getItem('bm-theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
-      className={`${raleway.variable} ${poppins.variable} ${inconsolata.variable} ${sinhala.variable}`}
+      className={`${display.variable} ${sans.variable} ${mono.variable} ${sinhala.variable}`}
+      suppressHydrationWarning
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <script
           type="application/ld+json"
           // Static, developer-controlled JSON-LD. `<` is escaped per Next.js guidance to prevent XSS.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema).replace(/</g, "\\u003c") }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(graph).replace(/</g, "\\u003c") }}
         />
         <link rel="me" href="https://www.linkedin.com/in/bhanumendis" />
         <link rel="me" href="https://www.instagram.com/bhanu_mendis" />
+        {/* Warm up DNS for the below-the-fold embeds (LinkedIn posts + Google Maps). */}
+        <link rel="dns-prefetch" href="https://www.linkedin.com" />
+        <link rel="dns-prefetch" href="https://maps.google.com" />
+        <link rel="dns-prefetch" href="https://maps.gstatic.com" />
       </head>
       <body>
         {children}
