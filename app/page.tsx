@@ -33,41 +33,13 @@ export default function Home() {
   const [isDark, setIsDark] = useState(false);
   const [showTop, setShowTop] = useState(false);
 
-  // ── Theme toggle: light is the default; dark is the "classified terminal"
-  //    mode. Choice is persisted and applied pre-paint from layout.tsx. ──
-  const applyTheme = (toDark: boolean, e?: React.MouseEvent<HTMLButtonElement>) => {
-    const root = document.documentElement;
-    const commit = () => {
-      root.classList.toggle("dark", toDark);
-      try { localStorage.setItem("bm-theme", toDark ? "dark" : "light"); } catch {}
-      setIsDark(toDark);
-    };
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!e || reduce) { commit(); return; }
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    const maxDist = Math.max(
-      Math.hypot(x, y),
-      Math.hypot(window.innerWidth - x, y),
-      Math.hypot(x, window.innerHeight - y),
-      Math.hypot(window.innerWidth - x, window.innerHeight - y)
-    );
-    const ripple = document.createElement("div");
-    ripple.className = "theme-ripple";
-    const size = maxDist * 2.2;
-    ripple.style.cssText = `position:fixed;z-index:9999;pointer-events:none;border-radius:50%;width:${size}px;height:${size}px;left:${x - size / 2}px;top:${y - size / 2}px;background:${toDark ? "#05070c" : "#f5f7fb"};transform:scale(0);`;
-    document.body.appendChild(ripple);
-    requestAnimationFrame(() => {
-      ripple.style.transition = "transform .7s cubic-bezier(.2,.9,.3,1.05)";
-      ripple.style.transform = "scale(1)";
-    });
-    window.setTimeout(() => {
-      commit();
-      ripple.style.transition = "opacity .3s ease";
-      ripple.style.opacity = "0";
-      window.setTimeout(() => ripple.remove(), 350);
-    }, 480);
+  // ── Theme toggle: a plain class flip. The gradual crossfade comes from the
+  //    CSS colour transitions on <body> and every surface — no expanding-circle
+  //    overlay (that caused the "oval flash" mid-swap). ──
+  const applyTheme = (toDark: boolean) => {
+    document.documentElement.classList.toggle("dark", toDark);
+    try { localStorage.setItem("bm-theme", toDark ? "dark" : "light"); } catch {}
+    setIsDark(toDark);
   };
 
   // Sync React state with the class the pre-paint script may have set.
@@ -209,8 +181,8 @@ export default function Home() {
 
       <div className="sidebar-left" aria-label="Theme controls">
         <div className="theme-toggle" role="group" aria-label="Theme toggle">
-          <button type="button" className={`theme-btn ${!isDark ? "active" : ""}`} onClick={(e) => { if (isDark) applyTheme(false, e); }} aria-pressed={!isDark} aria-label="Switch to light mode">☀</button>
-          <button type="button" className={`theme-btn ${isDark ? "active" : ""}`} onClick={(e) => { if (!isDark) applyTheme(true, e); }} aria-pressed={isDark} aria-label="Switch to dark mode">☾</button>
+          <button type="button" className={`theme-btn ${!isDark ? "active" : ""}`} onClick={() => { if (isDark) applyTheme(false); }} aria-pressed={!isDark} aria-label="Switch to light mode">☀</button>
+          <button type="button" className={`theme-btn ${isDark ? "active" : ""}`} onClick={() => { if (!isDark) applyTheme(true); }} aria-pressed={isDark} aria-label="Switch to dark mode">☾</button>
         </div>
       </div>
 
@@ -230,7 +202,7 @@ export default function Home() {
         <button
           type="button"
           className="nav-theme"
-          onClick={(e) => applyTheme(!isDark, e)}
+          onClick={() => applyTheme(!isDark)}
           aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
         >
           {isDark ? "☀" : "☾"}

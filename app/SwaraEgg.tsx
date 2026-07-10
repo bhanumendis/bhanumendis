@@ -120,8 +120,8 @@ export default function SwaraEgg() {
           const x = i * gap + (gap - bw) / 2;
           const y = h - bh;
           const g = ctx.createLinearGradient(0, h, 0, y);
-          g.addColorStop(0, dark ? "rgba(56,201,230,0.15)" : "rgba(31,116,184,0.16)");
-          g.addColorStop(1, dark ? "#8ceffb" : "#2f8bd4");
+          g.addColorStop(0, dark ? "rgba(79,157,255,0.15)" : "rgba(31,116,184,0.16)");
+          g.addColorStop(1, dark ? "#9cc3ff" : "#2f8bd4");
           ctx.fillStyle = g;
           const r = Math.min(bw / 2, bh / 2);
           ctx.beginPath();
