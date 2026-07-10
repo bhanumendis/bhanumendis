@@ -7,15 +7,17 @@ Personal portfolio for Bhanu Mendis. Next.js 16 (App Router) + React 19, TypeScr
 ## Architecture
 
 - `app/layout.tsx` — root layout. Self-hosted fonts via `next/font/local` (files in `app/fonts/`): Raleway (display), Poppins (UI/body), Inconsolata (mono), Noto Serif Sinhala (signature). Tab title is just `Bhanu Mendis`. Full SEO metadata, Open Graph/Twitter, and a JSON-LD `@graph` (Person + tutoring `Service`/`EducationalOccupationalProgram` + The Science Brainery + the Swara/Padura concerts). A tiny inline `themeInit` script applies the saved theme before paint (no flash). Renders the global `<Footer/>` and `<EasterEgg/>`.
-- `app/page.tsx` — the home page. A **standard vertical-scroll** single page. A fixed `.fx` backdrop (soft ambient orbs + dark-mode scanlines, no grid) parallaxes at different depths via a rAF scroll loop reading `[data-par]` speeds; section content rises in with a subtle 3D "Inception" reveal (`.reveal` → `.reveal.in`). The `#ethos` section is an Apple-style pinned-scroll band: a `position:sticky` background word stays fixed while the foreground lines scroll over it. Custom cursor + hero pointer parallax on desktop. Mobile (< 901px) and `prefers-reduced-motion` get a calm, static layout.
-  - Sections, in order: hero, about, **tutoring**, ethos (pinned), skills, press (`FeaturedIn`), exp, linkedin, achieve, certs, contact, findus (map, holds the single "Register for Classes" CTA). The footer is the global one from `layout.tsx` (shown on every page).
+- `app/page.tsx` — the home page. A **standard vertical-scroll** single page. The page background is **pure solid** (`#fff` light / `#000` dark) — there is no decorative backdrop layer. A rAF scroll loop drives the progress bar, nav state and back-to-top. Section content rises in with a 3D "Inception" reveal on desktop (`.reveal` → `.reveal.in`); **on mobile the reveal is a single lightweight 2D fade with no stagger** (the 3D version double-painted on mobile GPUs). Two sections use an Apple-style pinned-scroll effect — a `position:sticky` background word that stays fixed while content scrolls over it: `#ethos` ("LEARN") and `#exp` ("WORK", `.exp-pin-bg`). Custom cursor + hero pointer parallax on desktop. `prefers-reduced-motion` gets a calm, static layout.
+  - Sections, in order: hero, about, **tutoring**, ethos (pinned), skills, press (`FeaturedIn`), exp (pinned), linkedin, achieve, certs, contact, findus (map, holds the single "Register for Classes" CTA). The footer is the global one from `layout.tsx` (shown on every page).
+  - Theme toggle: the desktop `.sidebar-left` toggle is hidden on mobile; a compact `.nav-theme` button in the nav takes over below 901px.
 - `app/timeline/page.tsx` + `app/Timeline.tsx` — a separate vertical `/timeline` route.
-- Components: `Counter` (framer-motion count-up), `MagneticButton` (amplified pull + label lag + cursor sheen), `FeaturedIn` (press cards), `Footer`, `EasterEgg` (hold B+M).
+- Components: `Counter` (dependency-free rAF count-up — no animation library), `MagneticButton` (amplified pull + label lag + cursor sheen), `FeaturedIn` (press cards), `Footer`, `EasterEgg` (hold B+M), `SwaraEgg` (type `swara` → the Swara theme song at `public/swara.mp3` plays behind a themed overlay titled ස්වර with a live Web-Audio canvas visualizer; click-away / Esc / track-end closes it).
 - `app/robots.ts`, `app/sitemap.ts` — generated robots.txt and sitemap.xml. `public/llms.txt` — AI-crawler profile.
+- `proxy.ts` (Next 16's renamed Middleware) — **content negotiation**: requests with `Accept: text/markdown` for `/` or `/timeline` get the clean Markdown mirrors in `public/index.md` / `public/timeline.md`; browsers get HTML. Responses carry `Vary: Accept`. Keep the mirrors in sync when portfolio facts change.
 
 ## Theme system
 
-- **Light is the default** (clean, professional). **Dark is opt-in** ("classified terminal" — deep near-black + cyan glow + scanlines).
+- **Light is the default** (clean, professional — pure `#fff` background). **Dark is opt-in** (pure `#000` background + cyan accents). Backgrounds are intentionally pure/solid; card surfaces carry a faint tint + border so they stay legible against them.
 - Tokens live on `:root` (light) with `:root.dark` overrides. The theme class lives on `<html>` (documentElement). Reuse the CSS variables (`--bg`, `--sky`, `--card-bg`, `--glass`, etc.) — never hardcode theme colours.
 - The choice is persisted to `localStorage` (`bm-theme`) and re-applied pre-paint by the inline script in `layout.tsx`. `app/page.tsx` toggles the class + storage with a radial ripple.
 
@@ -42,7 +44,7 @@ The `hiroshmendis.com` past-papers link is a plain anchor (no CSP entry needed).
 
 Dependencies: keep `npm audit` at **0 vulnerabilities**. Tailwind/PostCSS were removed (the CSS is hand-authored with no Tailwind directives, so they were dead weight + supply-chain risk); there is no `postcss.config.mjs`. A `package.json` `overrides` pins `postcss` to a patched version inside Next's tree. Prefer patch/minor bumps; avoid major bumps (eslint 10, typescript 6) without a full build+QA pass.
 
-Performance: fonts self-hosted (`font-src 'self'`, preloaded); images AVIF/WebP via `next/image`; long-lived immutable caching for static media in `next.config.ts`; `dns-prefetch` hints in `layout.tsx` warm up the embed origins; `compress: true`, `poweredByHeader: false`. Keep it static and edge-cached.
+Performance: fonts self-hosted (`font-src 'self'`, preloaded); images AVIF/WebP via `next/image`; long-lived immutable caching for static media in `next.config.ts`; `dns-prefetch` hints in `layout.tsx` warm up the embed origins; `compress: true`, `poweredByHeader: false`. **No animation library** — `framer-motion` was removed (it was used only by `Counter`, now a ~40-line rAF loop), which cut a large transitive dependency tree and mobile JS bootup. Local Lighthouse (against `next start`): desktop performance ~98, accessibility 100, best-practices ~96, SEO 100; axe-core reports 0 WCAG A/AA violations. Keep it static and edge-cached.
 
 ## Gotchas
 

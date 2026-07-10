@@ -182,7 +182,7 @@ export default function Home() {
       (entries) => entries.forEach((entry) => {
         if (entry.isIntersecting) { entry.target.classList.add("in"); io.unobserve(entry.target); }
       }),
-      { threshold: 0.06, rootMargin: "0px 0px -8% 0px" }
+      { threshold: 0.01, rootMargin: "0px 0px -2% 0px" }
     );
     document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
@@ -200,15 +200,6 @@ export default function Home() {
       <div id="cd" aria-hidden="true" />
       <div id="cr" aria-hidden="true" />
       <div id="prog" aria-hidden="true" role="progressbar" aria-label="Page scroll progress" />
-
-      {/* Fixed ambient backdrop — soft depth only (no grid), plain and calm. */}
-      <div className="fx" aria-hidden="true">
-        <div className="fx-orb fx-oa" data-par="0.26" />
-        <div className="fx-orb fx-ob" data-par="-0.18" />
-        <div className="fx-orb fx-oc" data-par="0.34" />
-        <div className="fx-scan" />
-        <div className="fx-vignette" />
-      </div>
 
       <div className="sidebar-right" aria-label="Social links">
         <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer" aria-label="Instagram profile">Ig.</a>
@@ -235,6 +226,15 @@ export default function Home() {
           <li><a href="/timeline">Timeline</a></li>
           <li><a href="#contact" className="nav-cta">Contact</a></li>
         </ul>
+        {/* Compact theme toggle — shown on mobile where the sidebar toggle is hidden. */}
+        <button
+          type="button"
+          className="nav-theme"
+          onClick={(e) => applyTheme(!isDark, e)}
+          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {isDark ? "☀" : "☾"}
+        </button>
       </nav>
 
       <button type="button" className={`to-top ${showTop ? "visible" : ""}`} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Back to top">
@@ -268,7 +268,7 @@ export default function Home() {
               <div className="hsc" role="listitem"><div className="hsc-n">1st</div><div className="hsc-l">World choral rank</div></div>
             </div>
           </div>
-          <a href="#about" className="scroll-cue" aria-hidden="true"><span /></a>
+          <a href="#about" className="scroll-cue" aria-hidden="true" tabIndex={-1}><span /></a>
         </section>
 
         {/* ── ABOUT ── */}
@@ -386,8 +386,9 @@ export default function Home() {
 
         <FeaturedIn />
 
-        {/* ── EXPERIENCE ── */}
+        {/* ── EXPERIENCE ── (pinned background word, like the LEARN section) */}
         <section id="exp" aria-labelledby="exp-heading">
+          <div className="exp-pin-bg" aria-hidden="true"><span className="pin-word">WORK</span></div>
           <div className="sw" data-tilt>
             <div className="eyebrow reveal">Experience</div>
             <h2 className="sh reveal" id="exp-heading">Projects <em>Led</em></h2>

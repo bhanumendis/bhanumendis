@@ -12,12 +12,13 @@ Primary entity: `Person` — Bhanu Mendis. Key facts: currently an Educator at T
 
 ## SEO / discoverability assets (where on-page indexing actually lives)
 
-- `app/layout.tsx` — canonical metadata, Open Graph, Twitter card, and a JSON-LD `@graph`: `Person` (jobTitle, hasOccupation, alumniOf, worksFor, knowsAbout, award, makesOffer, sameAs) + the tutoring `Service`/`EducationalOccupationalProgram` + `The Science Brainery` + the Swara/Padura `MusicGroup`s.
+- `app/layout.tsx` — canonical metadata, Open Graph, Twitter card, and a JSON-LD `@graph`: `Person` (jobTitle, multi-role `hasOccupation` — Educator/Tutor, Musician, Audio Engineer, Software & Computing — alumniOf, worksFor, knowsAbout, award, makesOffer, sameAs) + the tutoring `Service`/`EducationalOccupationalProgram` + `The Science Brainery` + the Swara/Padura `MusicGroup`s.
 - `public/llms.txt` — plain-language profile and FAQ for LLM crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, etc.).
+- `proxy.ts` + `public/index.md` / `public/timeline.md` — Markdown mirror served via content negotiation (`Accept: text/markdown`) for agents that prefer Markdown over HTML.
 - `app/robots.ts` — allows all user agents; points to the sitemap.
 - `app/sitemap.ts` — lists `/` and `/timeline`.
 
-When updating facts about Bhanu, keep `layout.tsx` (metadata + JSON-LD), `public/llms.txt`, and `CLAUDE.md` in sync.
+When updating facts about Bhanu, keep `layout.tsx` (metadata + JSON-LD), `public/llms.txt`, `public/index.md` + `public/timeline.md` (Markdown mirrors), and `CLAUDE.md` in sync.
 
 ## House rules
 

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { useInView, useSpring, useMotionValueEvent, useReducedMotion } from "framer-motion";
 
 interface CounterProps {
   value: number;
@@ -9,30 +8,55 @@ interface CounterProps {
   className?: string;
 }
 
+// Lightweight count-up: a single rAF loop that starts when the number scrolls
+// into view. No animation library — keeps the JS bundle small and mobile fast.
+// Honours prefers-reduced-motion by snapping straight to the final value.
 export default function Counter({ value, suffix = "", prefix = "", className = "" }: CounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "0px 0px -80px 0px" });
-  const reduceMotion = useReducedMotion();
-
-  const spring = useSpring(0, { stiffness: 60, damping: 18, mass: 1 });
-
-  const format = (n: number) =>
-    prefix + (value >= 1000 ? n.toLocaleString() : String(n)) + suffix;
 
   useEffect(() => {
-    if (!inView) return;
-    // Honour reduced-motion: snap to the final value instead of animating.
-    if (reduceMotion) spring.jump(value);
-    else spring.set(value);
-  }, [inView, value, spring, reduceMotion]);
+    const el = ref.current;
+    if (!el) return;
+    const format = (n: number) =>
+      prefix + (value >= 1000 ? Math.round(n).toLocaleString() : String(Math.round(n))) + suffix;
 
-  useMotionValueEvent(spring, "change", (latest) => {
-    if (ref.current) ref.current.textContent = format(Math.round(latest));
-  });
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.textContent = format(value);
+      return;
+    }
+
+    let raf = 0, start = 0, ran = false;
+    const dur = 1400;
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const t = Math.min((ts - start) / dur, 1);
+      el.textContent = format(value * easeOutCubic(t));
+      if (t < 1) raf = requestAnimationFrame(step);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting) && !ran) {
+          ran = true;
+          raf = requestAnimationFrame(step);
+          io.disconnect();
+        }
+      },
+      { threshold: 0, rootMargin: "0px 0px -60px 0px" }
+    );
+    io.observe(el);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      io.disconnect();
+    };
+  }, [value, suffix, prefix]);
 
   return (
     <span ref={ref} className={className}>
-      {format(0)}
+      {prefix}0{suffix}
     </span>
   );
 }

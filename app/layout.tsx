@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Footer from "./Footer";
 import EasterEgg from "./EasterEgg";
+import SwaraEgg from "./SwaraEgg";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // ── Self-hosted fonts (next/font/local) ──────────────────────────────
@@ -154,12 +155,32 @@ const graph = {
       ],
       alumniOf: { "@type": "EducationalOrganization", name: "Lyceum International School" },
       worksFor: { "@id": "https://bhanumendis.com/#brainery" },
-      hasOccupation: {
-        "@type": "Occupation",
-        name: "Tutor / Educator",
-        occupationLocation: { "@type": "City", name: "Colombo, Sri Lanka" },
-        skills: "Science, Mathematics, Computing, Pearson Edexcel curriculum, Grades 5–8",
-      },
+      hasOccupation: [
+        {
+          "@type": "Occupation",
+          name: "Educator & Private Tutor",
+          occupationLocation: { "@type": "City", name: "Colombo, Sri Lanka" },
+          skills: "Science, Mathematics, Computing, Pearson Edexcel curriculum, Grades 5–8",
+        },
+        {
+          "@type": "Occupation",
+          name: "Musician",
+          occupationalCategory: "27-2042",
+          skills: "Sangeetha Visharadha (Eastern classical vocal & instrumental), choral music, live performance",
+        },
+        {
+          "@type": "Occupation",
+          name: "Audio Engineer",
+          occupationalCategory: "27-4014",
+          skills: "Music production, mixing & mastering, DAW architecture, MIDI sequencing",
+        },
+        {
+          "@type": "Occupation",
+          name: "Software & Computing",
+          occupationalCategory: "15-1252",
+          skills: "Programming, computing, information technology",
+        },
+      ],
       knowsAbout: [
         "Teaching", "Science Education", "Mathematics", "Computing", "Pearson Edexcel",
         "Public Speaking", "Audio Engineering", "Event Production", "Music Production",
@@ -260,6 +281,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <EasterEgg />
+        <SwaraEgg />
         <SpeedInsights />
       </body>
     </html>
