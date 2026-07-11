@@ -4,7 +4,6 @@ import Image from "next/image";
 import FeaturedIn from "./FeaturedIn";
 import MagneticButton from "./MagneticButton";
 import Counter from "./Counter";
-import HeroField from "./HeroField";
 
 // Open the tuition location directly in Google Maps.
 const MAP_LINK =
@@ -219,7 +218,6 @@ export default function Home() {
         <section id="hero" aria-labelledby="hero-name">
           <Image src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" fill sizes="100vw" priority />
           <div className="hero-bg-overlay" aria-hidden="true" />
-          <HeroField />
           <div id="hero-content" className="hero-content">
             <h1 className="h1" id="hero-name">BHANU<br /><span className="blue">MENDIS</span></h1>
             <p className="h-sub">Educator · Public Speaker · Audio Engineer · Artist · Visharadha</p>
