@@ -12,6 +12,8 @@ const MAP_LINK =
 
 const REGISTER_FORM = "https://forms.gle/N52vwAytUsJCt2df6";
 const PAST_PAPERS = "https://hiroshmendis.com";
+// Student Portal (bhanu-lms) — separate app/repo/domain, opens in its own tab.
+const LMS_URL = "https://lms.bhanumendis.com";
 
 const SKILLS: readonly string[] = [
   "Teaching", "Team Leadership", "People Management", "Event Strategy", "Event Production",
@@ -196,6 +198,7 @@ export default function Home() {
           <li><a href="#exp">Experience</a></li>
           <li><a href="#achieve">Awards</a></li>
           <li><a href="/timeline">Timeline</a></li>
+          <li><a href={LMS_URL} target="_blank" rel="noopener noreferrer">Student Portal</a></li>
           <li><a href="#contact" className="nav-cta">Contact</a></li>
         </ul>
         {/* Compact theme toggle — shown on mobile where the sidebar toggle is hidden. */}
@@ -300,6 +303,11 @@ export default function Home() {
               <a href="tel:+94777124152" className="btn-out">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
                 Call 0777 124 152
+              </a>
+              {/* Existing students go straight into the LMS from here, right next to the enrollment call-to-action. */}
+              <a href={LMS_URL} target="_blank" rel="noopener noreferrer" className="btn-fill">
+                Student Portal
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
               </a>
             </div>
 
