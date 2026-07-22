@@ -67,7 +67,7 @@ em{font-style:italic;}
 img{max-width:100%;}
 
 /* Colour/edge transitions for interactive surfaces on theme change */
-.srow,.sp,.ecard,.acard,.ccard,.hsc,.press-card,.tl-card,.cb,.nav-cta,.btn-out,.btn-fill,
+.srow,.sp,.ecard,.acard,.ccard,.hsc,.press-card,.tl-card,.cb,.nav-cta,.nav-cta-fill,.btn-out,.btn-fill,
 .et,.edate,.abadge,.tl-tag,.subj-card,.tut-fact,.paper-link,.soc-btn,.student-reg,.show-more-btn{
   transition:background-color .45s ease,border-color .45s cubic-bezier(.16,1,.3,1),color .4s ease,
              transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s cubic-bezier(.16,1,.3,1);
@@ -106,6 +106,12 @@ body.using-mouse .sidebar-right a,body.using-mouse .theme-btn{cursor:none;}
 .nav-links a:hover{opacity:1;color:var(--sky);}
 .nav-cta{padding:9px 22px;background:var(--pill-bg);border:1px solid var(--pill-b);border-radius:100px;font-family:var(--mono);font-size:13px;color:var(--sky);text-decoration:none;transition:all .25s;opacity:1!important;}
 .nav-cta:hover{background:var(--card-hbg);box-shadow:0 0 18px rgba(56,150,230,0.18);}
+/* Solid-filled nav CTA — deliberately heavier than the outlined .nav-cta
+   (Contact), same emphasis the Student Portal button gets in hiroshmendis.com's
+   own nav: a solid button that stands apart from the plain text links,
+   instead of blending in as one more of them. */
+.nav-cta-fill{padding:9px 22px;background:var(--skyg);border:1px solid transparent;border-radius:100px;font-family:var(--mono);font-size:13px;font-weight:700;color:#04121c;text-decoration:none;transition:all .25s;opacity:1!important;box-shadow:0 4px 16px -6px rgba(56,150,230,0.5);}
+.nav-cta-fill:hover{box-shadow:0 6px 22px -6px rgba(56,150,230,0.7);transform:translateY(-1px);}
 /* Compact theme toggle in the nav — desktop uses the sidebar toggle instead */
 .nav-theme{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--card-b);background:var(--card-bg);color:var(--sky);font-size:18px;align-items:center;justify-content:center;-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass);box-shadow:var(--glass-edge);}
 
