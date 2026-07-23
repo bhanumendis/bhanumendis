@@ -161,9 +161,9 @@ body.using-mouse .sidebar-right a,body.using-mouse .theme-btn{cursor:none;}
 .btn-magnetic::after{content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(130px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.45),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none;}
 .btn-magnetic:hover::after{opacity:.9;}
 .dark .btn-out.btn-magnetic::after,.dark .student-reg.btn-magnetic::after{background:radial-gradient(150px circle at var(--mx,50%) var(--my,50%),rgba(79,157,255,.28),transparent 60%);}
-.btn-fill{display:inline-flex;align-items:center;justify-content:center;padding:15px 34px;border-radius:100px;background:var(--skyg);color:#04121c;font-family:var(--sans);font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 8px 30px -8px rgba(56,150,230,0.55);}
+.btn-fill{display:inline-flex;align-items:center;justify-content:center;padding:15px 34px;border-radius:100px;background:var(--skyg);color:#04121c;font-family:var(--sans);font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 8px 30px -8px rgba(56,150,230,0.55);white-space:nowrap;flex-shrink:0;}
 .btn-fill:hover{box-shadow:0 12px 42px -8px rgba(56,150,230,0.7);}
-.btn-out{display:inline-flex;align-items:center;justify-content:center;padding:14px 28px;border-radius:100px;border:1px solid var(--card-b);background:var(--card-bg);color:var(--soft);font-family:var(--sans);font-size:14px;font-weight:500;text-decoration:none;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--glass-edge);}
+.btn-out{display:inline-flex;align-items:center;justify-content:center;padding:14px 28px;border-radius:100px;border:1px solid var(--card-b);background:var(--card-bg);color:var(--soft);font-family:var(--sans);font-size:14px;font-weight:500;text-decoration:none;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--glass-edge);white-space:nowrap;flex-shrink:0;}
 .btn-out:hover{border-color:var(--card-hb);color:var(--white);background:var(--card-hbg);}
 .btn-out svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
@@ -440,7 +440,7 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
   .map-embed{border-radius:0 0 var(--r2xl) var(--r2xl);}
 }
 @media(max-width:900px){
-  #nav{padding:16px 22px;}
+  #nav{padding:16px 22px;justify-content:flex-start;gap:16px;}
   #nav.scrolled{padding:12px 22px;}
   .nav-links{display:none;}
   #hero{padding:130px 22px 90px;}
