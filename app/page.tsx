@@ -219,7 +219,7 @@ export default function Home() {
       <main>
         {/* ── HERO ── */}
         <section id="hero" aria-labelledby="hero-name">
-          <Image src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" fill sizes="100vw" priority />
+          <Image src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" fill sizes="100vw" priority draggable={false} style={{ pointerEvents: "none" }} />
           <div className="hero-bg-overlay" aria-hidden="true" />
           <div id="hero-content" className="hero-content">
             <h1 className="h1" id="hero-name">BHANU<br /><span className="blue">MENDIS</span></h1>
@@ -261,7 +261,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="about-right reveal d2">
-                <Image src="/favicon.png" alt="Bhanu Mendis — profile photo" className="about-photo" width={120} height={120} />
+                <Image src="/favicon.png" alt="Bhanu Mendis — profile photo" className="about-photo" width={120} height={120} draggable={false} style={{ pointerEvents: "none" }} />
                 <div className="srow"><div className="sval"><Counter value={26} suffix="K+" /></div><div className="sdesc">Lyceumers at Elysium &apos;25</div></div>
                 <div className="srow"><div className="sval"><Counter value={750} suffix="+" /></div><div className="sdesc">Performers managed</div></div>
                 <div className="srow"><div className="sval"><Counter value={14} /></div><div className="sdesc">Years at Lyceum</div></div>
