@@ -1,0 +1,32 @@
+# bhanumendis.com — public portfolio site. Wants normal search indexing and
+# AI *retrieval*/citation traffic (complements the existing proxy.ts
+# text/markdown content-negotiation for agents); blocks AI *training*
+# scrapers, which are known to ignore robots.txt inconsistently, so pair
+# this with a Cloudflare WAF rule on the same user-agent list for anything
+# that doesn't play along voluntarily.
+
+# --- AI training scrapers: blocked ---
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: Meta-ExternalFetcher
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+# --- Everyone else (search engines, AI retrieval/citation bots, humans): allowed ---
+User-agent: *
+Allow: /

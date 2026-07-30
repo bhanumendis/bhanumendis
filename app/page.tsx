@@ -12,6 +12,8 @@ const MAP_LINK =
 
 const REGISTER_FORM = "https://forms.gle/N52vwAytUsJCt2df6";
 const PAST_PAPERS = "https://hiroshmendis.com";
+// Student Portal (bhanu-lms) — separate app/repo/domain, opens in its own tab.
+const LMS_URL = "https://lms.bhanumendis.com";
 
 const SKILLS: readonly string[] = [
   "Teaching", "Team Leadership", "People Management", "Event Strategy", "Event Production",
@@ -196,6 +198,7 @@ export default function Home() {
           <li><a href="#exp">Experience</a></li>
           <li><a href="#achieve">Awards</a></li>
           <li><a href="/timeline">Timeline</a></li>
+          <li><a href={LMS_URL} target="_blank" rel="noopener noreferrer" className="nav-cta-fill">Student Portal</a></li>
           <li><a href="#contact" className="nav-cta">Contact</a></li>
         </ul>
         {/* Compact theme toggle — shown on mobile where the sidebar toggle is hidden. */}
@@ -216,7 +219,7 @@ export default function Home() {
       <main>
         {/* ── HERO ── */}
         <section id="hero" aria-labelledby="hero-name">
-          <Image src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" fill sizes="100vw" priority />
+          <Image src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" fill sizes="100vw" priority draggable={false} style={{ pointerEvents: "none" }} />
           <div className="hero-bg-overlay" aria-hidden="true" />
           <div id="hero-content" className="hero-content">
             <h1 className="h1" id="hero-name">BHANU<br /><span className="blue">MENDIS</span></h1>
@@ -258,7 +261,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="about-right reveal d2">
-                <Image src="/favicon.png" alt="Bhanu Mendis — profile photo" className="about-photo" width={120} height={120} />
+                <Image src="/favicon.png" alt="Bhanu Mendis — profile photo" className="about-photo" width={120} height={120} draggable={false} style={{ pointerEvents: "none" }} />
                 <div className="srow"><div className="sval"><Counter value={26} suffix="K+" /></div><div className="sdesc">Lyceumers at Elysium &apos;25</div></div>
                 <div className="srow"><div className="sval"><Counter value={750} suffix="+" /></div><div className="sdesc">Performers managed</div></div>
                 <div className="srow"><div className="sval"><Counter value={14} /></div><div className="sdesc">Years at Lyceum</div></div>
@@ -301,6 +304,14 @@ export default function Home() {
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
                 Call 0777 124 152
               </a>
+              {/* Existing students go straight into the LMS from here, right next to the
+                  enrollment call-to-action — now a MagneticButton, same interactive
+                  cursor-tracking/sheen treatment as "Tutoring Classes" in the hero,
+                  instead of a static link that just happens to share its color. */}
+              <MagneticButton href={LMS_URL} external className="btn-fill" ariaLabel="Open the Student Portal">
+                Student Portal
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+              </MagneticButton>
             </div>
 
             {/* Highly visible past-papers link → hiroshmendis.com */}
