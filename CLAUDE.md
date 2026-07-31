@@ -51,3 +51,13 @@ Performance: fonts self-hosted (`font-src 'self'`, preloaded); images AVIF/WebP 
 - This repo lives on a cloud-synced (OneDrive) path; some editors inject stray NUL bytes / truncate on save. After any write, verify the file decodes as clean UTF-8 and ends correctly.
 - Maps are embedded as iframes (not Leaflet). Keep any new embedded origin in the CSP `frame-src`.
 - Google Fonts is not required at build time anymore â€” fonts are vendored in `app/fonts/`. Don't reintroduce a `next/font/google` build dependency.
+
+## Audit log
+
+**2026-07-30 — Security & performance audit (Claude/Cowork):**
+- Dependency vulnerabilities fixed and merged (PR #6, `fix/portfolio-dependency-vulnerabilities`) — confirmed live, `npm audit` clean.
+- README accuracy fix, Student Portal nav link, magnetic CTA, nav button sizing, mobile theme-toggle position, and the robots.txt policy all merged via PR #4 (`fix/readme-project-accuracy`) — confirmed live on `origin/main` and in production.
+- Structural performance check via curl (no live-browser Lighthouse available this session): Brotli compression confirmed active, static asset caching confirmed `Cache-Control: public, max-age=31536000, immutable` (gold standard), `next/image` responsive optimization confirmed, code-splitting confirmed via `_next/static/chunks/*.js`.
+- Local clone was several commits behind `origin/main` (both PRs above were merged via the GitHub web UI without a local pull) — fast-forwarded clean, no conflicts. The now-merged `fix/readme-project-accuracy` branch was deleted locally.
+- **Worth a 2-minute check next session**: this file documents `app/robots.ts` as the robots.txt mechanism, but PR #4 also added a *static* `public/robots.txt` around the same time. Confirm only one is actually in effect — a static file in `public/` can silently take precedence over a dynamic route at the same path.
+- SSL/timing/performance numbers produced *by a cloud sandbox* are not authoritative (proxied egress) — verify via a real browser / pagespeed.web.dev / ssllabs.com if precision matters.
