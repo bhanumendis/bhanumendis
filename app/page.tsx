@@ -30,6 +30,83 @@ const SUBJECTS = [
   { name: "Computing", tag: "Computational thinking · Code", body: "From logic and algorithms to hands-on coding and digital literacy." },
 ] as const;
 
+const SLIDESHOW_PHOTOS = [
+  "/Photos-1-001/IMG_20260724_080311_651.jpg",
+  "/Photos-1-001/IMG_20260724_080311_720.jpg",
+  "/Photos-1-001/IMG_20260724_080311_743.jpg",
+  "/Photos-1-001/IMG_20260724_080311_756.jpg",
+  "/Photos-1-001/IMG_20260724_080311_793.jpg",
+  "/Photos-1-001/IMG_20260724_080311_914.jpg",
+  "/Photos-1-001/IMG_20260724_080311_934.jpg",
+  "/Photos-1-001/IMG_20260724_080312_125.jpg",
+  "/Photos-1-001/IMG_20260724_080312_207.jpg",
+  "/Photos-1-001/IMG_20260724_080312_219.jpg",
+  "/Photos-1-001/IMG_20260724_080322_830.jpg",
+  "/Photos-1-001/IMG_20260724_080322_887.jpg",
+  "/Photos-1-001/IMG_20260724_080322_983.jpg",
+  "/Photos-1-001/IMG_20260724_080323_203.jpg",
+  "/Photos-1-001/IMG_20260724_080323_466.jpg"
+];
+
+function PhotoSlideshow() {
+  const [active, setActive] = useState(0);
+
+  const prev = () => setActive((prev) => (prev === 0 ? SLIDESHOW_PHOTOS.length - 1 : prev - 1));
+  const next = () => setActive((prev) => (prev === SLIDESHOW_PHOTOS.length - 1 ? 0 : prev + 1));
+
+  useEffect(() => {
+    const timer = setInterval(next, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <section id="photos" aria-labelledby="photos-heading">
+      <div className="sw" data-tilt>
+        <div className="eyebrow reveal">Captured Moments</div>
+        <h2 className="sh reveal" id="photos-heading">Photo <em>Slideshow</em></h2>
+        
+        <div className="slideshow-container reveal d1">
+          <div className="slideshow-viewport">
+            <button className="slideshow-nav prev" onClick={prev} aria-label="Previous image">
+              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <div className="slideshow-slide">
+              <Image 
+                src={SLIDESHOW_PHOTOS[active]} 
+                alt={`Slideshow image ${active + 1}`} 
+                fill 
+                sizes="(max-width: 1200px) 100vw, 1200px" 
+                priority={active === 0}
+                className="slideshow-img"
+              />
+            </div>
+            <button className="slideshow-nav next" onClick={next} aria-label="Next image">
+              <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>
+            </button>
+          </div>
+          
+          <div className="slideshow-indicator">
+            {active + 1} / {SLIDESHOW_PHOTOS.length}
+          </div>
+          
+          <div className="slideshow-thumbs">
+            {SLIDESHOW_PHOTOS.map((photo, i) => (
+              <button 
+                key={photo} 
+                className={`slideshow-thumb ${i === active ? 'active' : ''}`}
+                onClick={() => setActive(i)}
+                aria-label={`Go to slide ${i + 1}`}
+              >
+                <img src={photo} alt={`Thumbnail ${i + 1}`} />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const [showAllExp, setShowAllExp] = useState(false);
   const [isDark, setIsDark] = useState(false);
@@ -278,7 +355,7 @@ export default function Home() {
             <h2 className="sh reveal d1" id="tutoring-heading">Learn <em>Science, Maths<br />&amp; Computing</em></h2>
             <p className="lead reveal d2">
               Clear, concept-first classes on the <strong>Pearson Edexcel</strong> curriculum for
-              <strong> Grades 5–8</strong>, at The Science Brainery in Boralesgamuwa. Group and
+              <strong> Grades 6–8</strong>, at The Science Brainery in Boralesgamuwa. Group and
               individual — built around understanding, not memorising.
             </p>
 
@@ -294,7 +371,7 @@ export default function Home() {
 
             <div className="tut-facts reveal d2" role="list" aria-label="Class details">
               <div className="tut-fact" role="listitem"><span className="tf-k">Syllabus</span><span className="tf-v">Pearson Edexcel</span></div>
-              <div className="tut-fact" role="listitem"><span className="tf-k">Grades</span><span className="tf-v">5 · 6 · 7 · 8</span></div>
+              <div className="tut-fact" role="listitem"><span className="tf-k">Grades</span><span className="tf-v">6 · 7 · 8</span></div>
               <div className="tut-fact" role="listitem"><span className="tf-k">Classes</span><span className="tf-v">Group &amp; Individual</span></div>
               <div className="tut-fact" role="listitem"><span className="tf-k">Location</span><span className="tf-v">The Science Brainery</span></div>
             </div>
@@ -379,7 +456,7 @@ export default function Home() {
               <article className="ecard reveal d1">
                 <div className="etop"><div className="erole">Educator</div><span className="edate">Sep 2025 – Present</span></div>
                 <div className="eorg">The Science Brainery · Boralesgamuwa</div>
-                <p className="ebody">Teaching Pearson Edexcel Science, Mathematics and Computing for Grades 5–8. Lessons built for conceptual clarity, real application and genuine engagement.</p>
+                <p className="ebody">Teaching Pearson Edexcel Science, Mathematics and Computing for Grades 6–8. Lessons built for conceptual clarity, real application and genuine engagement.</p>
                 <div className="etags"><span className="et">Teaching</span><span className="et">Edexcel</span><span className="et">Science</span><span className="et">Maths</span><span className="et">Computing</span></div>
               </article>
               <article className="ecard reveal d2">
@@ -460,37 +537,41 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── ACHIEVEMENTS ── */}
+        <PhotoSlideshow />
+
+        {/* ── ACHIEVEMENTS & CREDENTIALS ── */}
         <section id="achieve" aria-labelledby="achieve-heading">
           <div className="sw" data-tilt>
-            <div className="eyebrow reveal">Honours &amp; Awards</div>
-            <h2 className="sh reveal" id="achieve-heading">Achievements <em>Earned</em></h2>
-            <div className="agrid">
-              <article className="acard reveal d1"><div className="amed" aria-hidden="true">🏆</div><div className="atitle">All-Island Dancing Champion</div><div className="abadge">Island 1st · 2018, 2019, 2023</div><p className="abody">Three-time national champion in competitive dance at the All-Island level.</p></article>
-              <article className="acard reveal d2"><div className="amed" aria-hidden="true">🎵</div><div className="atitle">All-Island Music Champion</div><div className="abadge">Island 1st · 2019, 2023, 2024</div><p className="abody">Three-time national music champion at the highest competitive level.</p></article>
-              <article className="acard reveal d3"><div className="amed" aria-hidden="true">🌏</div><div className="atitle">Malaysian World Choral Competition</div><div className="abadge">1st Place · International</div><p className="abody">Represented Sri Lanka on the world stage — and took first place.</p></article>
-              <article className="acard reveal d4"><div className="amed" aria-hidden="true">🎭</div><div className="atitle">British-Lanka Festival of Performing Arts</div><div className="abadge">First Place</div><p className="abody">Top honours at one of Sri Lanka&apos;s most prestigious performing-arts competitions.</p></article>
-              <article className="acard reveal d5"><div className="amed" aria-hidden="true">🌐</div><div className="atitle">WWF · United Nations Resolution</div><div className="abadge">First Place</div><p className="abody">First place at a WWF-affiliated Model UN in international policy debate.</p></article>
-              <article className="acard reveal d6"><div className="amed" aria-hidden="true">♟️</div><div className="atitle">National Chess Championship</div><div className="abadge">1st Place · 2016</div><p className="abody">National champion — strategy that reaches well beyond the stage.</p></article>
-            </div>
-          </div>
-        </section>
-
-        {/* ── CREDENTIALS ── */}
-        <section id="certs" aria-labelledby="certs-heading">
-          <div className="sw" data-tilt>
-            <div className="eyebrow reveal">Education &amp; Qualifications</div>
-            <h2 className="sh reveal" id="certs-heading">Credentials <em>Earned</em></h2>
-            <div className="cgrid">
-              <div className="ccard reveal d1"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Sangeetha Visharadha</div><div className="cfrom">Bathkandhe Sangit Vidhyapith · 6 Years · First Division</div></div></div>
-              <div className="ccard reveal d2"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><div className="cname">Aviation Course</div><div className="cfrom">Sri Lanka Air Force · Ratmalana</div></div></div>
-              <div className="ccard reveal d3"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div><div className="cname">Professional Compering</div><div className="cfrom">Institute of Media &amp; Performing Arts</div></div></div>
-              <div className="ccard reveal d4"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div><div className="cname">Diploma in Information Technology</div><div className="cfrom">ESOFT Metro Campus · 2022</div></div></div>
-              <div className="ccard reveal d5"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 19V6l12-3v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="15" r="3"/></svg></div><div><div className="cname">Diploma in Western Music</div><div className="cfrom">Lyceum International School · 2023</div></div></div>
-              <div className="ccard reveal d6"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><div className="cname">Cambridge GCE O/Level</div><div className="cfrom">A* Sinhala · A Physics · A Maths · A Biology</div></div></div>
-              <div className="ccard reveal d1"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Leadership Award</div><div className="cfrom">Institute for Professional Development · 2022</div></div></div>
-              <div className="ccard reveal d2"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Graduated — Lyceum International School</div><div className="cfrom">Nugegoda · 14 Years · Outstanding Student</div></div></div>
-              <div className="ccard reveal d3"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Ranwala Balakaya — Outstanding Award</div><div className="cfrom">Ranwala Foundation · 2015, 2016</div></div></div>
+            <div className="eyebrow reveal">Honours, Awards &amp; Qualifications</div>
+            <h2 className="sh reveal" id="achieve-heading">Achievements &amp; <em>Credentials</em></h2>
+            
+            <div className="merged-grid reveal d1">
+              <div className="merged-col">
+                <h3 className="merged-subheading">Honours &amp; Awards</h3>
+                <div className="agrid">
+                  <article className="acard reveal d1"><div className="amed" aria-hidden="true">🏆</div><div className="atitle">All-Island Dancing Champion</div><div className="abadge">Island 1st · 2018, 2019, 2023</div><p className="abody">Three-time national champion in competitive dance at the All-Island level.</p></article>
+                  <article className="acard reveal d2"><div className="amed" aria-hidden="true">🎵</div><div className="atitle">All-Island Music Champion</div><div className="abadge">Island 1st · 2019, 2023, 2024</div><p className="abody">Three-time national music champion at the highest competitive level.</p></article>
+                  <article className="acard reveal d3"><div className="amed" aria-hidden="true">🌏</div><div className="atitle">Malaysian World Choral Competition</div><div className="abadge">1st Place · International</div><p className="abody">Represented Sri Lanka on the world stage — and took first place.</p></article>
+                  <article className="acard reveal d4"><div className="amed" aria-hidden="true">🎭</div><div className="atitle">British-Lanka Festival of Performing Arts</div><div className="abadge">First Place</div><p className="abody">Top honours at one of Sri Lanka&apos;s most prestigious performing-arts competitions.</p></article>
+                  <article className="acard reveal d5"><div className="amed" aria-hidden="true">🌐</div><div className="atitle">WWF · United Nations Resolution</div><div className="abadge">First Place</div><p className="abody">First place at a WWF-affiliated Model UN in international policy debate.</p></article>
+                  <article className="acard reveal d6"><div className="amed" aria-hidden="true">♟️</div><div className="atitle">National Chess Championship</div><div className="abadge">1st Place · 2016</div><p className="abody">National champion — strategy that reaches well beyond the stage.</p></article>
+                </div>
+              </div>
+              
+              <div className="merged-col" id="certs">
+                <h3 className="merged-subheading">Education &amp; Qualifications</h3>
+                <div className="cgrid">
+                  <div className="ccard reveal d1"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Sangeetha Visharadha</div><div className="cfrom">Bathkandhe Sangit Vidhyapith · 6 Years · First Division</div></div></div>
+                  <div className="ccard reveal d2"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><div className="cname">Aviation Course</div><div className="cfrom">Sri Lanka Air Force · Ratmalana</div></div></div>
+                  <div className="ccard reveal d3"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div><div className="cname">Professional Compering</div><div className="cfrom">Institute of Media &amp; Performing Arts</div></div></div>
+                  <div className="ccard reveal d4"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div><div className="cname">Diploma in Information Technology</div><div className="cfrom">ESOFT Metro Campus · 2022</div></div></div>
+                  <div className="ccard reveal d5"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 19V6l12-3v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="15" r="3"/></svg></div><div><div className="cname">Diploma in Western Music</div><div className="cfrom">Lyceum International School · 2023</div></div></div>
+                  <div className="ccard reveal d6"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><div className="cname">Cambridge GCE O/Level</div><div className="cfrom">A* Sinhala · A Physics · A Maths · A Biology</div></div></div>
+                  <div className="ccard reveal d1"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Leadership Award</div><div className="cfrom">Institute for Professional Development · 2022</div></div></div>
+                  <div className="ccard reveal d2"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Graduated — Lyceum International School</div><div className="cfrom">Nugegoda · 14 Years · Outstanding Student</div></div></div>
+                  <div className="ccard reveal d3"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Ranwala Balakaya — Outstanding Award</div><div className="cfrom">Ranwala Foundation · 2015, 2016</div></div></div>
+                </div>
+              </div>
             </div>
           </div>
         </section>

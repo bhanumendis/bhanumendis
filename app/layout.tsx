@@ -59,14 +59,14 @@ export const metadata: Metadata = {
     template: "%s | Bhanu Mendis",
   },
   description:
-    "Bhanu Mendis — Educator and tutor of Science, Mathematics & Computing (Pearson Edexcel, Grades 5–8) at The Science Brainery, Boralesgamuwa. Also a public speaker, audio engineer, Sangeetha Visharadha and three-time All-Island champion from Colombo, Sri Lanka.",
+    "Bhanu Mendis — Educator and tutor of Science, Mathematics & Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery, Boralesgamuwa. Also a public speaker, audio engineer, Sangeetha Visharadha and three-time All-Island champion from Colombo, Sri Lanka.",
   keywords: [
     "Bhanu Mendis", "Bhanu Mendis tutor", "Science Maths Computing tutor Sri Lanka",
     "Pearson Edexcel tutor Colombo", "The Science Brainery", "Boralesgamuwa tutor",
     "Colombo", "Sri Lanka", "Educator", "Public Speaker", "Audio Engineer",
     "Sangeetha Visharadha", "Lyceum International School", "Senior Head Prefect",
     "Performing Artist", "Swara Concert", "Padura Concert", "All-Island Champion",
-    "Grade 5 6 7 8 tuition", "bhanumendis.com", "භානු මෙන්ඩිස්",
+    "Grade 6 7 8 tuition", "bhanumendis.com", "භානු මෙන්ඩිස්",
   ],
   authors: [{ name: "Bhanu Mendis", url: "https://bhanumendis.com" }],
   creator: "Bhanu Mendis",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer",
     description:
-      "Tutoring Science, Maths & Computing (Pearson Edexcel, Grades 5–8) at The Science Brainery. Public speaker, audio engineer, Sangeetha Visharadha and three-time All-Island champion from Colombo, Sri Lanka.",
+      "Tutoring Science, Maths & Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery. Public speaker, audio engineer, Sangeetha Visharadha and three-time All-Island champion from Colombo, Sri Lanka.",
     url: "https://bhanumendis.com",
     siteName: "Bhanu Mendis",
     locale: "en_US",
@@ -137,7 +137,7 @@ const graph = {
       image: "https://bhanumendis.com/favicon.png",
       jobTitle: "Educator, Public Speaker, Audio Engineer & Founder",
       description:
-        "Bhanu Mendis — Educator and private tutor of Science, Mathematics and Computing (Pearson Edexcel, Grades 5–8) at The Science Brainery in Boralesgamuwa. Also a public speaker, audio engineer, performing artist and Sangeetha Visharadha from Colombo, Sri Lanka; founder of the Swara and Padura concerts.",
+        "Bhanu Mendis — Educator and private tutor of Science, Mathematics and Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery in Boralesgamuwa. Also a public speaker, audio engineer, performing artist and Sangeetha Visharadha from Colombo, Sri Lanka; founder of the Swara and Padura concerts.",
       nationality: { "@type": "Country", name: "Sri Lanka" },
       telephone: "+94-77-712-4152",
       email: "bhanumendis@gmail.com",
@@ -160,7 +160,7 @@ const graph = {
           "@type": "Occupation",
           name: "Educator & Private Tutor",
           occupationLocation: { "@type": "City", name: "Colombo, Sri Lanka" },
-          skills: "Science, Mathematics, Computing, Pearson Edexcel curriculum, Grades 5–8",
+          skills: "Science, Mathematics, Computing, Pearson Edexcel curriculum, Grades 6–8",
         },
         {
           "@type": "Occupation",
@@ -215,7 +215,7 @@ const graph = {
       name: "Private Tutoring — Science, Mathematics & Computing",
       serviceType: "Private tuition (Group & Individual)",
       description:
-        "Pearson Edexcel Science, Mathematics and Computing tuition for Grades 5, 6, 7 and 8, delivered as group and individual classes at The Science Brainery, Boralesgamuwa.",
+        "Pearson Edexcel Science, Mathematics and Computing tuition for Grades 6, 7 and 8, delivered as group and individual classes at The Science Brainery, Boralesgamuwa.",
       educationalProgramMode: ["onsite", "In-person group classes", "Individual classes"],
       occupationalCategory: "Tutoring",
       provider: { "@id": "https://bhanumendis.com/#person" },
@@ -224,7 +224,7 @@ const graph = {
       teaches: ["Science", "Mathematics", "Computing / ICT"],
       offers: {
         "@type": "Offer",
-        category: "Pearson Edexcel · Grades 5–8",
+        category: "Pearson Edexcel · Grades 6–8",
         availability: "https://schema.org/InStock",
         areaServed: "Boralesgamuwa, Sri Lanka",
       },

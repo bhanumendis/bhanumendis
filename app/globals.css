@@ -486,3 +486,166 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
   .reveal,.reveal.in{opacity:1!important;transform:none!important;animation:none!important;}
   .tl-pulse,.scroll-cue{display:none;}
 }
+
+/* ── Photo Slideshow Section ── */
+#photos {
+  padding-bottom: 0;
+}
+.slideshow-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.slideshow-viewport {
+  position: relative;
+  aspect-ratio: 16/10;
+  border-radius: var(--r2xl);
+  border: 1px solid var(--card-b);
+  background: var(--card-bg);
+  overflow: hidden;
+  box-shadow: var(--glass-edge);
+}
+.slideshow-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.slideshow-img {
+  object-fit: cover;
+  transition: opacity 0.5s ease-in-out;
+}
+.slideshow-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(4, 18, 28, 0.6);
+  border: 1px solid var(--card-b);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+.slideshow-nav:hover {
+  background: var(--sky);
+  color: #04121c;
+  border-color: var(--sky);
+}
+.slideshow-nav.prev {
+  left: 20px;
+}
+.slideshow-nav.next {
+  right: 20px;
+}
+.slideshow-nav svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.slideshow-indicator {
+  align-self: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--sky);
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-b);
+  padding: 4px 12px;
+  border-radius: 100px;
+  letter-spacing: 0.05em;
+}
+.slideshow-thumbs {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pill-b) transparent;
+}
+.slideshow-thumb {
+  flex: 0 0 80px;
+  aspect-ratio: 16/10;
+  border-radius: var(--r);
+  border: 2px solid transparent;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  transition: all 0.2s ease;
+}
+.slideshow-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.slideshow-thumb.active {
+  border-color: var(--sky);
+  transform: scale(1.05);
+}
+.slideshow-thumb:hover:not(.active) {
+  border-color: var(--card-hb);
+}
+
+/* ── Merged Achievements & Credentials Section ── */
+.merged-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 40px;
+  align-items: start;
+}
+.merged-subheading {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 24px;
+  letter-spacing: -0.01em;
+}
+.merged-col .agrid {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.merged-col .cgrid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 1400px) {
+  .merged-col .cgrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .merged-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .merged-col .agrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .merged-col .cgrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .merged-col .agrid {
+    grid-template-columns: 1fr;
+  }
+  .merged-col .cgrid {
+    grid-template-columns: 1fr;
+  }
+}
+

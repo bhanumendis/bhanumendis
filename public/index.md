@@ -11,7 +11,7 @@ Private tuition at **The Science Brainery**, Boralesgamuwa.
 
 - **Subjects:** Science (Physics, Chemistry, Biology), Mathematics, Computing / ICT
 - **Syllabus:** Pearson Edexcel
-- **Grades:** 5, 6, 7 and 8
+- **Grades:** 6, 7 and 8
 - **Formats:** Group and individual (one-to-one) classes
 - **Register:** https://forms.gle/N52vwAytUsJCt2df6
 - **Contact to register:** +94 77 712 4152 (0777 124 152)
@@ -23,7 +23,7 @@ Bhanu is a multi-disciplinary leader who works where creativity meets careful ex
 
 ## Experience
 
-- **Educator** — The Science Brainery, Boralesgamuwa (Sep 2025 – Present). Teaching Pearson Edexcel Science, Mathematics and Computing, Grades 5–8.
+- **Educator** — The Science Brainery, Boralesgamuwa (Sep 2025 – Present). Teaching Pearson Edexcel Science, Mathematics and Computing, Grades 6–8.
 - **Senior Head Prefect** — Lyceum International School, Nugegoda (Sep 2023 – Sep 2025). Directed Elysium '25 (26,000+ audience); coordinated Maathra 14 (750+ performers); National Child Protection Ambassador.
 - **Audio Engineer** — PEARLBAY® Holdings (Oct 2025 – Mar 2026). DAW architecture, MIDI, mixing & mastering.
 - **Founder — Swara Concert** (Dec 2023 – Sep 2025). Sri Lanka's largest island-wide school Eastern music concert; 700+ performers.
