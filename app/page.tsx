@@ -63,7 +63,7 @@ function PhotoSlideshow() {
     <section id="photos" aria-labelledby="photos-heading">
       <div className="sw" data-tilt>
         <div className="eyebrow reveal">Captured Moments</div>
-        <h2 className="sh reveal" id="photos-heading">Photo <em>Slideshow</em></h2>
+        <h2 className="sh reveal" id="photos-heading">Memories<em>...</em></h2>
         
         <div className="slideshow-container reveal d1">
           <div className="slideshow-viewport">
