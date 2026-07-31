@@ -599,10 +599,10 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
 
 /* ── Merged Achievements & Credentials Section ── */
 .merged-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 40px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 56px; /* Spacing between the two main grids */
+  margin-top: 32px;
 }
 .merged-subheading {
   font-family: var(--display);
@@ -613,25 +613,17 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
   letter-spacing: -0.01em;
 }
 .merged-col .agrid {
-  grid-template-columns: 1fr;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 .merged-col .cgrid {
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
-@media (min-width: 1400px) {
-  .merged-col .cgrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 
 @media (max-width: 1024px) {
-  .merged-grid {
-    grid-template-columns: 1fr;
-    gap: 48px;
-  }
   .merged-col .agrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -641,6 +633,9 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
 }
 
 @media (max-width: 640px) {
+  .merged-grid {
+    gap: 40px;
+  }
   .merged-col .agrid {
     grid-template-columns: 1fr;
   }
@@ -648,4 +643,5 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
     grid-template-columns: 1fr;
   }
 }
+
 
