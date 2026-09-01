@@ -61,4 +61,4 @@ Bhanu is a multi-disciplinary leader who works where creativity meets careful ex
 
 ---
 
-*This Markdown mirror is served via content negotiation to clients requesting `text/markdown`. The full site is at https://bhanumendis.com and all content is open to AI crawlers (see /llms.txt).*
+*This Markdown mirror is served via content negotiation to clients requesting `text/markdown`. The full site is at https://bhanumendis.com. Retrieval and answer-engine crawlers are welcome and encouraged to cite this site; bulk model-training scrapers are disallowed. See /llms.txt and /robots.txt for the exact policy.*

@@ -25,6 +25,26 @@
   --shadow:0 24px 60px -30px rgba(15,23,42,0.42);
   --hero-glow:rgba(31,116,184,0.14);
 
+  /* ── Second accent: amber ──────────────────────────────────────
+     Bhanu's work has two natures and the palette should say so.
+     Cool blue = the analytical half (Science, Maths, Computing, audio
+     engineering, the LMS). Warm amber = the expressive half (dance,
+     music, Visharadha, Swara/Padura, honours).
+     This is semantic, not decorative — amber appears ONLY on
+     performance/achievement surfaces, so the page is legible at a glance. */
+  /* #9A6416 measures 4.77:1 on the #achieve surface — the .abadge label is
+     10px, so it needs the 4.5:1 small-text threshold, not 3:1. An earlier
+     warmer #A9701C looked better and measured 4.00:1, so it was dropped. */
+  --amber:#9A6416;--amber2:#7E5210;--amber3:#C89A4E;
+  --amber-bg:rgba(154,100,22,.075);--amber-b:rgba(154,100,22,.26);
+  --amber-hb:rgba(154,100,22,.44);--amber-hbg:rgba(154,100,22,.06);
+  --amberg:linear-gradient(120deg,#C08428,#8E5C12);
+  /* Depth: the grounds stay essentially pure, but gain a whisper of grain
+     and one soft atmospheric wash behind the hero so nothing floats on a
+     dead flat field. */
+  --grain:.030;
+  --atmos:radial-gradient(1150px 640px at 50% -10%,rgba(31,116,184,.11),transparent 68%);
+  --surface-alt:#F8FAFC;
   --sans:var(--font-sans),system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   --display:var(--font-display),Georgia,Cambria,serif;
   --mono:var(--font-mono),ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -50,6 +70,13 @@
   --glass:saturate(150%) blur(22px);
   --glass-edge:inset 0 1px 0 rgba(255,255,255,0.08),inset 0 0 0 1px rgba(255,255,255,0.02);
   --shadow:0 26px 64px -30px rgba(0,0,0,0.75);
+  --amber:#E8B563;--amber2:#F3D3A2;--amber3:#C9954A;
+  --amber-bg:rgba(232,181,99,.11);--amber-b:rgba(232,181,99,.30);
+  --amber-hb:rgba(232,181,99,.46);--amber-hbg:rgba(232,181,99,.09);
+  --amberg:linear-gradient(120deg,#E8B563,#F3D3A2);
+  --grain:.042;
+  --atmos:radial-gradient(1150px 640px at 50% -10%,rgba(79,157,255,.17),transparent 68%);
+  --surface-alt:#07090E;
   --hero-glow:rgba(79,157,255,0.20);
   color-scheme:dark;
 }
@@ -645,3 +672,104 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
 }
 
 
+
+/* ── LinkedIn facade (click-to-load; see app/LinkedInPosts.tsx) ── */
+.li-facade{
+  width:100%;height:540px;border-radius:var(--rl);
+  border:1px solid var(--card-b);background:var(--card-bg);
+  backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);
+  box-shadow:var(--glass-edge);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  cursor:pointer;padding:32px;text-align:center;font-family:var(--sans);
+  transition:border-color .35s var(--ease-io,cubic-bezier(.4,0,.2,1)),
+             background-color .35s ease,transform .5s cubic-bezier(.16,1,.3,1);
+}
+.li-facade:hover{border-color:var(--card-hb);background:var(--card-hbg);transform:translateY(-4px);}
+.li-facade:focus-visible{outline:2px solid var(--sky);outline-offset:3px;}
+.li-mark{
+  width:56px;height:56px;border-radius:var(--rl);display:flex;align-items:center;justify-content:center;
+  color:var(--sky);background:var(--pill-bg);border:1px solid var(--pill-b);margin-bottom:4px;
+}
+.li-facade-title{font-family:var(--display);font-size:19px;font-weight:800;color:var(--white);letter-spacing:-.01em;}
+.li-facade-hint{font-size:13.5px;color:var(--soft);}
+.li-facade-note{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+
+/* ══════════════════════════════════════════════════════════════════
+   VISUAL SYSTEM v2
+   Appended deliberately so it wins the cascade over the base rules
+   above without editing them in place. Everything here is expressed
+   through the :root tokens — no hardcoded theme colours.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Ground texture ───────────────────────────────────────────────
+   A fixed film grain over the page background only. `main` already
+   carries z-index:1, so this sits behind all content and never blends
+   over text — it gives the flat white/black ground a surface without
+   touching legibility. */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:var(--grain);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  transition:opacity .5s ease;
+}
+
+/* ── Hero atmosphere ──────────────────────────────────────────────
+   One soft wash bleeding down from the top of the page. Sits under the
+   hero photo (z-index 0) so it reads as depth, not as an overlay. */
+#hero::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:var(--atmos);transition:background .5s ease;
+}
+
+/* ── Section rhythm ───────────────────────────────────────────────
+   The two "product" sections lift onto a faintly distinct surface so
+   the page reads as chapters rather than one continuous scroll. Kept
+   deliberately near-imperceptible — the cue is felt, not seen. */
+#tutoring,#achieve{background:var(--surface-alt);transition:background .5s ease;}
+
+/* ── Subject cards earn more presence ─────────────────────────────
+   Science / Maths / Computing are the commercial heart of the site.
+   A hairline gradient rule on the top edge separates them from the
+   quieter fact chips below without adding another border. */
+.subj-card{position:relative;overflow:hidden;}
+.subj-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--skyg);transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .55s cubic-bezier(.16,1,.3,1);
+}
+.subj-card:hover::before{transform:scaleX(1);}
+
+/* ── The warm half: honours & performance ─────────────────────────
+   Amber is applied ONLY here. An award, a championship, a Visharadha
+   qualification and a concert are a different KIND of fact from a
+   syllabus, and the palette should not pretend otherwise. */
+#achieve .sh em{color:var(--amber);}
+:root.dark #achieve .sh em{text-shadow:0 0 30px rgba(232,181,99,.22);}
+#achieve .eyebrow{color:var(--amber);}
+#achieve .eyebrow::before{background:var(--amber);}
+
+.acard{position:relative;overflow:hidden;}
+.acard::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--amberg);transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .55s cubic-bezier(.16,1,.3,1);
+}
+.acard:hover::before{transform:scaleX(1);}
+.acard:hover{border-color:var(--amber-hb);background:var(--amber-hbg);}
+.acard .amed{background:var(--amber-bg);border-color:var(--amber-b);}
+.acard .abadge{color:var(--amber);background:var(--amber-bg);border-color:var(--amber-b);}
+
+/* ── Typography polish ────────────────────────────────────────────
+   Large display type wraps badly by default; balance stops the lonely
+   trailing word. Optical sizing tightens the very large sizes. */
+.h1,.sh,.atitle,.ctitle{text-wrap:balance;}
+.h1{letter-spacing:-.035em;}
+.sh{letter-spacing:-.028em;}
+.atext{max-width:64ch;}
+
+/* Grain and atmosphere are texture, not information — drop them when
+   the viewer has asked for less, alongside the motion rules. */
+@media (prefers-reduced-motion: reduce){
+  body::before{transition:none;}
+  #hero::before{transition:none;}
+}

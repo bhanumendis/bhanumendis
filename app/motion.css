@@ -1,0 +1,213 @@
+/* ══════════════════════════════════════════════════════════════════
+   MOTION SYSTEM — "Signal"
+   ──────────────────────────────────────────────────────────────────
+   Design thesis: Bhanu is an audio engineer as much as an educator.
+   Scroll is treated as a PLAYHEAD travelling a timeline, not as a
+   trigger that fires once. Elements are scrubbed by scroll position,
+   the way a DAW scrubs a waveform.
+
+   Engineering thesis: every animation below is scroll-LINKED via the
+   native `animation-timeline` property. That runs on the compositor,
+   off the main thread, and costs 0 KB of JavaScript. Where the
+   browser lacks support we fall back to the existing
+   IntersectionObserver one-shot reveals (see page.tsx) — which the JS
+   now SKIPS entirely when native support is present.
+
+   Motion vocabulary borrowed from the references:
+     · expo-out  cubic-bezier(.16,1,.3,1)  — the house curve (already
+       in globals.css; motion.dev, anime.js and the motionsites spec
+       all converge on this shape)
+     · stagger   ~60-80ms equivalent, expressed as scroll-range offsets
+       rather than time delays (time delays are meaningless on a
+       scroll timeline)
+     · springs   approximated with overshoot curves; true spring
+       physics needs JS and isn't worth the bytes here
+
+   ORDERING: this file is imported AFTER globals.css so it can layer
+   scroll-driven behaviour over the existing token system.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Motion tokens ─────────────────────────────────────────────── */
+:root{
+  --ease-expo:cubic-bezier(.16,1,.3,1);      /* house curve — decisive, settles softly */
+  --ease-spring:cubic-bezier(.34,1.56,.64,1); /* overshoot, for playful accents only */
+  --ease-io:cubic-bezier(.4,0,.2,1);          /* symmetric, for state changes */
+
+  --rise:34px;        /* how far entrance elements travel */
+  --rise-lg:60px;     /* for large display type */
+  --drift:56px;       /* parallax travel distance */
+  --stagger:7%;       /* scroll-range offset between staggered siblings */
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   NATIVE SCROLL-DRIVEN LAYER
+   Everything here is gated behind BOTH a support query and a
+   reduced-motion query. If either fails, none of it applies and the
+   site falls back to the JS reveal path.
+   ══════════════════════════════════════════════════════════════════ */
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion: no-preference) {
+
+  /* When native scroll-driven motion is live, the JS observer stands
+     down and `.reveal` must NOT rely on the `.in` class any more. */
+  html[data-motion="native"] .reveal{
+    animation:sigRise linear both;
+    animation-timeline:view();
+    animation-range:entry 2% entry 46%;
+  }
+
+  /* Staggered groups: siblings share one animation but enter across
+     offset slices of the scroll range. This is the scroll-timeline
+     equivalent of anime.js `stagger(70)`. */
+  html[data-motion="native"] .stagger > *{
+    animation:sigRise linear both;
+    animation-timeline:view();
+    animation-range:entry 0% entry 42%;
+  }
+  html[data-motion="native"] .stagger > *:nth-child(2){animation-range:entry calc(var(--stagger) * 1) entry calc(42% + var(--stagger) * 1);}
+  html[data-motion="native"] .stagger > *:nth-child(3){animation-range:entry calc(var(--stagger) * 2) entry calc(42% + var(--stagger) * 2);}
+  html[data-motion="native"] .stagger > *:nth-child(4){animation-range:entry calc(var(--stagger) * 3) entry calc(42% + var(--stagger) * 3);}
+  html[data-motion="native"] .stagger > *:nth-child(5){animation-range:entry calc(var(--stagger) * 4) entry calc(42% + var(--stagger) * 4);}
+  html[data-motion="native"] .stagger > *:nth-child(6){animation-range:entry calc(var(--stagger) * 5) entry calc(42% + var(--stagger) * 5);}
+  html[data-motion="native"] .stagger > *:nth-child(n+7){animation-range:entry calc(var(--stagger) * 6) entry calc(42% + var(--stagger) * 6);}
+
+  /* Display headings get a longer throw and a slight unblur — the
+     "focus pull" of a camera finding its subject. */
+  html[data-motion="native"] .m-display{
+    animation:sigDisplay linear both;
+    animation-timeline:view();
+    animation-range:entry 0% entry 55%;
+  }
+
+  /* Continuous parallax. Runs across the element's ENTIRE pass through
+     the viewport (`cover`), so it never settles — this is what makes
+     scrolling feel three-dimensional rather than slideshow-like. */
+  html[data-motion="native"] .m-drift{
+    animation:sigDrift linear both;
+    animation-timeline:view();
+    animation-range:cover 0% cover 100%;
+  }
+  html[data-motion="native"] .m-drift-slow{
+    animation:sigDriftSlow linear both;
+    animation-timeline:view();
+    animation-range:cover 0% cover 100%;
+  }
+
+  /* Media that scales down as it settles — weight and inertia. */
+  html[data-motion="native"] .m-settle{
+    animation:sigSettle linear both;
+    animation-timeline:view();
+    animation-range:entry 0% cover 42%;
+  }
+
+  /* Section rules that draw themselves as they enter. */
+  html[data-motion="native"] .m-draw{
+    animation:sigDraw linear both;
+    animation-timeline:view();
+    animation-range:entry 10% entry 70%;
+  }
+
+  /* The playhead. #prog already exists in page.tsx with the correct
+     role="progressbar" ARIA — we keep that element and simply stop driving
+     it from JavaScript, swapping the width write for a compositor-driven
+     scaleX off the document scroll timeline. */
+  html[data-motion="native"] #prog{
+    width:100%;
+    transform:scaleX(0);
+    transform-origin:0 50%;
+    animation:sigProgress linear both;
+    animation-timeline:scroll(root block);
+  }
+}
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   KEYFRAMES
+   Defined outside the @supports block so the JS fallback path
+   (`.reveal.in`) can reuse sigRise if we ever want it to.
+   ══════════════════════════════════════════════════════════════════ */
+@keyframes sigRise{
+  from{opacity:0;transform:translate3d(0,var(--rise),0);}
+  to{opacity:1;transform:translate3d(0,0,0);}
+}
+@keyframes sigDisplay{
+  from{opacity:0;transform:translate3d(0,var(--rise-lg),0);filter:blur(6px);}
+  60%{filter:blur(0);}
+  to{opacity:1;transform:translate3d(0,0,0);filter:blur(0);}
+}
+@keyframes sigDrift{
+  from{transform:translate3d(0,var(--drift),0);}
+  to{transform:translate3d(0,calc(var(--drift) * -1),0);}
+}
+@keyframes sigDriftSlow{
+  from{transform:translate3d(0,calc(var(--drift) * .45),0);}
+  to{transform:translate3d(0,calc(var(--drift) * -.45),0);}
+}
+@keyframes sigSettle{
+  from{opacity:0;transform:scale(1.08) translate3d(0,28px,0);}
+  to{opacity:1;transform:scale(1) translate3d(0,0,0);}
+}
+@keyframes sigDraw{
+  from{transform:scaleX(0);opacity:0;}
+  to{transform:scaleX(1);opacity:1;}
+}
+@keyframes sigProgress{
+  from{transform:scaleX(0);}
+  to{transform:scaleX(1);}
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   MICRO-INTERACTIONS
+   Borrowed in spirit from kokonutui: shimmer, glass, gradient edges.
+   All are cheap (transform/opacity only) and none run continuously
+   unless hovered.
+   ══════════════════════════════════════════════════════════════════ */
+.m-shimmer{
+  position:relative;overflow:hidden;
+  background:linear-gradient(90deg,var(--white) 0%,var(--white) 40%,var(--sky3) 50%,var(--white) 60%,var(--white) 100%);
+  background-size:250% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;
+}
+@media (prefers-reduced-motion: no-preference){
+  .m-shimmer:hover{animation:sigShimmer 1.4s var(--ease-io);}
+}
+@keyframes sigShimmer{from{background-position:150% 0;}to{background-position:-50% 0;}}
+
+/* Lift — the standard card hover. Transform + shadow only, never
+   width/height/top (those force layout). */
+.m-lift{transition:transform .5s var(--ease-expo),box-shadow .5s var(--ease-expo),border-color .35s var(--ease-io);will-change:transform;}
+@media (hover:hover) and (prefers-reduced-motion: no-preference){
+  .m-lift:hover{transform:translate3d(0,-6px,0);box-shadow:var(--shadow);}
+}
+
+/* Underline that wipes in from the leading edge. */
+.m-wipe{position:relative;}
+.m-wipe::after{
+  content:"";position:absolute;left:0;bottom:-3px;width:100%;height:1.5px;
+  background:var(--sky);transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .45s var(--ease-expo);
+}
+@media (hover:hover){ .m-wipe:hover::after{transform:scaleX(1);} }
+
+/* ══════════════════════════════════════════════════════════════════
+   REDUCED MOTION — the hard stop.
+   Anyone who has asked their OS for less motion gets a completely
+   static page. No drift, no scrub, no shimmer. Opacity-only reveals
+   are still allowed because they convey no motion.
+   ══════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce){
+  html[data-motion="native"] .reveal,
+  html[data-motion="native"] .stagger > *,
+  html[data-motion="native"] .m-display,
+  html[data-motion="native"] .m-drift,
+  html[data-motion="native"] .m-drift-slow,
+  html[data-motion="native"] .m-settle,
+  html[data-motion="native"] .m-draw{
+    animation:none !important;opacity:1 !important;transform:none !important;filter:none !important;
+  }
+  html[data-motion="native"] #prog{animation:none !important;transform:none !important;width:0 !important;}
+  .m-lift,.m-wipe::after{transition:none !important;}
+  .m-shimmer{animation:none !important;background:none;color:var(--white);-webkit-text-fill-color:currentColor;}
+  html{scroll-behavior:auto !important;}
+}

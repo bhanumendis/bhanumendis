@@ -42,3 +42,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# OneDrive conflict-duplicate files quarantined here, 2026-08-21
+_conflict_backups/
+
+# Local working sources for image generation (not served)
+design-src/
+bhanu_lh.json

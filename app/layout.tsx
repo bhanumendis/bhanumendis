@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import "./motion.css";
 import Footer from "./Footer";
 import EasterEgg from "./EasterEgg";
 import SwaraEgg from "./SwaraEgg";
@@ -72,7 +73,7 @@ export const metadata: Metadata = {
   creator: "Bhanu Mendis",
   publisher: "Bhanu Mendis",
   alternates: { canonical: "https://bhanumendis.com" },
-  icons: { icon: "/favicon.png", apple: "/favicon.png" },
+  icons: { icon: "/favicon.png", apple: "/apple-touch-icon.png", shortcut: "/favicon.ico" },
   openGraph: {
     title: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer",
     description:
@@ -81,14 +82,19 @@ export const metadata: Metadata = {
     siteName: "Bhanu Mendis",
     locale: "en_US",
     type: "profile",
-    images: [{ url: "/favicon.png", width: 180, height: 180, alt: "Bhanu Mendis" }],
+    images: [{
+      url: "/og-image.jpg",
+      width: 1200,
+      height: 630,
+      alt: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer, Colombo, Sri Lanka",
+    }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer",
     description:
       "Educator · Tutor (Science · Maths · Computing) · Public Speaker · Audio Engineer · Visharadha — Colombo, Sri Lanka.",
-    images: ["/favicon.png"],
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
@@ -134,7 +140,7 @@ const graph = {
       name: "Bhanu Mendis",
       alternateName: ["භානු මෙන්ඩිස්", "Bhanu"],
       url: "https://bhanumendis.com",
-      image: "https://bhanumendis.com/favicon.png",
+      image: "https://bhanumendis.com/portrait.jpg",
       jobTitle: "Educator, Public Speaker, Audio Engineer & Founder",
       description:
         "Bhanu Mendis — Educator and private tutor of Science, Mathematics and Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery in Boralesgamuwa. Also a public speaker, audio engineer, performing artist and Sangeetha Visharadha from Colombo, Sri Lanka; founder of the Swara and Padura concerts.",
@@ -252,7 +258,14 @@ const graph = {
 
 // Runs before paint: applies the saved theme so there is no flash.
 // Default is the light theme; only an explicit prior choice of "dark" opts in.
-const themeInit = `(function(){try{var t=localStorage.getItem('bm-theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();`;
+// Pre-paint boot script. Two jobs, both must land BEFORE first paint:
+//  1. adopt the persisted theme (avoids a light-to-dark flash)
+//  2. stamp data-motion="native" when the browser supports scroll-driven
+//     animations. motion.css keys every scroll-linked rule off that flag,
+//     and page.tsx skips its IntersectionObserver entirely when it is set —
+//     so modern browsers run the whole motion system on the compositor
+//     with zero main-thread work, and older ones keep the JS fallback.
+const bootInit = `(function(){try{var t=localStorage.getItem('bm-theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}try{if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()')){document.documentElement.setAttribute('data-motion','native');}}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -264,7 +277,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        <script dangerouslySetInnerHTML={{ __html: bootInit }} />
         <script
           type="application/ld+json"
           // Static, developer-controlled JSON-LD. `<` is escaped per Next.js guidance to prevent XSS.

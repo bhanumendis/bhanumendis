@@ -162,6 +162,9 @@ export default function SwaraEgg() {
         aria-modal="true"
         aria-label="Swara theme song"
         aria-hidden={!active}
+        // aria-hidden alone leaves descendants focusable; inert removes them
+        // from the tab order and the a11y tree while the dialog is closed.
+        inert={!active}
         onClick={stop}
       >
         <div className="swara-card" onClick={(e) => e.stopPropagation()}>

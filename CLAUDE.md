@@ -15,6 +15,69 @@ Personal portfolio for Bhanu Mendis. Next.js 16 (App Router) + React 19, TypeScr
 - `app/robots.ts`, `app/sitemap.ts` — generated robots.txt and sitemap.xml. `public/llms.txt` — AI-crawler profile.
 - `proxy.ts` (Next 16's renamed Middleware) — **content negotiation**: requests with `Accept: text/markdown` for `/` or `/timeline` get the clean Markdown mirrors in `public/index.md` / `public/timeline.md`; browsers get HTML. Responses carry `Vary: Accept`. Keep the mirrors in sync when portfolio facts change.
 
+## Motion system (`app/motion.css`) — "Signal"
+
+Scroll is treated as a **playhead** (the audio-engineering motif), not a one-shot trigger.
+
+- **Native scroll-linked.** Every reveal, stagger, parallax drift and the top progress rail runs off
+  the CSS `animation-timeline` property (`view()` for elements, `scroll(root)` for the rail). That
+  executes on the compositor — **0 KB of JS and no main-thread work.**
+- **The feature flag.** The pre-paint `bootInit` script in `layout.tsx` stamps `data-motion="native"`
+  on `<html>` when `CSS.supports('animation-timeline','view()')`. Every scroll-driven rule in
+  `motion.css` is keyed off that attribute **and** wrapped in `@supports` + `prefers-reduced-motion:
+  no-preference`.
+- **The fallback.** When the flag is absent, `page.tsx` runs its original IntersectionObserver and
+  `.reveal.in` behaves exactly as before. The observer is **skipped entirely** when the flag is
+  present — never run both, that was the point.
+- **If JS never runs at all**, `data-motion` is never set, no scroll animation applies, and
+  `.reveal{opacity:1}` from `globals.css` keeps everything visible. Content is never gated on motion.
+- **Utility classes:** `.m-display` (headings, rise + focus-pull unblur), `.stagger > *` (siblings
+  enter across offset scroll ranges — the scroll-timeline equivalent of a time-based stagger; time
+  delays are meaningless on a scroll timeline), `.m-drift` / `.m-drift-slow` (parallax),
+  `.m-settle`, `.m-draw`, `.m-lift`, `.m-wipe`, `.m-shimmer`.
+- **Reduced motion is a hard stop** — a dedicated block nulls every animation, hides the progress
+  rail and disables `scroll-behavior: smooth`.
+- House easing stays `cubic-bezier(.16,1,.3,1)`. **No animation library** — that rule still holds;
+  anime.js / Motion were consulted for motion vocabulary only, never added as dependencies.
+
+## LinkedIn embeds are behind a facade
+
+`app/LinkedInPosts.tsx` renders keyboard-accessible placeholder buttons that reserve the exact
+iframe height (540px, so no CLS). The three LinkedIn iframes — and all their third-party JS and
+cookies — load **only on click**. Do not revert to mounting them eagerly; `loading="lazy"` is not
+sufficient, it only defers until the viewport approaches.
+
+## Visual system v2 (appended block in `app/globals.css`)
+
+Appended at the end of the stylesheet **on purpose** so it wins the cascade without editing the
+base rules in place. Everything is expressed through `:root` tokens — no hardcoded theme colours.
+
+- **Two accents, used semantically.** Cool blue = the analytical half (Science, Maths, Computing,
+  audio engineering, the LMS). **Amber** = the expressive half (dance, music, Visharadha,
+  Swara/Padura, honours). Amber appears ONLY on `#achieve` — its eyebrow, its `.sh em`, and the
+  `.acard` medal chip / badge / top rule. `.ccard` (Education & Qualifications) deliberately stays
+  blue, so awards and qualifications read as different kinds of fact.
+- **Amber light value is contrast-bound, not taste-bound.** `--amber:#9A6416` measures **4.77:1**
+  on the `#achieve` surface. `.abadge` is 10px, so it needs the 4.5:1 small-text threshold, not
+  3:1. A warmer `#A9701C` looked better and measured 4.00:1 — it was rejected. **Re-measure before
+  changing this value.** Dark `#E8B563` is 11.2:1.
+- **Depth.** `body::before` is a fixed film-grain layer at `z-index:0` (behind `main`, which is
+  `z-index:1`) so it textures the ground and never blends over text. `#hero::before` carries one
+  soft `--atmos` radial wash. Measured cost: **0 long tasks and no wall-time difference** with the
+  layer on vs off, verified over a full scroll pass.
+- **Section rhythm.** `#tutoring` and `#achieve` sit on `--surface-alt` — deliberately
+  near-imperceptible. `#certs` is a `div` inside `#achieve`, not a sibling section, so there is no
+  banding seam.
+- **Card hierarchy.** `.subj-card` and `.acard` get a hairline gradient rule that wipes in on hover
+  (`scaleX` on a pseudo-element — no layout, no extra border).
+
+## One progress bar, not two
+
+`#prog` (in `page.tsx`, with `role="progressbar"`) is the **only** scroll indicator. When
+`data-motion="native"` is set, `motion.css` drives it via `scaleX` off a `scroll(root block)`
+timeline and `page.tsx` **skips the JS width write** — otherwise the two fight and re-introduce a
+per-frame layout cost. A second standalone rail was briefly added during the redesign and removed.
+
 ## Theme system
 
 - **Light is the default** (clean, professional — pure `#fff` background). **Dark is opt-in** (pure `#000` background + cyan accents). Backgrounds are intentionally pure/solid; card surfaces carry a faint tint + border so they stay legible against them.
@@ -54,14 +117,14 @@ Performance: fonts self-hosted (`font-src 'self'`, preloaded); images AVIF/WebP 
 
 ## Audit log
 
-**2026-07-30 � Security & performance audit (Claude/Cowork):**
-- Dependency vulnerabilities fixed and merged (PR #6, `fix/portfolio-dependency-vulnerabilities`) � confirmed live, `npm audit` clean.
-- README accuracy fix, Student Portal nav link, magnetic CTA, nav button sizing, mobile theme-toggle position, and the robots.txt policy all merged via PR #4 (`fix/readme-project-accuracy`) � confirmed live on `origin/main` and in production.
+**2026-07-30 — Security & performance audit (Claude/Cowork):**
+- Dependency vulnerabilities fixed and merged (PR #6, `fix/portfolio-dependency-vulnerabilities`) — confirmed live, `npm audit` clean.
+- README accuracy fix, Student Portal nav link, magnetic CTA, nav button sizing, mobile theme-toggle position, and the robots.txt policy all merged via PR #4 (`fix/readme-project-accuracy`) — confirmed live on `origin/main` and in production.
 - Structural performance check via curl (no live-browser Lighthouse available this session): Brotli compression confirmed active, static asset caching confirmed `Cache-Control: public, max-age=31536000, immutable` (gold standard), `next/image` responsive optimization confirmed, code-splitting confirmed via `_next/static/chunks/*.js`.
-- Local clone was several commits behind `origin/main` (both PRs above were merged via the GitHub web UI without a local pull) � fast-forwarded clean, no conflicts. The now-merged `fix/readme-project-accuracy` branch was deleted locally.
-- **Worth a 2-minute check next session**: this file documents `app/robots.ts` as the robots.txt mechanism, but PR #4 also added a *static* `public/robots.txt` around the same time. Confirm only one is actually in effect � a static file in `public/` can silently take precedence over a dynamic route at the same path.
-- SSL/timing/performance numbers produced *by a cloud sandbox* are not authoritative (proxied egress) � verify via a real browser / pagespeed.web.dev / ssllabs.com if precision matters.
+- Local clone was several commits behind `origin/main` (both PRs above were merged via the GitHub web UI without a local pull) — fast-forwarded clean, no conflicts. The now-merged `fix/readme-project-accuracy` branch was deleted locally.
+- **Worth a 2-minute check next session**: this file documents `app/robots.ts` as the robots.txt mechanism, but PR #4 also added a *static* `public/robots.txt` around the same time. Confirm only one is actually in effect — a static file in `public/` can silently take precedence over a dynamic route at the same path.
+- SSL/timing/performance numbers produced *by a cloud sandbox* are not authoritative (proxied egress) — verify via a real browser / pagespeed.web.dev / ssllabs.com if precision matters.
 
-**2026-07-30 (same-day correction):** The "npm audit clean" line above was accurate for PR #6 at merge time � but pushing the audit-log commit itself triggered a fresh GitHub Dependabot alert minutes later: 3 new high-severity advisories (2x brace-expansion DoS, 1x js-yaml quadratic-CPU), all disclosed *after* PR #6 merged, not missed by it. All three confirmed via GitHub's own dependency graph as Development-scoped -- zero risk to the deployed static site. `npm audit fix` (non-force) resolved 2 of 3, verified via a clean `eslint` + `next build` run before committing. The 3rd (brace-expansion GHSA-mh99-v99m-4gvg) is nested under minimatch -> ESLint's whole plugin chain and can only be closed by jumping ESLint 9->10 -- exactly the major bump this file already flags as needing a full QA pass first (see Security & performance above). Deliberately deferred, not missed; revisit alongside a dedicated ESLint 10 upgrade. Lesson: npm audit needs periodic rechecking, not a one-time box to check.
+**2026-07-30 (same-day correction):** The "npm audit clean" line above was accurate for PR #6 at merge time — but pushing the audit-log commit itself triggered a fresh GitHub Dependabot alert minutes later: 3 new high-severity advisories (2x brace-expansion DoS, 1x js-yaml quadratic-CPU), all disclosed *after* PR #6 merged, not missed by it. All three confirmed via GitHub's own dependency graph as Development-scoped -- zero risk to the deployed static site. `npm audit fix` (non-force) resolved 2 of 3, verified via a clean `eslint` + `next build` run before committing. The 3rd (brace-expansion GHSA-mh99-v99m-4gvg) is nested under minimatch -> ESLint's whole plugin chain and can only be closed by jumping ESLint 9->10 -- exactly the major bump this file already flags as needing a full QA pass first (see Security & performance above). Deliberately deferred, not missed; revisit alongside a dedicated ESLint 10 upgrade. Lesson: npm audit needs periodic rechecking, not a one-time box to check.
 
 **2026-07-30 (ESLint 10 attempted and reverted):** Tried the deferred ESLint 9->10 bump on a branch. npm install succeeded, but npm run lint crashed immediately: eslint-config-next's own bundled eslint-plugin-react calls context.getFilename(), an API ESLint 10 removed (replaced by context.filename). Confirmed upstream incompatibility in eslint-config-next itself, not a local issue -- verified via a real lint run, not inferred. npm audit fix --force offered to fix the remaining brace-expansion finding by installing eslint-config-next@12.0.4, a major downgrade from the ^16.2.12 this project needs for Next 16 -- declined. Branch abandoned, package.json/package-lock.json restored, main unaffected. Do not retry until eslint-config-next publishes an ESLint-10-compatible release for Next 16 -- check https://www.npmjs.com/package/eslint-config-next before attempting again.

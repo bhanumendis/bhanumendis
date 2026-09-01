@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       {
-        source: "/:asset(hero-bg\\.jpg|bhanumendis\\.jpg|dm-favicon\\.avif|st-favicon\\.avif)",
+        source: "/:asset(hero-bg\\.jpg|bhanumendis\\.jpg|og-image\\.jpg|portrait\\.jpg|apple-touch-icon\\.png|dm-favicon\\.avif|st-favicon\\.avif)",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       {

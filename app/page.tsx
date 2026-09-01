@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import FeaturedIn from "./FeaturedIn";
 import MagneticButton from "./MagneticButton";
+import LinkedInPosts from "./LinkedInPosts";
 import Counter from "./Counter";
 
 // Open the tuition location directly in Google Maps.
@@ -63,7 +64,7 @@ function PhotoSlideshow() {
     <section id="photos" aria-labelledby="photos-heading">
       <div className="sw" data-tilt>
         <div className="eyebrow reveal">Captured Moments</div>
-        <h2 className="sh reveal" id="photos-heading">Memories<em>...</em></h2>
+        <h2 className="sh reveal m-display" id="photos-heading">Memories<em>...</em></h2>
         
         <div className="slideshow-container reveal d1">
           <div className="slideshow-viewport">
@@ -97,7 +98,20 @@ function PhotoSlideshow() {
                 onClick={() => setActive(i)}
                 aria-label={`Go to slide ${i + 1}`}
               >
-                <img src={photo} alt={`Thumbnail ${i + 1}`} />
+                {/* Thumbnails paint at 54x96 CSS px. Serving the 1023x1280
+                    original here cost ~4.4 MB across 15 strips. next/image
+                    caps this at the 128px bucket and lazy-loads it.
+                    alt="" is deliberate: the parent button already carries
+                    the accessible name via aria-label. */}
+                <Image
+                  src={photo}
+                  alt=""
+                  width={108}
+                  height={192}
+                  quality={70}
+                  loading="lazy"
+                  draggable={false}
+                />
               </button>
             ))}
           </div>
@@ -209,7 +223,11 @@ export default function Home() {
       ticking = false;
       const y = window.scrollY;
       const h = document.documentElement.scrollHeight - window.innerHeight;
-      if (prog) prog.style.width = `${h > 0 ? (y / h) * 100 : 0}%`;
+      // When data-motion="native" is set, motion.css drives #prog off a
+      // scroll() timeline on the compositor — writing width here would
+      // fight it and re-introduce the per-frame layout cost.
+      if (prog && document.documentElement.getAttribute("data-motion") !== "native")
+        prog.style.width = `${h > 0 ? (y / h) * 100 : 0}%`;
       if (nav) nav.classList.toggle("scrolled", y > 40);
       setShowTop(y > window.innerHeight * 0.9);
       if (!reduce && wide.matches) {
@@ -229,18 +247,29 @@ export default function Home() {
     render();
 
     // Entrance reveals — one-shot, never a visibility gate.
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => {
-        if (entry.isIntersecting) { entry.target.classList.add("in"); io.unobserve(entry.target); }
-      }),
-      { threshold: 0.01, rootMargin: "0px 0px -2% 0px" }
-    );
-    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+    // When the browser supports scroll-driven animations, motion.css owns
+    // every reveal off a native view() timeline (compositor thread, zero JS).
+    // The pre-paint boot script in layout.tsx sets data-motion="native".
+    // In that case we skip the observer entirely rather than doing the same
+    // work twice — this is the difference between a motion system that costs
+    // main-thread time and one that costs none.
+    const nativeMotion =
+      document.documentElement.getAttribute("data-motion") === "native";
+
+    const io = nativeMotion
+      ? null
+      : new IntersectionObserver(
+          (entries) => entries.forEach((entry) => {
+            if (entry.isIntersecting) { entry.target.classList.add("in"); io?.unobserve(entry.target); }
+          }),
+          { threshold: 0.01, rootMargin: "0px 0px -2% 0px" }
+        );
+    if (io) document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      io.disconnect();
+      io?.disconnect();
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -266,7 +295,7 @@ export default function Home() {
       </div>
 
       <nav id="nav" aria-label="Main navigation">
-        <a href="#hero" className="logo" aria-label="Bhanu Mendis — home">
+        <a href="#hero" className="logo" aria-label="භානු මෙන්ඩිස් — Bhanu Mendis, home">
           <span className="logo-dot" aria-hidden="true" />
           <span className="logo-text sinhala">භානු මෙන්ඩිස්</span>
         </a>
@@ -352,14 +381,14 @@ export default function Home() {
         <section id="tutoring" aria-labelledby="tutoring-heading">
           <div className="sw" data-tilt>
             <div className="eyebrow reveal">Tutoring &amp; Teaching</div>
-            <h2 className="sh reveal d1" id="tutoring-heading">Learn <em>Science, Maths<br />&amp; Computing</em></h2>
+            <h2 className="sh reveal m-display d1" id="tutoring-heading">Learn <em>Science, Maths<br />&amp; Computing</em></h2>
             <p className="lead reveal d2">
               Clear, concept-first classes on the <strong>Pearson Edexcel</strong> curriculum for
               <strong> Grades 6–8</strong>, at The Science Brainery in Boralesgamuwa. Group and
               individual — built around understanding, not memorising.
             </p>
 
-            <div className="subj-grid">
+            <div className="subj-grid stagger">
               {SUBJECTS.map((s, i) => (
                 <article key={s.name} className={`subj-card reveal d${i + 1}`}>
                   <div className="subj-name">{s.name}</div>
@@ -435,7 +464,7 @@ export default function Home() {
         <section id="skills" aria-labelledby="skills-heading">
           <div className="sw" data-tilt>
             <div className="eyebrow reveal">Core Skills</div>
-            <h2 className="sh reveal" id="skills-heading">Skills &amp; <em>Strengths</em></h2>
+            <h2 className="sh reveal m-display" id="skills-heading">Skills &amp; <em>Strengths</em></h2>
             <div className="spills reveal d1" role="list" aria-label="Skills list">
               {SKILLS.map((skill) => (
                 <span key={skill} className="sp" role="listitem">{skill}</span>
@@ -451,8 +480,8 @@ export default function Home() {
           <div className="exp-pin-bg" aria-hidden="true"><span className="pin-word">WORK</span></div>
           <div className="sw" data-tilt>
             <div className="eyebrow reveal">Experience</div>
-            <h2 className="sh reveal" id="exp-heading">Projects <em>Led</em></h2>
-            <div className="ecards">
+            <h2 className="sh reveal m-display" id="exp-heading">Projects <em>Led</em></h2>
+            <div className="ecards stagger">
               <article className="ecard reveal d1">
                 <div className="etop"><div className="erole">Educator</div><span className="edate">Sep 2025 – Present</span></div>
                 <div className="eorg">The Science Brainery · Boralesgamuwa</div>
@@ -528,12 +557,8 @@ export default function Home() {
         <section id="linkedin" aria-labelledby="li-heading">
           <div className="sw" data-tilt>
             <div className="eyebrow reveal">From LinkedIn</div>
-            <h2 className="sh reveal" id="li-heading">Latest <em>Posts</em></h2>
-            <div className="li-grid reveal d1">
-              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7467136600683073536?collapsed=1" height="540" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 1" referrerPolicy="no-referrer-when-downgrade" />
-              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7463987225429708800?collapsed=1" height="540" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 2" referrerPolicy="no-referrer-when-downgrade" />
-              <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7399673996285358080?collapsed=1" height="540" frameBorder="0" allowFullScreen loading="lazy" title="LinkedIn post — Bhanu Mendis 3" referrerPolicy="no-referrer-when-downgrade" />
-            </div>
+            <h2 className="sh reveal m-display" id="li-heading">Latest <em>Posts</em></h2>
+            <LinkedInPosts />
           </div>
         </section>
 
@@ -543,12 +568,12 @@ export default function Home() {
         <section id="achieve" aria-labelledby="achieve-heading">
           <div className="sw" data-tilt>
             <div className="eyebrow reveal">Honours, Awards &amp; Qualifications</div>
-            <h2 className="sh reveal" id="achieve-heading">Achievements &amp; <em>Credentials</em></h2>
+            <h2 className="sh reveal m-display" id="achieve-heading">Achievements &amp; <em>Credentials</em></h2>
             
             <div className="merged-grid reveal d1">
               <div className="merged-col">
                 <h3 className="merged-subheading">Honours &amp; Awards</h3>
-                <div className="agrid">
+                <div className="agrid stagger">
                   <article className="acard reveal d1"><div className="amed" aria-hidden="true">🏆</div><div className="atitle">All-Island Dancing Champion</div><div className="abadge">Island 1st · 2018, 2019, 2023</div><p className="abody">Three-time national champion in competitive dance at the All-Island level.</p></article>
                   <article className="acard reveal d2"><div className="amed" aria-hidden="true">🎵</div><div className="atitle">All-Island Music Champion</div><div className="abadge">Island 1st · 2019, 2023, 2024</div><p className="abody">Three-time national music champion at the highest competitive level.</p></article>
                   <article className="acard reveal d3"><div className="amed" aria-hidden="true">🌏</div><div className="atitle">Malaysian World Choral Competition</div><div className="abadge">1st Place · International</div><p className="abody">Represented Sri Lanka on the world stage — and took first place.</p></article>
@@ -560,7 +585,7 @@ export default function Home() {
               
               <div className="merged-col" id="certs">
                 <h3 className="merged-subheading">Education &amp; Qualifications</h3>
-                <div className="cgrid">
+                <div className="cgrid stagger">
                   <div className="ccard reveal d1"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M8 14l-3 7h14l-3-7"/></svg></div><div><div className="cname">Sangeetha Visharadha</div><div className="cfrom">Bathkandhe Sangit Vidhyapith · 6 Years · First Division</div></div></div>
                   <div className="ccard reveal d2"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><div><div className="cname">Aviation Course</div><div className="cfrom">Sri Lanka Air Force · Ratmalana</div></div></div>
                   <div className="ccard reveal d3"><div className="cico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div><div className="cname">Professional Compering</div><div className="cfrom">Institute of Media &amp; Performing Arts</div></div></div>
@@ -596,7 +621,7 @@ export default function Home() {
           <div className="map-panel">
             <div className="map-info" data-tilt>
               <div className="eyebrow reveal">Find Us</div>
-              <h2 className="sh reveal" id="findus-heading">The Science<br /><em>Brainery</em></h2>
+              <h2 className="sh reveal m-display" id="findus-heading">The Science<br /><em>Brainery</em></h2>
               <p className="map-addr reveal d1">
                 No. 2, Malani Bulathsinghala Mawatha,<br />
                 Boralesgamuwa, Sri Lanka
