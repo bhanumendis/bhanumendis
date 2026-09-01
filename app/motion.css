@@ -131,9 +131,8 @@
   to{opacity:1;transform:translate3d(0,0,0);}
 }
 @keyframes sigDisplay{
-  from{opacity:0;transform:translate3d(0,var(--rise-lg),0);filter:blur(6px);}
-  60%{filter:blur(0);}
-  to{opacity:1;transform:translate3d(0,0,0);filter:blur(0);}
+  from{opacity:0;transform:translate3d(0,var(--rise-lg),0);clip-path:inset(105% 0 -10% 0);}
+  to{opacity:1;transform:translate3d(0,0,0);clip-path:inset(-25% 0 -10% 0);}
 }
 @keyframes sigDrift{
   from{transform:translate3d(0,var(--drift),0);}
@@ -203,11 +202,159 @@
   html[data-motion="native"] .m-drift,
   html[data-motion="native"] .m-drift-slow,
   html[data-motion="native"] .m-settle,
-  html[data-motion="native"] .m-draw{
-    animation:none !important;opacity:1 !important;transform:none !important;filter:none !important;
+  html[data-motion="native"] .m-draw,
+  html[data-motion="native"] #hero .hero-bg-img,
+  html[data-motion="native"] #hero .hero-content,
+  html[data-motion="native"] #hero .hero-bg-overlay,
+  html[data-motion="native"] #hero .hsc,
+  html[data-motion="native"] #hero .scroll-cue,
+  html[data-motion="native"] .pin-word,
+  html[data-motion="native"] .subj-card,
+  html[data-motion="native"] .ecard,
+  html[data-motion="native"] .acard,
+  html[data-motion="native"] .ccard,
+  html[data-motion="native"] .press-card,
+  html[data-motion="native"] .slideshow-viewport,
+  html[data-motion="native"] .spills > *,
+  html[data-motion="native"] .eyebrow{
+    animation:none !important;opacity:1 !important;transform:none !important;
+    filter:none !important;clip-path:none !important;
   }
   html[data-motion="native"] #prog{animation:none !important;transform:none !important;width:0 !important;}
   .m-lift,.m-wipe::after{transition:none !important;}
   .m-shimmer{animation:none !important;background:none;color:var(--white);-webkit-text-fill-color:currentColor;}
   html{scroll-behavior:auto !important;}
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CHOREOGRAPHY
+   ──────────────────────────────────────────────────────────────────
+   The utilities above are the vocabulary; this is the score. Without
+   this block the site had exactly two effects wired up (headings and
+   grid staggers), which is why it read as unchanged.
+
+   Every animation here is still driven by a native scroll timeline —
+   `view()` for elements, a named `--hero` timeline for the opening
+   sequence. Zero JavaScript, compositor thread, and the whole block
+   is gated behind @supports + prefers-reduced-motion exactly like the
+   rest of the system.
+   ══════════════════════════════════════════════════════════════════ */
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion: no-preference) {
+
+  /* The hero publishes a named timeline its own children animate against,
+     so the whole opening sequence is scrubbed by one shared progress value
+     rather than each element guessing its own range. */
+  #hero{view-timeline-name:--hero;view-timeline-axis:block;}
+
+  /* ── 1. The hero exit ────────────────────────────────────────────
+     The stage recedes as you leave it: the photograph pushes in, the
+     scrim thickens, and the content lifts away and lets go. This is the
+     single most visible piece of motion on the site. */
+  html[data-motion="native"] #hero .hero-bg-img{
+    animation:heroPush linear both;
+    animation-timeline:--hero;animation-range:exit 0% exit 100%;
+  }
+  html[data-motion="native"] #hero .hero-content{
+    animation:heroLift linear both;
+    animation-timeline:--hero;animation-range:exit 0% exit 82%;
+  }
+  html[data-motion="native"] #hero .hero-bg-overlay{
+    animation:heroDeepen linear both;
+    animation-timeline:--hero;animation-range:exit 0% exit 100%;
+  }
+  html[data-motion="native"] #hero .scroll-cue{
+    animation:cueOut linear both;
+    animation-timeline:--hero;animation-range:exit 0% exit 24%;
+  }
+  /* The four stat cards leave at staggered rates — parallax depth, so the
+     hero reads as layered rather than one flat plane sliding away. */
+  html[data-motion="native"] #hero .hsc{
+    animation:heroLift linear both;animation-timeline:--hero;
+  }
+  html[data-motion="native"] #hero .hsc:nth-child(1){animation-range:exit 0% exit 68%;}
+  html[data-motion="native"] #hero .hsc:nth-child(2){animation-range:exit 0% exit 76%;}
+  html[data-motion="native"] #hero .hsc:nth-child(3){animation-range:exit 0% exit 84%;}
+  html[data-motion="native"] #hero .hsc:nth-child(4){animation-range:exit 0% exit 92%;}
+
+  /* ── 2. The pinned words ─────────────────────────────────────────
+     #ethos ("LEARN") and #exp ("WORK") already pin a giant background
+     word. Scrubbing its scale and tracking across the whole section turns
+     a static backdrop into the section's own motion. */
+  html[data-motion="native"] .pin-word{
+    animation:wordScrub linear both;
+    animation-timeline:view();animation-range:cover 0% cover 100%;
+  }
+
+  /* ── 3. Cards arrive with real travel ────────────────────────────
+     A 34px nudge is invisible. These come from further away, tilted, and
+     resolve over a long scroll range so the movement is legible. */
+  html[data-motion="native"] .subj-card,
+  html[data-motion="native"] .ecard,
+  html[data-motion="native"] .acard,
+  html[data-motion="native"] .ccard,
+  html[data-motion="native"] .press-card{
+    animation:cardArrive linear both;
+    animation-timeline:view();animation-range:entry 0% entry 62%;
+    transform-origin:50% 100%;
+  }
+
+  /* ── 4. The gallery opens up ─────────────────────────────────────
+     The slideshow grows into place and its corners relax, so the section
+     reads as a reveal rather than a block that was always there. */
+  html[data-motion="native"] .slideshow-viewport{
+    animation:mediaOpen linear both;
+    animation-timeline:view();animation-range:entry 0% cover 38%;
+  }
+
+  /* ── 5. Skills cascade ───────────────────────────────────────────
+     24 pills entering as one wave. The generic .stagger caps at six
+     siblings; these get their own finer-grained ladder. */
+  html[data-motion="native"] .spills > *{
+    animation:sigRise linear both;
+    animation-timeline:view();animation-range:entry 0% entry 40%;
+  }
+  html[data-motion="native"] .spills > *:nth-child(n+5) {animation-range:entry 3%  entry 43%;}
+  html[data-motion="native"] .spills > *:nth-child(n+9) {animation-range:entry 6%  entry 46%;}
+  html[data-motion="native"] .spills > *:nth-child(n+13){animation-range:entry 9%  entry 49%;}
+  html[data-motion="native"] .spills > *:nth-child(n+17){animation-range:entry 12% entry 52%;}
+  html[data-motion="native"] .spills > *:nth-child(n+21){animation-range:entry 15% entry 55%;}
+
+  /* ── 6. Depth on the section furniture ───────────────────────────
+     Eyebrows drift against their headings. Small, but it is what stops
+     a section from arriving as one rigid slab. */
+  html[data-motion="native"] .eyebrow{
+    animation:sigDriftSlow linear both;
+    animation-timeline:view();animation-range:cover 0% cover 100%;
+  }
+}
+}
+
+@keyframes heroPush{
+  from{transform:scale(1);}
+  to{transform:scale(1.16);}
+}
+@keyframes heroLift{
+  from{opacity:1;transform:translate3d(0,0,0) scale(1);}
+  to{opacity:0;transform:translate3d(0,-110px,0) scale(.94);}
+}
+@keyframes heroDeepen{
+  from{opacity:1;}
+  to{opacity:1;backdrop-filter:brightness(.72);}
+}
+@keyframes cueOut{
+  from{opacity:.75;transform:translate(-50%,0);}
+  to{opacity:0;transform:translate(-50%,26px);}
+}
+@keyframes wordScrub{
+  from{transform:scale(.86) translate3d(0,40px,0);letter-spacing:.06em;opacity:.55;}
+  to{transform:scale(1.12) translate3d(0,-40px,0);letter-spacing:-.01em;opacity:1;}
+}
+@keyframes cardArrive{
+  from{opacity:0;transform:perspective(1100px) translate3d(0,86px,0) rotateX(9deg) scale(.94);}
+  to{opacity:1;transform:perspective(1100px) translate3d(0,0,0) rotateX(0) scale(1);}
+}
+@keyframes mediaOpen{
+  from{opacity:.3;transform:scale(.84);border-radius:64px;}
+  to{opacity:1;transform:scale(1);border-radius:var(--rl);}
 }
