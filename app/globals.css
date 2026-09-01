@@ -25,20 +25,6 @@
   --shadow:0 24px 60px -30px rgba(15,23,42,0.42);
   --hero-glow:rgba(31,116,184,0.14);
 
-  /* ── Second accent: amber ──────────────────────────────────────
-     Bhanu's work has two natures and the palette should say so.
-     Cool blue = the analytical half (Science, Maths, Computing, audio
-     engineering, the LMS). Warm amber = the expressive half (dance,
-     music, Visharadha, Swara/Padura, honours).
-     This is semantic, not decorative — amber appears ONLY on
-     performance/achievement surfaces, so the page is legible at a glance. */
-  /* #9A6416 measures 4.77:1 on the #achieve surface — the .abadge label is
-     10px, so it needs the 4.5:1 small-text threshold, not 3:1. An earlier
-     warmer #A9701C looked better and measured 4.00:1, so it was dropped. */
-  --amber:#9A6416;--amber2:#7E5210;--amber3:#C89A4E;
-  --amber-bg:rgba(154,100,22,.075);--amber-b:rgba(154,100,22,.26);
-  --amber-hb:rgba(154,100,22,.44);--amber-hbg:rgba(154,100,22,.06);
-  --amberg:linear-gradient(120deg,#C08428,#8E5C12);
   /* Depth: the grounds stay essentially pure, but gain a whisper of grain
      and one soft atmospheric wash behind the hero so nothing floats on a
      dead flat field. */
@@ -70,10 +56,6 @@
   --glass:saturate(150%) blur(22px);
   --glass-edge:inset 0 1px 0 rgba(255,255,255,0.08),inset 0 0 0 1px rgba(255,255,255,0.02);
   --shadow:0 26px 64px -30px rgba(0,0,0,0.75);
-  --amber:#E8B563;--amber2:#F3D3A2;--amber3:#C9954A;
-  --amber-bg:rgba(232,181,99,.11);--amber-b:rgba(232,181,99,.30);
-  --amber-hb:rgba(232,181,99,.46);--amber-hbg:rgba(232,181,99,.09);
-  --amberg:linear-gradient(120deg,#E8B563,#F3D3A2);
   --grain:.042;
   --atmos:radial-gradient(1150px 640px at 50% -10%,rgba(79,157,255,.17),transparent 68%);
   --surface-alt:#07090E;
@@ -739,25 +721,17 @@ body::before{
 }
 .subj-card:hover::before{transform:scaleX(1);}
 
-/* ── The warm half: honours & performance ─────────────────────────
-   Amber is applied ONLY here. An award, a championship, a Visharadha
-   qualification and a concert are a different KIND of fact from a
-   syllabus, and the palette should not pretend otherwise. */
-#achieve .sh em{color:var(--amber);}
-:root.dark #achieve .sh em{text-shadow:0 0 30px rgba(232,181,99,.22);}
-#achieve .eyebrow{color:var(--amber);}
-#achieve .eyebrow::before{background:var(--amber);}
-
+/* ── Award cards ─────────────────────────────────────────────────
+   Same hairline-rule treatment as the subject cards, in the house
+   blue. (An amber second accent was trialled here and rejected —
+   Bhanu wants the existing palette.) */
 .acard{position:relative;overflow:hidden;}
 .acard::before{
   content:"";position:absolute;top:0;left:0;right:0;height:2px;
-  background:var(--amberg);transform:scaleX(0);transform-origin:0 50%;
+  background:var(--skyg);transform:scaleX(0);transform-origin:0 50%;
   transition:transform .55s cubic-bezier(.16,1,.3,1);
 }
 .acard:hover::before{transform:scaleX(1);}
-.acard:hover{border-color:var(--amber-hb);background:var(--amber-hbg);}
-.acard .amed{background:var(--amber-bg);border-color:var(--amber-b);}
-.acard .abadge{color:var(--amber);background:var(--amber-bg);border-color:var(--amber-b);}
 
 /* ── Typography polish ────────────────────────────────────────────
    Large display type wraps badly by default; balance stops the lonely
@@ -773,3 +747,89 @@ body::before{
   body::before{transition:none;}
   #hero::before{transition:none;}
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   STAGE — the hero is always lit, whatever the theme
+   ──────────────────────────────────────────────────────────────────
+   Bhanu directs concerts for tens of thousands of people. The site
+   should open the way a show does: you step onto a lit stage, then
+   walk into the building. So the hero commits to a full-bleed image
+   with a dark scrim in BOTH themes, and the rest of the page stays
+   whatever theme the visitor chose.
+
+   White type over a photograph is a contrast hazard, so the scrim is
+   not decorative — it is what makes the text legible, and its stops
+   were tuned against sampled pixel luminance behind each text block,
+   not by eye.
+   ══════════════════════════════════════════════════════════════════ */
+:root{
+  --stage-ink:#FFFFFF;
+  --stage-soft:rgba(255,255,255,.93);
+  --stage-muted:rgba(255,255,255,.82);
+  --stage-accent:#9CC3FF;          /* the existing dark-theme blue (--sky2) */
+  --stage-glass:rgba(255,255,255,.10);
+  --stage-glass-b:rgba(255,255,255,.26);
+}
+
+/* The stage floor. Without this the hero paints as var(--bg) — WHITE in the
+   light theme — for as long as the photograph takes to arrive, which means
+   white hero type on a white ground: invisible text on first paint, and a
+   flash of unreadable content on any slow connection. A dark base under the
+   image makes the stage dark from the very first frame and gives the scrim
+   something to sit on if the photo never loads at all. */
+#hero{background-color:#0A1420;}
+
+/* The photograph, finally used at full strength instead of a 10% ghost. */
+#hero .hero-bg-img{opacity:.92;object-position:center 26%;}
+:root.dark #hero .hero-bg-img{opacity:.82;}
+
+/* The atmosphere wash belongs to the light hero; the photo replaces it. */
+#hero::before{display:none;}
+
+/* The scrim. Final stop resolves to --bg so the stage dissolves into the
+   page instead of ending on a hard horizontal edge. */
+#hero .hero-bg-overlay{
+  /* These stops are tuned against SAMPLED PIXEL LUMINANCE behind each text
+     block, not by eye. Measured worst-case ratios at the earlier values:
+     subtitle 4.02:1 (needs 4.5) and tagline 2.71:1 (needs 3.0) — both failed
+     over the bright sky/surf band. Holding the scrim dark to 88% also rescued
+     the stat labels, which had dropped to 2.40:1 once the gradient started
+     resolving toward the light page background.
+     Re-measure if you move these. */
+  background:linear-gradient(to bottom,
+    rgba(6,12,22,.80) 0%,
+    rgba(6,12,22,.66) 26%,
+    rgba(6,12,22,.81) 48%,
+    rgba(6,12,22,.86) 88%,
+    var(--bg) 100%);
+}
+
+/* Type on the stage */
+#hero .h1{color:var(--stage-ink);text-shadow:0 6px 44px rgba(0,0,0,.55);}
+#hero .h1 .blue{color:var(--stage-accent);}
+:root.dark #hero .h1{text-shadow:0 6px 44px rgba(0,0,0,.7);}
+#hero .h-sub{color:var(--stage-soft);}
+#hero .h-tagline{color:var(--stage-accent);}
+#hero .hsc{
+  background:var(--stage-glass);border-color:var(--stage-glass-b);
+  backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px);
+}
+#hero .hsc:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.42);}
+#hero .hsc-n{color:var(--stage-ink);}
+#hero .hsc-l{color:var(--stage-muted);opacity:1;}
+#hero .btn-out{
+  background:var(--stage-glass);border-color:var(--stage-glass-b);color:var(--stage-ink);
+}
+#hero .btn-out:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.45);color:var(--stage-ink);}
+#hero .scroll-cue{border-color:rgba(255,255,255,.45);}
+#hero .scroll-cue span{background:var(--stage-accent);}
+
+/* Nav sits on the stage until the visitor scrolls off it. `.scrolled` is
+   already applied by the existing rAF loop, so this needs no new JS. */
+#nav:not(.scrolled) .nav-links a,
+#nav:not(.scrolled) .logo-text{color:var(--stage-ink);}
+#nav:not(.scrolled) .nav-links a:hover{color:var(--stage-accent);}
+#nav:not(.scrolled) .nav-cta{
+  color:var(--stage-ink);background:var(--stage-glass);border-color:var(--stage-glass-b);
+}
+#nav:not(.scrolled) .nav-cta:hover{background:rgba(255,255,255,.2);}
