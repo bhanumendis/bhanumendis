@@ -5,6 +5,17 @@ import FeaturedIn from "./FeaturedIn";
 import MagneticButton from "./MagneticButton";
 import LinkedInPosts from "./LinkedInPosts";
 import Counter from "./Counter";
+import SiteChrome from "./SiteChrome";
+import dynamic from "next/dynamic";
+
+// Below the fold and interaction-only, so it rides in its own chunk rather
+// than the initial bundle. SSR stays ON deliberately: the markup (and the
+// centre photo) must exist without JavaScript, per the house rule that
+// content is never gated on motion. The placeholder reserves the stage
+// height so the swap costs no layout shift.
+const Coverflow = dynamic(() => import("./Coverflow"), {
+  loading: () => <div className="cf-skeleton" aria-hidden="true" />,
+});
 
 // Open the tuition location directly in Google Maps.
 const MAP_LINK =
@@ -49,284 +60,192 @@ const SLIDESHOW_PHOTOS = [
   "/Photos-1-001/IMG_20260724_080323_466.jpg"
 ];
 
-function PhotoSlideshow() {
-  const [active, setActive] = useState(0);
-
-  const prev = () => setActive((prev) => (prev === 0 ? SLIDESHOW_PHOTOS.length - 1 : prev - 1));
-  const next = () => setActive((prev) => (prev === SLIDESHOW_PHOTOS.length - 1 ? 0 : prev + 1));
-
-  useEffect(() => {
-    const timer = setInterval(next, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <section id="photos" aria-labelledby="photos-heading">
-      <div className="sw" data-tilt>
-        <div className="eyebrow reveal">Captured Moments</div>
-        <h2 className="sh reveal m-display" id="photos-heading">Memories<em>...</em></h2>
-        
-        <div className="slideshow-container reveal d1">
-          <div className="slideshow-viewport">
-            <button className="slideshow-nav prev" onClick={prev} aria-label="Previous image">
-              <svg viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" /></svg>
-            </button>
-            <div className="slideshow-slide">
-              <Image 
-                src={SLIDESHOW_PHOTOS[active]} 
-                alt={`Slideshow image ${active + 1}`} 
-                fill 
-                sizes="(max-width: 1200px) 100vw, 1200px" 
-                priority={active === 0}
-                className="slideshow-img"
-              />
-            </div>
-            <button className="slideshow-nav next" onClick={next} aria-label="Next image">
-              <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" /></svg>
-            </button>
-          </div>
-          
-          <div className="slideshow-indicator">
-            {active + 1} / {SLIDESHOW_PHOTOS.length}
-          </div>
-          
-          <div className="slideshow-thumbs">
-            {SLIDESHOW_PHOTOS.map((photo, i) => (
-              <button 
-                key={photo} 
-                className={`slideshow-thumb ${i === active ? 'active' : ''}`}
-                onClick={() => setActive(i)}
-                aria-label={`Go to slide ${i + 1}`}
-              >
-                {/* Thumbnails paint at 54x96 CSS px. Serving the 1023x1280
-                    original here cost ~4.4 MB across 15 strips. next/image
-                    caps this at the 128px bucket and lazy-loads it.
-                    alt="" is deliberate: the parent button already carries
-                    the accessible name via aria-label. */}
-                <Image
-                  src={photo}
-                  alt=""
-                  width={108}
-                  height={192}
-                  quality={70}
-                  loading="lazy"
-                  draggable={false}
-                />
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+// ── Page-scoped structured data ──────────────────────────────────────
+// The entity graph (Person, WebSite, the tutoring service, the concerts)
+// is site-wide and lives in layout.tsx. This node describes THIS page,
+// which is exactly why it cannot live there — layout also renders on
+// /timeline, and declaring that route a ProfilePage about Bhanu would be
+// false. ProfilePage is the right type for a portfolio homepage: one page
+// whose whole subject is one person.
+const profilePage = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "@id": "https://bhanumendis.com/#webpage",
+  url: "https://bhanumendis.com",
+  name: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer",
+  isPartOf: { "@id": "https://bhanumendis.com/#website" },
+  about: { "@id": "https://bhanumendis.com/#person" },
+  mainEntity: { "@id": "https://bhanumendis.com/#person" },
+  primaryImageOfPage: { "@id": "https://bhanumendis.com/#portrait" },
+  inLanguage: "en",
+  significantLink: ["https://bhanumendis.com/timeline"],
+} as const;
 
 export default function Home() {
   const [showAllExp, setShowAllExp] = useState(false);
-  const [isDark, setIsDark] = useState(false);
-  const [showTop, setShowTop] = useState(false);
-
-  // ── Theme toggle: a plain class flip. The gradual crossfade comes from the
-  //    CSS colour transitions on <body> and every surface — no expanding-circle
-  //    overlay (that caused the "oval flash" mid-swap). ──
-  const applyTheme = (toDark: boolean) => {
-    document.documentElement.classList.toggle("dark", toDark);
-    try { localStorage.setItem("bm-theme", toDark ? "dark" : "light"); } catch {}
-    setIsDark(toDark);
-  };
-
-  // Sync React state with the class the pre-paint script may have set.
-  // Intentional one-time sync: SSR renders the light default, then we adopt
-  // the real (persisted) theme on mount. Doing this in an effect is what keeps
-  // hydration stable, so the set-state-in-effect guard is deliberately waived.
+  // Dark ships from the server (see layout.tsx), so this seeds true and the
+  // effect below adopts the real, persisted value on mount.
+  // Theme, the cursor and the scroll engine all moved to SiteChrome — they
+  // belong on every route, and duplicating them here is what left /timeline
+  // looking like a different site.
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsDark(document.documentElement.classList.contains("dark"));
     document.body.classList.add("home");
     return () => document.body.classList.remove("home");
   }, []);
 
-  // ── Custom cursor + hero pointer parallax (desktop, guarded). ──
+  // ── Hero pointer field (desktop, guarded). ──
+  //    The custom cursor itself now lives in SiteChrome, because it belongs on
+  //    every route. What stays here is the one genuinely homepage-only piece:
+  //    the like-pole repulsion that pushes each hero line AWAY from the
+  //    pointer, with a quadratic falloff so the force fades to nothing at the
+  //    radius instead of stopping at a hard edge. Each line has its own
+  //    ceiling (h1 10px, stats 26px) — equal ceilings read as one wobbling
+  //    block, unequal ones read as depth.
+  //
+  //    Nothing is written from the pointer event; the handler only records
+  //    coordinates and every style write happens once per frame in the loop.
+  //    And it writes --hx/--hy rather than `transform` because the hero
+  //    cascade in motion.css runs `heroEnter ... both`, and a filled animation
+  //    permanently outranks an inline style — an inline transform here would
+  //    be silently dead on every browser with native motion. heroEnter's final
+  //    keyframe consumes those two properties instead.
   useEffect(() => {
-    const cd = document.getElementById("cd");
-    const cr = document.getElementById("cr");
-    if (!cd || !cr) return;
-
-    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-    let rx = mx, ry = my, frame = 0;
-    let usingMouse = false;
-
-    const enableMouse = () => {
-      if (!usingMouse) { usingMouse = true; document.body.classList.add("using-mouse"); }
-    };
-    if (!window.matchMedia("(pointer: coarse)").matches) enableMouse();
-
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
     const heroContent = document.getElementById("hero-content");
-    const heroH1 = heroContent?.querySelector<HTMLElement>(".h1") ?? null;
+    if (reduce || coarse || !heroContent) return;
 
-    const onMouseMove = (e: MouseEvent) => {
-      enableMouse();
-      mx = e.clientX; my = e.clientY;
-      cd.style.left = `${mx}px`; cd.style.top = `${my}px`;
-      if (heroContent && window.scrollY < window.innerHeight) {
-        const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-        const dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
-        heroContent.style.transform = `translate3d(${-dx * 18}px, ${-dy * 12}px, 0)`;
-        if (heroH1) {
-          const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-          const glow = Math.max(0, 1 - dist / Math.hypot(cx, cy));
-          heroH1.style.textShadow =
-            `0 0 ${20 + glow * 40}px rgba(120,192,245,${0.08 + glow * 0.22})`;
-        }
+    const glow = document.querySelector<HTMLElement>("#hero .hero-glow");
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let gx = mx, gy = my;
+    let frame = 0, running = false, moved = true;
+
+    const RADIUS = 460;
+    const field = ([[".h1", 10], [".h-sub", 16], [".h-tagline", 22], [".h-actions", 13], [".h-stats", 26]] as const)
+      .flatMap(([sel, max]) => {
+        const el = heroContent.querySelector<HTMLElement>(sel);
+        return el ? [{ el, max, cx: 0, cy: 0, x: 0, y: 0 }] : [];
+      });
+    if (!field.length) return;
+
+    // Centres are measured in document space by walking offsetParent rather
+    // than via getBoundingClientRect. Offset positions are LAYOUT positions,
+    // so they are immune both to the field's own displacement (a rect would
+    // feed the offset back into the centre it is measuring) and to the hero
+    // cascade, which at mount still has every line translated 26px down.
+    // Runs on mount and resize only — never per frame.
+    const measure = () => {
+      for (const f of field) {
+        let x = 0, y = 0;
+        let n: HTMLElement | null = f.el;
+        while (n) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent as HTMLElement | null; }
+        f.cx = x + f.el.offsetWidth / 2;
+        f.cy = y + f.el.offsetHeight / 2;
       }
     };
-    const onTouchStart = () => { usingMouse = false; document.body.classList.remove("using-mouse"); };
+    measure();
 
     const loop = () => {
-      rx += (mx - rx) * 0.22; ry += (my - ry) * 0.22;
-      cr.style.left = `${rx}px`; cr.style.top = `${ry}px`;
+      let settled = true;
+      if (glow) {
+        gx += (mx - gx) * 0.085; gy += (my - gy) * 0.085;
+        glow.style.transform = `translate3d(${gx.toFixed(1)}px, ${gy.toFixed(1)}px, 0)`;
+        if (Math.abs(mx - gx) > 0.4 || Math.abs(my - gy) > 0.4) settled = false;
+      }
+      // Hero-only: once it has scrolled away there is nothing to push.
+      if (window.scrollY < window.innerHeight) {
+        const sy = window.scrollY;
+        for (const f of field) {
+          const dx = f.cx - mx, dy = f.cy - sy - my;
+          const d = Math.hypot(dx, dy) || 1;
+          const fall = Math.max(0, 1 - d / RADIUS);
+          const push = fall * fall * f.max;
+          const tx = (dx / d) * push, ty = (dy / d) * push;
+          f.x += (tx - f.x) * 0.14;
+          f.y += (ty - f.y) * 0.14;
+          f.el.style.setProperty("--hx", `${f.x.toFixed(2)}px`);
+          f.el.style.setProperty("--hy", `${f.y.toFixed(2)}px`);
+          if (Math.abs(tx - f.x) > 0.05 || Math.abs(ty - f.y) > 0.05) settled = false;
+        }
+      }
+      // An idle hero costs nothing: the loop parks itself once everything has
+      // landed and the next pointer move restarts it.
+      if (settled && !moved) { running = false; return; }
+      moved = false;
       frame = requestAnimationFrame(loop);
     };
+    const start = () => { if (!running) { running = true; frame = requestAnimationFrame(loop); } };
+
+    const onMouseMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; moved = true; start(); };
+    const onResize = () => { measure(); moved = true; start(); };
 
     document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("touchstart", onTouchStart, { passive: true });
-    loop();
-
-    const hoverEls = document.querySelectorAll<HTMLElement>(
-      "a,button,.hsc,.srow,.acard,.ccard,.ecard,.sp,.soc-btn,.foot-link,.show-more-btn,.theme-btn,.sidebar-right a,.subj-card,.paper-link,.tut-fact"
-    );
-    const onEnter = () => document.body.classList.add("cg");
-    const onLeave = () => document.body.classList.remove("cg");
-    hoverEls.forEach((el) => { el.addEventListener("mouseenter", onEnter); el.addEventListener("mouseleave", onLeave); });
+    window.addEventListener("resize", onResize);
+    start();
 
     return () => {
       document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("touchstart", onTouchStart);
-      hoverEls.forEach((el) => { el.removeEventListener("mouseenter", onEnter); el.removeEventListener("mouseleave", onLeave); });
+      window.removeEventListener("resize", onResize);
       cancelAnimationFrame(frame);
     };
   }, []);
 
-  // ── Vertical scroll engine: progress bar, nav state, 3D parallax layers,
-  //    entrance reveals, back-to-top. All transform/opacity; reduced-motion
-  //    and small screens get a calm, static experience. ──
+  // ── Keyboard parity for the pinned horizontal rail. ──
+  //    While #exp is pinned, the rail has `overflow:hidden` and the cards move
+  //    by transform, so the browser's own "scroll the focused element into
+  //    view" has nothing to scroll — a Tab into card 7 would leave focus on an
+  //    invisible card. Instead we translate the card's index back into the
+  //    page offset that parks it on screen and scroll the DOCUMENT there,
+  //    which is the same input the CSS scroll timeline is reading. Without a
+  //    pinned rail (mobile, no scroll-timeline support, reduced motion) this
+  //    does nothing and native focus scrolling is left alone.
   useEffect(() => {
-    const prog = document.getElementById("prog");
-    const nav = document.getElementById("nav");
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const wide = window.matchMedia("(min-width: 901px)");
+    const wrap = document.querySelector<HTMLElement>("#exp .hscroll");
+    const sticky = wrap?.querySelector<HTMLElement>(".hscroll-sticky");
+    const track = wrap?.querySelector<HTMLElement>(".hscroll-track");
+    if (!wrap || !sticky || !track) return;
 
-    const parLayers = Array.from(document.querySelectorAll<HTMLElement>("[data-par]"));
-    let raf = 0, ticking = false;
+    const onFocusIn = (e: FocusEvent) => {
+      // The rail is only pinned when the CSS actually made it sticky; every
+      // fallback path leaves it static and native focus scrolling is correct.
+      if (getComputedStyle(sticky).position !== "sticky") return;
+      // Cards only: the show-more button is still a track child on mobile,
+      // and counting it would skew the index-to-scroll-offset maths.
+      const items = Array.from(track.children).filter((el) =>
+        el.classList.contains("ecard"),
+      ) as HTMLElement[];
+      const item = items.find((el) => el.contains(e.target as Node));
+      if (!item || items.length < 2) return;
 
-    const render = () => {
-      ticking = false;
-      const y = window.scrollY;
-      const h = document.documentElement.scrollHeight - window.innerHeight;
-      // When data-motion="native" is set, motion.css drives #prog off a
-      // scroll() timeline on the compositor — writing width here would
-      // fight it and re-introduce the per-frame layout cost.
-      if (prog && document.documentElement.getAttribute("data-motion") !== "native")
-        prog.style.width = `${h > 0 ? (y / h) * 100 : 0}%`;
-      if (nav) nav.classList.toggle("scrolled", y > 40);
-      setShowTop(y > window.innerHeight * 0.9);
-      if (!reduce && wide.matches) {
-        for (const el of parLayers) {
-          const speed = parseFloat(el.dataset.par || "0");
-          el.style.transform = `translate3d(0, ${y * speed}px, 0)`;
-        }
-      }
+      const travel = wrap.offsetHeight - window.innerHeight;
+      if (travel <= 0) return;
+      const p = items.indexOf(item) / (items.length - 1);
+      window.scrollTo({ top: wrap.offsetTop + travel * p, behavior: "smooth" });
     };
-    const onScroll = () => { if (!ticking) { ticking = true; raf = requestAnimationFrame(render); } };
 
-    const clearParallax = () => { for (const el of parLayers) el.style.transform = ""; };
-    const onResize = () => { if (reduce || !wide.matches) clearParallax(); onScroll(); };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-    render();
-
-    // Entrance reveals — one-shot, never a visibility gate.
-    // When the browser supports scroll-driven animations, motion.css owns
-    // every reveal off a native view() timeline (compositor thread, zero JS).
-    // The pre-paint boot script in layout.tsx sets data-motion="native".
-    // In that case we skip the observer entirely rather than doing the same
-    // work twice — this is the difference between a motion system that costs
-    // main-thread time and one that costs none.
-    const nativeMotion =
-      document.documentElement.getAttribute("data-motion") === "native";
-
-    const io = nativeMotion
-      ? null
-      : new IntersectionObserver(
-          (entries) => entries.forEach((entry) => {
-            if (entry.isIntersecting) { entry.target.classList.add("in"); io?.unobserve(entry.target); }
-          }),
-          { threshold: 0.01, rootMargin: "0px 0px -2% 0px" }
-        );
-    if (io) document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-      io?.disconnect();
-      cancelAnimationFrame(raf);
-    };
+    track.addEventListener("focusin", onFocusIn);
+    return () => track.removeEventListener("focusin", onFocusIn);
   }, []);
 
   return (
     <>
-      <a href="#hero" className="skip-link">Skip to content</a>
-      <div id="cd" aria-hidden="true" />
-      <div id="cr" aria-hidden="true" />
-      <div id="prog" aria-hidden="true" role="progressbar" aria-label="Page scroll progress" />
+      <SiteChrome home />
 
-      <div className="sidebar-right" aria-label="Social links">
-        <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer" aria-label="Instagram profile">Ig.</a>
-        <a href="https://linktr.ee/bhanu_mendis" target="_blank" rel="noopener noreferrer" aria-label="Facebook via Linktree">Fb.</a>
-        <a href="https://www.linkedin.com/in/bhanumendis" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">In.</a>
-      </div>
-
-      <div className="sidebar-left" aria-label="Theme controls">
-        <div className="theme-toggle" role="group" aria-label="Theme toggle">
-          <button type="button" className={`theme-btn ${!isDark ? "active" : ""}`} onClick={() => { if (isDark) applyTheme(false); }} aria-pressed={!isDark} aria-label="Switch to light mode">☀</button>
-          <button type="button" className={`theme-btn ${isDark ? "active" : ""}`} onClick={() => { if (!isDark) applyTheme(true); }} aria-pressed={isDark} aria-label="Switch to dark mode">☾</button>
-        </div>
-      </div>
-
-      <nav id="nav" aria-label="Main navigation">
-        <a href="#hero" className="logo" aria-label="භානු මෙන්ඩිස් — Bhanu Mendis, home">
-          <span className="logo-dot" aria-hidden="true" />
-          <span className="logo-text sinhala">භානු මෙන්ඩිස්</span>
-        </a>
-        <ul className="nav-links" role="list">
-          <li><a href="#about">About</a></li>
-          <li><a href="#exp">Experience</a></li>
-          <li><a href="#achieve">Awards</a></li>
-          <li><a href="/timeline">Timeline</a></li>
-          <li><a href={LMS_URL} target="_blank" rel="noopener noreferrer" className="nav-cta-fill">Student Portal</a></li>
-          <li><a href="#contact" className="nav-cta">Contact</a></li>
-        </ul>
-        {/* Compact theme toggle — shown on mobile where the sidebar toggle is hidden. */}
-        <button
-          type="button"
-          className="nav-theme"
-          onClick={() => applyTheme(!isDark)}
-          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          {isDark ? "☀" : "☾"}
-        </button>
-      </nav>
-
-      <button type="button" className={`to-top ${showTop ? "visible" : ""}`} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Back to top">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
-      </button>
+      <script
+        type="application/ld+json"
+        // Static, developer-authored. `<` escaped per Next.js guidance.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePage).replace(/</g, "\\u003c") }}
+      />
 
       <main>
         {/* ── HERO ── */}
         <section id="hero" aria-labelledby="hero-name">
           <Image src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" fill sizes="100vw" priority draggable={false} style={{ pointerEvents: "none" }} />
           <div className="hero-bg-overlay" aria-hidden="true" />
+          {/* Ambient glow that follows the pointer. A composited layer moved
+              by transform, not a repainting gradient — the same light source
+              the repel field reads as its pole. */}
+          <div className="hero-glow" aria-hidden="true" />
           <div id="hero-content" className="hero-content">
             <h1 className="h1" id="hero-name">BHANU<br /><span className="blue">MENDIS</span></h1>
             <p className="h-sub">Educator · Public Speaker · Audio Engineer · Artist · Visharadha</p>
@@ -361,9 +280,14 @@ export default function Home() {
                 <h2 className="sh" id="about-heading">A teacher, a leader,<br />and a <em>builder.</em></h2>
                 <div className="ayubowan-about" lang="si">ආයුබෝවන්</div>
                 <div className="atext">
-                  <p><strong>Bhanu Mendis</strong> is an educator, performing artist and audio engineer from <em>Colombo, Sri Lanka</em> — someone who lives where creativity meets careful execution.</p>
-                  <p>Today he teaches <strong>Science, Maths and Computing</strong> at The Science Brainery. Before that, as <strong>2024/2025 Senior Head Prefect</strong> of Lyceum International School, he directed <em>Elysium&nbsp;&apos;25</em> at Cinnamon Life — a student-led graduation for <strong>26,000+ Lyceumers</strong> — and coordinated <em>Maathra&nbsp;14</em> at the BMICH for <strong>750+ performers</strong>.</p>
-                  <p>He is a qualified <strong>Sangeetha Visharadha</strong> (First Division), a certified audio engineer, a multiple national and international champion, and a <strong>National Child Protection Ambassador</strong>.</p>
+                  {/* An executive summary: stated, not narrated. Third person and
+                      no first-person achievement listing — that read as boastful.
+                      Plain register throughout; the record is specific enough
+                      that inflated language would only dilute it. */}
+                  <p>Educator, performing artist and audio engineer based in <em>Colombo, Sri Lanka</em>. Currently teaching <strong>Science, Maths and Computing</strong> at The Science Brainery.</p>
+                  <p><strong>Leadership.</strong> <strong>2024/2025 Senior Head Prefect</strong> of Lyceum International School. Overall coordinator for <em>Maathra&nbsp;14</em> at the BMICH, a production of <strong>750+ performers</strong>, and director of the <em>Elysium&nbsp;&apos;25</em> graduation at Cinnamon Life for <strong>26,000+ Lyceumers</strong>.</p>
+                  <p><strong>Audio and the arts.</strong> <strong>Sangeetha Visharadha</strong>, First Division. Founding President of the Eastern Music Club and founder of the <em>Swara</em> concert series. Works in <strong>Cubase 14 Pro</strong>, from composition through to final master.</p>
+                  <p><strong>Community.</strong> Leads regional flood-relief and stationery donation drives in the <strong>Kurunegala</strong> district. <strong>National Child Protection Ambassador</strong>.</p>
                 </div>
               </div>
               <div className="about-right reveal d2">
@@ -478,10 +402,20 @@ export default function Home() {
         {/* ── EXPERIENCE ── (pinned background word, like the LEARN section) */}
         <section id="exp" aria-labelledby="exp-heading">
           <div className="exp-pin-bg" aria-hidden="true"><span className="pin-word">WORK</span></div>
-          <div className="sw" data-tilt>
-            <div className="eyebrow reveal">Experience</div>
-            <h2 className="sh reveal m-display" id="exp-heading">Projects <em>Led</em></h2>
-            <div className="ecards stagger">
+          {/* The tall wrapper IS the scroll budget for the horizontal travel:
+              one viewport to pin, plus a slice per card. --hs-count feeds that
+              sum in CSS and tracks the show-more state, so the rail always
+              ends exactly on the last card. Below 901px (or without native
+              scroll timelines) every rule here is off and the cards fall back
+              to the plain vertical stack. */}
+          <div className="hscroll" data-collapsed={!showAllExp}>
+           <div className="hscroll-sticky">
+            <div className="sw hscroll-head" data-tilt>
+              <div className="eyebrow reveal">Experience</div>
+              <h2 className="sh reveal m-display" id="exp-heading">Projects <em>Led</em></h2>
+            </div>
+            <div className="hscroll-rail">
+            <div className="ecards stagger hscroll-track">
               <article className="ecard reveal d1">
                 <div className="etop"><div className="erole">Educator</div><span className="edate">Sep 2025 – Present</span></div>
                 <div className="eorg">The Science Brainery · Boralesgamuwa</div>
@@ -512,44 +446,46 @@ export default function Home() {
                 <p className="ebody">An original instrumental concert series spotlighting student talent in Western and fusion traditions — from creative direction through to live execution.</p>
                 <div className="etags"><span className="et">Concert Production</span><span className="et">Instrumental</span><span className="et">Creative Direction</span></div>
               </article>
-              {showAllExp && (
-                <>
-                  <article className="ecard">
-                    <div className="etop"><div className="erole">Founding President — Eastern Music Club</div><span className="edate">Sep 2023 – Sep 2025</span></div>
-                    <div className="eorg">Lyceum International School, Nugegoda</div>
-                    <p className="ebody">Built the Eastern Music Club from scratch into an active platform for classical and contemporary Eastern performance.</p>
-                    <div className="etags"><span className="et">Start-up Leadership</span><span className="et">Music</span><span className="et">Club Management</span></div>
-                  </article>
-                  <article className="ecard">
-                    <div className="etop"><div className="erole">Head of Logistics — Model UN</div><span className="edate">Dec 2023 – Dec 2024</span></div>
-                    <div className="eorg">LISMUN &amp; SLMUN Conferences</div>
-                    <p className="ebody">Ran end-to-end logistics for Model UN conferences — venue, delegate registration, resources and on-ground operations across multi-day events.</p>
-                    <div className="etags"><span className="et">Logistics</span><span className="et">Model UN</span><span className="et">Operations</span></div>
-                  </article>
-                  <article className="ecard">
-                    <div className="etop"><div className="erole">News Reporter &amp; Voice Actor</div><span className="edate">Sep 2019 – Sep 2024</span></div>
-                    <div className="eorg">Institute of Media &amp; Performing Arts</div>
-                    <p className="ebody">Trained in news reporting, voice acting, dubbing and narration — building vocal control and expressive storytelling across genres.</p>
-                    <div className="etags"><span className="et">Voice Acting</span><span className="et">News Reporting</span><span className="et">Dubbing</span></div>
-                  </article>
-                  <article className="ecard">
-                    <div className="etop"><div className="erole">Aviator — Flight Training</div><span className="edate">Sep 2020 – Mar 2021</span></div>
-                    <div className="eorg">Sri Lanka Air Force · Ratmalana</div>
-                    <p className="ebody">Completed a full aviation programme across beginner, intermediate and advanced levels — theory plus hands-on flight training and aircraft operations.</p>
-                    <div className="etags"><span className="et">Aviation</span><span className="et">Flight Training</span><span className="et">SLAF</span></div>
-                  </article>
-                  <article className="ecard">
-                    <div className="etop"><div className="erole">Regional Relief Drive Lead</div><span className="edate">Ongoing</span></div>
-                    <div className="eorg">Kurunegala, Sri Lanka</div>
-                    <p className="ebody">Leads community relief efforts in Kurunegala — coordinating volunteers and resources for real, on-the-ground impact.</p>
-                    <div className="etags"><span className="et">Community Service</span><span className="et">Volunteering</span><span className="et">Social Impact</span></div>
-                  </article>
-                </>
-              )}
+              <article className="ecard reveal">
+                <div className="etop"><div className="erole">Founding President — Eastern Music Club</div><span className="edate">Sep 2023 – Sep 2025</span></div>
+                <div className="eorg">Lyceum International School, Nugegoda</div>
+                <p className="ebody">Built the Eastern Music Club from scratch into an active platform for classical and contemporary Eastern performance.</p>
+                <div className="etags"><span className="et">Start-up Leadership</span><span className="et">Music</span><span className="et">Club Management</span></div>
+              </article>
+              <article className="ecard reveal">
+                <div className="etop"><div className="erole">Head of Logistics — Model UN</div><span className="edate">Dec 2023 – Dec 2024</span></div>
+                <div className="eorg">LISMUN &amp; SLMUN Conferences</div>
+                <p className="ebody">Ran end-to-end logistics for Model UN conferences — venue, delegate registration, resources and on-ground operations across multi-day events.</p>
+                <div className="etags"><span className="et">Logistics</span><span className="et">Model UN</span><span className="et">Operations</span></div>
+              </article>
+              <article className="ecard reveal">
+                <div className="etop"><div className="erole">News Reporter &amp; Voice Actor</div><span className="edate">Sep 2019 – Sep 2024</span></div>
+                <div className="eorg">Institute of Media &amp; Performing Arts</div>
+                <p className="ebody">Trained in news reporting, voice acting, dubbing and narration — building vocal control and expressive storytelling across genres.</p>
+                <div className="etags"><span className="et">Voice Acting</span><span className="et">News Reporting</span><span className="et">Dubbing</span></div>
+              </article>
+              <article className="ecard reveal">
+                <div className="etop"><div className="erole">Aviator — Flight Training</div><span className="edate">Sep 2020 – Mar 2021</span></div>
+                <div className="eorg">Sri Lanka Air Force · Ratmalana</div>
+                <p className="ebody">Completed a full aviation programme across beginner, intermediate and advanced levels — theory plus hands-on flight training and aircraft operations.</p>
+                <div className="etags"><span className="et">Aviation</span><span className="et">Flight Training</span><span className="et">SLAF</span></div>
+              </article>
+              <article className="ecard reveal">
+                <div className="etop"><div className="erole">Regional Relief Drive Lead</div><span className="edate">Ongoing</span></div>
+                <div className="eorg">Kurunegala, Sri Lanka</div>
+                <p className="ebody">Leads community relief efforts in Kurunegala — coordinating volunteers and resources for real, on-the-ground impact.</p>
+                <div className="etags"><span className="et">Community Service</span><span className="et">Volunteering</span><span className="et">Social Impact</span></div>
+              </article>
               <button type="button" className="show-more-btn" onClick={() => setShowAllExp((s) => !s)} aria-expanded={showAllExp} aria-controls="exp">
                 {showAllExp ? "Show less" : "Show more →"}
               </button>
             </div>
+            </div>
+            <p className="hscroll-hint" aria-hidden="true">
+              <span className="hscroll-hint-rule" />
+              Keep scrolling
+            </p>
+           </div>
           </div>
         </section>
 
@@ -562,7 +498,16 @@ export default function Home() {
           </div>
         </section>
 
-        <PhotoSlideshow />
+        {/* ── MEMORIES ── */}
+        <section id="photos" aria-labelledby="photos-heading">
+          <div className="sw" data-tilt>
+            <div className="eyebrow reveal">Captured Moments</div>
+            <h2 className="sh reveal m-display" id="photos-heading">Memories<em>...</em></h2>
+            <div className="reveal d1">
+              <Coverflow photos={SLIDESHOW_PHOTOS} />
+            </div>
+          </div>
+        </section>
 
         {/* ── ACHIEVEMENTS & CREDENTIALS ── */}
         <section id="achieve" aria-labelledby="achieve-heading">
@@ -627,14 +572,14 @@ export default function Home() {
                 Boralesgamuwa, Sri Lanka
               </p>
               <div className="map-actions reveal d2">
-                <a href={MAP_LINK} target="_blank" rel="noopener noreferrer" className="cb prim">Open in Google Maps</a>
+                <a href={MAP_LINK} target="_blank" rel="noopener noreferrer" className="cb prim" data-cursor="pin">Open in Google Maps</a>
                 <a href="tel:+94777124152" className="cb">Call</a>
               </div>
               <MagneticButton href={REGISTER_FORM} external className="btn-fill map-register reveal d3" ariaLabel="Register for classes">
                 Register for Classes →
               </MagneticButton>
             </div>
-            <div className="map-embed reveal d2">
+            <div className="map-embed reveal d2" data-cursor="pin">
               <iframe
                 title="Map to The Science Brainery, Boralesgamuwa"
                 src="https://maps.google.com/maps?width=600&height=400&hl=en&q=The%20Science%20Brainery%2C%20Boralesgamuwa&t=&z=16&ie=UTF8&iwloc=B&output=embed"

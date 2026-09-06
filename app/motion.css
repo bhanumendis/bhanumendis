@@ -346,9 +346,14 @@
   from{opacity:.75;transform:translate(-50%,0);}
   to{opacity:0;transform:translate(-50%,26px);}
 }
+/* The pinned backdrop word. It resolves to .34, not 1: the philosophy
+   copy in #ethos sits directly on top of a 460px letterform, and at full
+   opacity the two competed instead of layering. .34 keeps the word
+   unmistakably present while leaving the text the brightest thing in the
+   frame, which is the whole point of a backdrop. */
 @keyframes wordScrub{
-  from{transform:scale(.86) translate3d(0,40px,0);letter-spacing:.06em;opacity:.55;}
-  to{transform:scale(1.12) translate3d(0,-40px,0);letter-spacing:-.01em;opacity:1;}
+  from{transform:scale(.86) translate3d(0,40px,0);letter-spacing:.06em;opacity:.14;}
+  to{transform:scale(1.12) translate3d(0,-40px,0);letter-spacing:-.01em;opacity:.34;}
 }
 @keyframes cardArrive{
   from{opacity:0;transform:perspective(1100px) translate3d(0,86px,0) rotateX(9deg) scale(.94);}
@@ -357,4 +362,448 @@
 @keyframes mediaOpen{
   from{opacity:.3;transform:scale(.84);border-radius:64px;}
   to{opacity:1;transform:scale(1);border-radius:var(--rl);}
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SCROLL MOTION v3
+   ──────────────────────────────────────────────────────────────────
+   Appended after the "Signal" system on purpose, same reasoning as the
+   visual-system block in globals.css: it layers over the base rules
+   without editing them in place, so the fallback path stays intact.
+
+   Four additions, each earning its place against the brief:
+     1. the smooth-scroll handshake  (html[data-smooth="on"])
+     2. the nav that hides going down and returns coming up
+     3. clip-path reveals and the hero's opening cascade
+     4. the pinned horizontal Experience rail
+   Every scroll-linked rule keeps the same two gates as everything
+   above: @supports (animation-timeline) AND no-preference motion.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Smooth-scroll handshake ──────────────────────────────────
+   The rAF loop in SmoothScroll.tsx eases window.scrollY itself. Native
+   scroll-behavior:smooth would run its own easing on top of that and
+   the two fight, so the flag turns the CSS-level one off. Scripted
+   scrolls that ask for smoothing explicitly (the anchor links and the
+   back-to-top button both pass behavior:"smooth") are unaffected by
+   this rule and still animate. */
+html[data-smooth="on"]{scroll-behavior:auto;}
+
+/* ── 2. Hide-on-scroll navigation ────────────────────────────────
+   Transform only — never `top`, which would force layout every frame.
+   The bar is pinned open whenever focus is inside it, because tabbing
+   into an off-screen nav is a WCAG 2.4.11 failure, not a nicety. */
+#nav{
+  transform:translate3d(0,0,0);
+  transition:background .4s ease,backdrop-filter .4s ease,padding .3s ease,
+             transform .52s var(--ease-expo);
+  will-change:transform;
+}
+#nav.nav-hide{transform:translate3d(0,-118%,0);}
+#nav:focus-within,
+#nav:hover{transform:translate3d(0,0,0)!important;}
+
+/* ── 3a. Clip-path reveals ───────────────────────────────────────
+   A wipe reads as deliberate where a fade reads as loading. `.m-clip`
+   wipes in from the leading edge; `.m-curtain` lifts a panel open from
+   its own bottom edge. Both animate clip-path only, which the
+   compositor handles without a repaint. */
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion: no-preference) {
+
+  html[data-motion="native"] .m-clip{
+    animation:sigClip linear both;
+    animation-timeline:view();
+    animation-range:entry 4% entry 58%;
+  }
+  /* Same wipe, mirrored — for right-aligned or RTL-set text, where a
+     left-to-right wipe would run against the copy's own alignment. */
+  html[data-motion="native"] .m-clip-rev{
+    animation:sigClipRev linear both;
+    animation-timeline:view();
+    animation-range:entry 4% entry 58%;
+  }
+  html[data-motion="native"] .m-curtain{
+    animation:sigCurtain linear both;
+    animation-timeline:view();
+    animation-range:entry 0% cover 34%;
+  }
+
+  /* The pinned philosophy lines had no motion of their own. Numeral,
+     heading and paragraph now wipe in across offset ranges, so each
+     block assembles itself as it arrives instead of appearing whole. */
+  html[data-motion="native"] #ethos .pin-num{
+    animation:sigClip linear both;
+    animation-timeline:view();animation-range:entry 8% entry 42%;
+  }
+  html[data-motion="native"] #ethos .pin-h{
+    animation:sigClip linear both;
+    animation-timeline:view();animation-range:entry 14% entry 58%;
+  }
+  html[data-motion="native"] #ethos .pin-p{
+    animation:sigRise linear both;
+    animation-timeline:view();animation-range:entry 20% entry 66%;
+  }
+  /* Right-aligned lines wipe from the right, so the motion follows the
+     text's own alignment instead of fighting it. */
+  html[data-motion="native"] #ethos .pin-line:nth-child(even) .pin-num,
+  html[data-motion="native"] #ethos .pin-line:nth-child(even) .pin-h{
+    animation-name:sigClipRev;
+  }
+
+  /* The map panel is the last big media block on the page; a curtain
+     gives the closing section the same weight as the opening one. */
+  html[data-motion="native"] .map-embed{
+    animation:sigCurtain linear both;
+    animation-timeline:view();animation-range:entry 0% cover 30%;
+  }
+
+  /* ── 3b. The hero cascade ──────────────────────────────────────
+     Time-based, not scroll-based, and deliberately so: the hero is
+     already on screen at load, so there is no scroll range to scrub.
+     This is the one place in the system where a delay ladder is the
+     honest tool. `both` holds the from-state through the delay, so
+     nothing flashes at its final position first. */
+  html[data-motion="native"] #hero .h1,
+  html[data-motion="native"] #hero .h-sub,
+  html[data-motion="native"] #hero .h-tagline,
+  html[data-motion="native"] #hero .h-actions,
+  html[data-motion="native"] #hero .h-stats{
+    animation:heroEnter .95s var(--ease-expo) both;
+  }
+  html[data-motion="native"] #hero .h1{animation-delay:.08s;}
+  html[data-motion="native"] #hero .h-sub{animation-delay:.20s;}
+  html[data-motion="native"] #hero .h-tagline{animation-delay:.30s;}
+  html[data-motion="native"] #hero .h-actions{animation-delay:.40s;}
+  html[data-motion="native"] #hero .h-stats{animation-delay:.50s;}
+
+  /* ── 3c. Sections let go as they leave ─────────────────────────
+     Depth between neighbours: the outgoing section sinks and dims while
+     the incoming one arrives at full strength. Kept shallow (opacity
+     .38, 34px) — enough to feel layered, never enough to make a
+     half-scrolled section hard to read. #hero runs its own exit
+     sequence and the closing sections must stay fully lit, so both are
+     left out. */
+  html[data-motion="native"] #about .sw,
+  html[data-motion="native"] #tutoring .sw,
+  html[data-motion="native"] #skills .sw,
+  html[data-motion="native"] #press .sw,
+  html[data-motion="native"] #linkedin .sw,
+  html[data-motion="native"] #achieve .sw{
+    animation:sectionRelease linear both;
+    animation-timeline:view();
+    animation-range:exit 12% exit 100%;
+  }
+}
+}
+
+@keyframes sigClip{
+  from{clip-path:inset(0 100% 0 0);opacity:0;}
+  to{clip-path:inset(0 0 0 0);opacity:1;}
+}
+@keyframes sigClipRev{
+  from{clip-path:inset(0 0 0 100%);opacity:0;}
+  to{clip-path:inset(0 0 0 0);opacity:1;}
+}
+@keyframes sigCurtain{
+  from{clip-path:inset(0 0 100% 0);transform:scale(1.05);}
+  to{clip-path:inset(0 0 0 0);transform:scale(1);}
+}
+@keyframes heroEnter{
+  /* The to-state consumes --hx/--hy so the pointer field survives this
+     animation's `both` fill, which would otherwise pin transform at 0 and
+     outrank anything the rAF loop wrote inline. */
+  from{opacity:0;transform:translate3d(0,26px,0);filter:blur(6px);}
+  to{opacity:1;transform:translate3d(var(--hx,0px),var(--hy,0px),0);filter:blur(0);}
+}
+@keyframes sectionRelease{
+  from{opacity:1;transform:translate3d(0,0,0);}
+  to{opacity:.38;transform:translate3d(0,-34px,0);}
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   4. THE PINNED HORIZONTAL RAIL  (#exp — "Projects Led")
+   ──────────────────────────────────────────────────────────────────
+   The default state written first is the FALLBACK: a plain vertical
+   stack, exactly what the section was before. Everything that makes it
+   horizontal lives behind the media query + support + motion gates
+   below, so a narrow screen, an old browser and a reduced-motion
+   preference all land on the stack with no special casing.
+
+   How the pin works: `.hscroll` is a tall block that publishes an
+   `--exphs` view timeline. `.hscroll-sticky` pins one viewport inside
+   it. For a subject taller than the scrollport, the `contain` range
+   runs from "subject top at scrollport top" to "subject bottom at
+   scrollport bottom" — precisely the interval the sticky child stays
+   pinned. So the track's horizontal travel is scrubbed one-to-one with
+   the pin, on the compositor, with no JavaScript and no measuring.
+   ══════════════════════════════════════════════════════════════════ */
+.hscroll{position:relative;z-index:1;}
+.hscroll-rail{position:relative;}
+.hscroll-hint{display:none;}
+
+@supports (animation-timeline: view()) {
+@media (min-width:901px) and (prefers-reduced-motion: no-preference) {
+  html[data-motion="native"] #exp .hscroll{
+    /* One viewport to hold the pin, plus a slice of scroll per card.
+       The show-more button is gone from the rail, so all ten cards are
+       always present and the count is a constant — it no longer tracks
+       any React state. 52vh rather than the old 62vh: at ten cards the
+       original pacing held the pin for 720vh, which overstayed. */
+    height:calc(100vh + (var(--hs-count, 11) - 1) * 52vh);
+    view-timeline-name:--exphs;
+    view-timeline-axis:block;
+  }
+  html[data-motion="native"] #exp .hscroll-sticky{
+    position:sticky;top:0;height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+    overflow:hidden;
+  }
+  html[data-motion="native"] #exp .hscroll-head{
+    /* Drop the 1120px centring: inside the pin the rail runs full-bleed
+       from 56px, and a centred heading would sit off that line. */
+    max-width:none;margin:0;padding:0 56px 30px;flex:0 0 auto;
+  }
+  html[data-motion="native"] #exp .hscroll-rail{
+    flex:0 0 auto;
+    /* `clip` rather than `hidden`: it cannot become a scroll container,
+       so the browser can never scroll a focused card into view behind
+       our back. The focusin handler in page.tsx owns that instead. */
+    overflow:clip;
+  }
+  html[data-motion="native"] #exp .hscroll-track{
+    flex-direction:row;align-items:stretch;
+    gap:22px;width:max-content;
+    padding:6px 8vw 6px 56px;
+    animation:railTravel linear both;
+    animation-timeline:--exphs;
+    animation-range:contain 0% contain 100%;
+    will-change:transform;
+  }
+  html[data-motion="native"] #exp .hscroll-track > .ecard{
+    /* A fixed width is what makes the travel arithmetic predictable, and
+       the height cap plus internal scroll keeps the longest entry inside
+       one viewport instead of pushing the rail off the bottom. */
+    flex:0 0 clamp(320px,26vw,400px);
+    /* The cap only bites on short viewports; at 900px tall the longest
+       card (Senior Head Prefect) measures 413px and never scrolls. When
+       it does bite, the card scrolls inside itself rather than pushing
+       the rail past the fold — and the scrollbar is tinted to the theme
+       so it reads as part of the card, not as browser chrome. */
+    max-height:min(66vh,560px);
+    overflow-y:auto;
+    scrollbar-width:thin;
+    scrollbar-color:var(--pill-b) transparent;
+    /* The cards already arrive sideways; the vertical `cardArrive`
+       entrance from the Signal layer would double-move them. */
+    animation:none;opacity:1;
+  }
+  html[data-motion="native"] #exp .hscroll-track > .ecard::-webkit-scrollbar{width:6px;}
+  html[data-motion="native"] #exp .hscroll-track > .ecard::-webkit-scrollbar-thumb{
+    background:var(--pill-b);border-radius:100px;
+  }
+  /* A scroll affordance, since a pinned section reads as a dead stop
+     until the first card actually moves. */
+  html[data-motion="native"] #exp .hscroll-hint{
+    display:flex;align-items:center;gap:14px;
+    margin:26px 0 0 56px;flex:0 0 auto;
+    font-family:var(--mono);font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--muted);
+    animation:hintFade linear both;
+    animation-timeline:--exphs;
+    animation-range:contain 0% contain 18%;
+  }
+  html[data-motion="native"] #exp .hscroll-hint-rule{
+    display:block;width:64px;height:1px;background:var(--sky);opacity:.6;
+  }
+  /* The WORK backdrop is pinned for the whole rail now, so its scrub
+     follows the rail's own progress rather than the section's full
+     cover range (which is many viewports long here).
+
+     It also needs its own, quieter keyframe. `wordScrub` resolves to
+     full opacity, which was fine when the section's cover range put the
+     word at full strength for a single instant in passing. Behind a rail
+     that holds it on screen for three thousand pixels it turned into a
+     wall of type competing with the card text, so the rail caps it at
+     .26 and halves the scale swing. Measured on the pinned frame, not
+     guessed: at .26 over #000 the word sits far below the card copy in
+     contrast, which is exactly what a backdrop should do. */
+  html[data-motion="native"] #exp .pin-word{
+    animation-name:wordScrubRail;
+    animation-timeline:--exphs;
+    animation-range:contain 0% contain 100%;
+  }
+  .dark #exp .pin-word{filter:drop-shadow(0 0 60px rgba(79,157,255,.18));}
+
+  /* Solid-ish panels, not glass, once the word is behind them. The base
+     .ecard is a 6% wash over the ground so the grain shows through; over
+     a 460px letterform that reads as text-on-text. Inside the rail the
+     card gets a near-opaque ground of its own and the word stays a
+     backdrop instead of bleeding into the copy. */
+  html[data-motion="native"] #exp .hscroll-track > .ecard{
+    background:color-mix(in srgb,var(--bg) 88%,var(--card-bg));
+    backdrop-filter:saturate(150%) blur(26px);
+    -webkit-backdrop-filter:saturate(150%) blur(26px);
+  }
+}
+}
+
+@keyframes railTravel{
+  from{transform:translate3d(0,0,0);}
+  /* -100% is the track's own width; +100vw brings its right edge back to
+     the viewport's right edge. The last card lands flush whatever the
+     card count is, with no measurement in JavaScript. */
+  to{transform:translate3d(calc(100vw - 100%),0,0);}
+}
+@keyframes wordScrubRail{
+  from{transform:scale(.94) translate3d(0,26px,0);letter-spacing:.03em;opacity:.10;}
+  to{transform:scale(1.04) translate3d(0,-26px,0);letter-spacing:-.01em;opacity:.26;}
+}
+@keyframes hintFade{
+  from{opacity:1;transform:translate3d(0,0,0);}
+  to{opacity:0;transform:translate3d(-18px,0,0);}
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   REDUCED MOTION — the v3 additions join the hard stop above.
+   ══════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce){
+  html[data-motion="native"] .m-clip,
+  html[data-motion="native"] .m-clip-rev,
+  html[data-motion="native"] .m-curtain,
+  html[data-motion="native"] #ethos .pin-num,
+  html[data-motion="native"] #ethos .pin-h,
+  html[data-motion="native"] #ethos .pin-p,
+  html[data-motion="native"] .map-embed,
+  html[data-motion="native"] #hero .h1,
+  html[data-motion="native"] #hero .h-sub,
+  html[data-motion="native"] #hero .h-tagline,
+  html[data-motion="native"] #hero .h-actions,
+  html[data-motion="native"] #hero .h-stats,
+  html[data-motion="native"] #exp .hscroll-track,
+  html[data-motion="native"] #exp .hscroll-hint,
+  html[data-motion="native"] main > section > .sw{
+    animation:none!important;opacity:1!important;transform:none!important;
+    clip-path:none!important;filter:none!important;
+  }
+  #nav,#nav.nav-hide{transform:none!important;transition:none!important;}
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TIMELINE (/timeline) — scroll-driven layer
+
+   /timeline had no scroll motion at all: `tlFadeIn` is a TIME ladder,
+   so all fourteen items finished animating within a second of load and
+   everything below the fold had already played before you reached it.
+
+   As everywhere else, the default written in globals.css is the
+   fallback and stays untouched; this block upgrades it and is gated on
+   the same three conditions as the rest of the system.
+
+   The one structural constraint worth stating: an element cannot run
+   two transform animations off two different timelines. So the
+   continuous parallax lives on `.tl-item` and the entrance on
+   `.tl-card` — parent and child, composing naturally.
+   ══════════════════════════════════════════════════════════════════ */
+@supports (animation-timeline: view()) {
+@media (prefers-reduced-motion: no-preference) {
+
+  /* 1. The pads float. --drift is set per card from Timeline.tsx so they
+        travel at different rates and read as different depths rather than
+        one sliding slab. This also replaces the fallback's time ladder —
+        the shorthand resets the animation-delay that `--d` carried. */
+  html[data-motion="native"] #timeline .tl-item{
+    animation:tlDrift linear both;
+    animation-timeline:view(block);
+    animation-range:cover 0% cover 100%;
+    will-change:transform;
+  }
+
+  /* 2. Each card arrives from its own side of the spine. */
+  html[data-motion="native"] #timeline .tl-card{
+    animation:tlPadEnter linear both;
+    animation-timeline:view(block);
+    animation-range:entry 0% entry 92%;
+  }
+  html[data-motion="native"] #timeline .tl-left  .tl-card{--enter-x:-44px;}
+  html[data-motion="native"] #timeline .tl-right .tl-card{--enter-x:44px;}
+
+  /* 3. The spine draws itself. `.tl-wrap` publishes the timeline; the fill
+        scrubs over it, leaving the static gradient underneath as the base. */
+  html[data-motion="native"] #timeline .tl-wrap{
+    view-timeline-name:--tlspine;
+    view-timeline-axis:block;
+  }
+  html[data-motion="native"] #timeline .tl-line-fill{
+    animation:tlSpine linear both;
+    animation-timeline:--tlspine;
+    animation-range:cover 0% cover 100%;
+  }
+
+  /* 4. Dots ignite as they cross the middle of the viewport.
+        This animates `scale`, the INDEPENDENT transform property, not
+        `transform` — the dots already carry a side-specific
+        translateX(±50%) that centres them on the spine, and animating
+        `transform` here would overwrite it and knock every dot out of
+        alignment. `scale` composes with it instead. */
+  html[data-motion="native"] #timeline .tl-dot{
+    animation:tlIgnite linear both;
+    animation-timeline:view(block);
+    animation-range:cover 0% cover 100%;
+  }
+
+  /* 5. The ghost year in the empty half fades up, holds, and hands off. */
+  html[data-motion="native"] #timeline .tl-ghost{
+    animation:tlGhost linear both;
+    animation-timeline:view(block);
+    animation-range:cover 0% cover 100%;
+  }
+
+  /* 6. Ambient pads drift against the page scroll, each at its own rate. */
+  html[data-motion="native"] #timeline .tl-blob{
+    animation:tlBlob linear both;
+    animation-timeline:scroll(root block);
+    will-change:transform;
+  }
+}
+}
+
+@keyframes tlDrift{
+  from{transform:translate3d(0,var(--drift,10px),0);}
+  to{transform:translate3d(0,calc(var(--drift,10px) * -1),0);}
+}
+@keyframes tlPadEnter{
+  from{opacity:0;transform:translate3d(var(--enter-x,40px),16px,0) scale(.968);}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1);}
+}
+@keyframes tlSpine{
+  from{transform:scaleY(0);}
+  to{transform:scaleY(1);}
+}
+@keyframes tlIgnite{
+  0%{scale:1;box-shadow:0 0 6px rgba(56,150,230,.18);}
+  50%{scale:1.3;box-shadow:0 0 22px rgba(56,150,230,.7);}
+  100%{scale:1;box-shadow:0 0 6px rgba(56,150,230,.18);}
+}
+@keyframes tlGhost{
+  0%{opacity:0;transform:translate3d(0,24px,0);}
+  50%{opacity:1;transform:translate3d(0,0,0);}
+  100%{opacity:0;transform:translate3d(0,-24px,0);}
+}
+@keyframes tlBlob{
+  to{transform:translate3d(var(--bx,0),var(--by,-120px),0);}
+}
+
+/* Reduced motion joins the hard stop: the page falls back to the plain
+   static timeline, ambient pads held still. */
+@media (prefers-reduced-motion: reduce){
+  html[data-motion="native"] #timeline .tl-item,
+  html[data-motion="native"] #timeline .tl-card,
+  html[data-motion="native"] #timeline .tl-dot,
+  html[data-motion="native"] #timeline .tl-ghost,
+  html[data-motion="native"] #timeline .tl-blob,
+  html[data-motion="native"] #timeline .tl-line-fill{
+    animation:none!important;opacity:1!important;transform:none!important;scale:none!important;
+  }
+  #timeline .tl-line-fill{opacity:0!important;}
 }

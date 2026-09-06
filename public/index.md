@@ -19,7 +19,11 @@ Private tuition at **The Science Brainery**, Boralesgamuwa.
 
 ## About
 
-Bhanu is a multi-disciplinary leader who works where creativity meets careful execution. Today he teaches Science, Maths and Computing at The Science Brainery. As 2024/2025 Senior Head Prefect of Lyceum International School he directed *Elysium '25* at Cinnamon Life — a student-led graduation for 26,000+ Lyceumers — and coordinated *Maathra 14* at the BMICH for 750+ performers. He is a certified audio engineer, a National Child Protection Ambassador, and a multiple national and international champion.
+Educator, performing artist and audio engineer based in Colombo, Sri Lanka. Currently teaching Science, Maths and Computing at The Science Brainery.
+
+- **Leadership** — 2024/2025 Senior Head Prefect of Lyceum International School. Overall coordinator for *Maathra 14* at the BMICH, a production of 750+ performers, and director of the *Elysium '25* graduation at Cinnamon Life for 26,000+ Lyceumers.
+- **Audio and the arts** — Sangeetha Visharadha, First Division. Founding President of the Eastern Music Club and founder of the *Swara* concert series. Works in Cubase 14 Pro, from composition through to final master.
+- **Community** — Leads regional flood-relief and stationery donation drives in the Kurunegala district. National Child Protection Ambassador.
 
 ## Experience
 
@@ -29,7 +33,10 @@ Bhanu is a multi-disciplinary leader who works where creativity meets careful ex
 - **Founder — Swara Concert** (Dec 2023 – Sep 2025). Sri Lanka's largest island-wide school Eastern music concert; 700+ performers.
 - **Founder — Padura Concert** (Dec 2023 – Sep 2025). Original instrumental concert series.
 - **Founding President — Eastern Music Club**, Lyceum International School.
-- **Head of Logistics — Model UN** (LISMUN & SLMUN), 2023–2024.
+- **Head of Logistics — Model UN** (LISMUN & SLMUN), 2023–2024. Venue, delegate registration and on-ground operations across multi-day conferences.
+- **News Reporter & Voice Actor** — Institute of Media & Performing Arts (Sep 2019 – Sep 2024). News reporting, voice acting, dubbing and narration.
+- **Aviator — Flight Training** — Sri Lanka Air Force, Ratmalana (Sep 2020 – Mar 2021). Beginner through advanced aviation programme, theory plus hands-on flight training.
+- **Regional Relief Drive Lead** — Kurunegala, Sri Lanka (ongoing). Coordinates volunteers and resources for community relief efforts.
 
 ## Awards & Honours
 

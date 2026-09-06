@@ -85,11 +85,56 @@ img{max-width:100%;}
 /* ── Custom cursor (desktop only) ── */
 body{cursor:auto;}
 body.using-mouse{cursor:none;}
-#cd{position:fixed;width:7px;height:7px;border-radius:50%;background:var(--sky);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .3s;opacity:0;}
-#cr{position:fixed;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--pill-b);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.16,1,.3,1),height .32s cubic-bezier(.16,1,.3,1),border-color .3s,opacity .3s;opacity:0;}
+#cd{position:fixed;left:0;top:0;width:7px;height:7px;border-radius:50%;background:var(--sky);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .3s;opacity:0;}
+#cr{position:fixed;left:0;top:0;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--pill-b);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.16,1,.3,1),height .32s cubic-bezier(.16,1,.3,1),border-color .3s,opacity .3s;opacity:0;}
 body.using-mouse #cd,body.using-mouse #cr{opacity:1;}
 .cg #cd{width:11px;height:11px;}
 .cg #cr{width:54px;height:54px;border-color:var(--card-hb);}
+
+/* ── Context-aware cursor ──
+   The ring turns into an affordance over specific surfaces: drag over the
+   coverflow, a play triangle over the LinkedIn facades, a pin over the map,
+   an arrow over anything that leaves the site. Every icon is drawn with
+   borders on the ring's own pseudo-elements — no image and no data: URI, so
+   none of it touches the CSP. The centre dot hides so the icon reads clean.
+   NOTE: a cross-origin iframe swallows pointer events, so the pin shows on
+   approach and around the map's frame; inside it the OS cursor takes over. */
+body[data-cursor-ctx] #cd{opacity:0;}
+body[data-cursor-ctx="drag"] #cr{width:66px;height:66px;border-color:var(--sky);}
+body[data-cursor-ctx="play"] #cr,
+body[data-cursor-ctx="pin"] #cr{width:58px;height:58px;border-color:var(--sky);}
+body[data-cursor-ctx="external"] #cr{width:52px;height:52px;border-color:var(--sky);}
+
+body[data-cursor-ctx="drag"] #cr::before,
+body[data-cursor-ctx="drag"] #cr::after{
+  content:"";position:absolute;top:50%;width:7px;height:7px;
+  border-top:1.5px solid var(--sky);border-right:1.5px solid var(--sky);
+}
+body[data-cursor-ctx="drag"] #cr::before{left:13px;transform:translateY(-50%) rotate(-135deg);}
+body[data-cursor-ctx="drag"] #cr::after{right:13px;transform:translateY(-50%) rotate(45deg);}
+
+body[data-cursor-ctx="play"] #cr::before{
+  content:"";position:absolute;top:50%;left:50%;
+  border-left:12px solid var(--sky);
+  border-top:8px solid transparent;border-bottom:8px solid transparent;
+  transform:translate(-35%,-50%);
+}
+
+body[data-cursor-ctx="pin"] #cr::before{
+  content:"";position:absolute;top:50%;left:50%;width:12px;height:12px;
+  border-radius:50% 50% 50% 0;background:var(--sky);
+  transform:translate(-50%,-56%) rotate(-45deg);
+}
+
+body[data-cursor-ctx="external"] #cr::before{
+  content:"";position:absolute;top:50%;left:50%;width:9px;height:9px;
+  border-top:1.5px solid var(--sky);border-right:1.5px solid var(--sky);
+  transform:translate(-50%,-50%) rotate(-45deg);
+}
+body[data-cursor-ctx="external"] #cr::after{
+  content:"";position:absolute;top:50%;left:50%;width:14px;height:1.5px;
+  background:var(--sky);transform:translate(-50%,-50%) rotate(-45deg);
+}
 .dark #cr{box-shadow:0 0 18px rgba(79,157,255,0.35);}
 @media (hover:none) and (pointer:coarse){
   #cd,#cr{display:none!important;opacity:0!important;}
@@ -148,7 +193,22 @@ body.using-mouse .sidebar-right a,body.using-mouse .theme-btn{cursor:none;}
 .hero-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;opacity:.10;pointer-events:none;z-index:0;}
 .dark .hero-bg-img{opacity:.14;}
 .hero-bg-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,var(--bg) 0%,transparent 32%,transparent 62%,var(--bg) 100%);z-index:1;pointer-events:none;transition:background .5s ease;}
-.hero-content{position:relative;z-index:2;transition:transform .3s cubic-bezier(.16,1,.3,1);}
+.hero-content{position:relative;z-index:2;}
+#hero .h1,#hero .h-sub,#hero .h-tagline,#hero .h-actions,#hero .h-stats{
+  transform:translate3d(var(--hx,0px),var(--hy,0px),0);
+}
+.hero-glow{
+  position:absolute;left:0;top:0;width:620px;height:620px;
+  margin:-310px 0 0 -310px;border-radius:50%;
+  background:radial-gradient(circle,var(--hero-glow),transparent 68%);
+  pointer-events:none;z-index:1;opacity:0;
+  transition:opacity .6s ease;will-change:transform;
+}
+body.using-mouse #hero .hero-glow{opacity:1;}
+@media (prefers-reduced-motion:reduce){
+  .hero-glow{display:none;}
+  #hero .h1,#hero .h-sub,#hero .h-tagline,#hero .h-actions,#hero .h-stats{transform:none;}
+}
 .h1{font-family:var(--display);font-size:clamp(58px,11vw,150px);line-height:.9;font-weight:900;letter-spacing:-.03em;margin-bottom:16px;opacity:0;animation:fu .9s .18s cubic-bezier(.16,1,.3,1) forwards;}
 .h1 .blue{color:var(--sky2);}
 .dark .h1{text-shadow:0 0 44px rgba(79,157,255,0.25);}
@@ -252,6 +312,12 @@ body.using-mouse .sidebar-right a,body.using-mouse .theme-btn{cursor:none;}
 .etags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
 .et{font-family:var(--mono);font-size:10px;font-weight:500;padding:5px 12px;border-radius:100px;background:var(--faint);color:var(--white);letter-spacing:.03em;opacity:.82;}
 .show-more-btn{display:flex;align-items:center;justify-content:center;gap:8px;margin:20px auto 0;padding:13px 32px;border-radius:100px;background:var(--card-bg);border:1px solid var(--card-b);font-family:var(--mono);font-size:12px;font-weight:500;color:var(--white);letter-spacing:.03em;box-shadow:var(--glass-edge);}
+@media (min-width:901px){
+  .show-more-btn{display:none;}
+}
+@media (max-width:900px){
+  #exp .hscroll[data-collapsed="true"] .ecard:nth-of-type(n+6){display:none;}
+}
 .show-more-btn:hover{background:var(--card-hbg);border-color:var(--card-hb);color:var(--sky);}
 
 /* ── LinkedIn ── */
@@ -356,7 +422,23 @@ footer{position:relative;z-index:1;background:var(--bg1);padding:56px 56px 32px;
 /* ════════════════════════════════════════════════════════════════
    TIMELINE (separate /timeline route)
    ════════════════════════════════════════════════════════════════ */
-#timeline .sw{padding-top:120px;}
+#timeline{position:relative;overflow-x:clip;}
+#timeline .sw{padding-top:120px;position:relative;z-index:1;}
+/* Ambient pads — decorative depth behind the spine. */
+.tl-ambient{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.tl-blob{position:absolute;border-radius:50%;background:radial-gradient(circle,var(--hero-glow),transparent 70%);filter:blur(44px);}
+.tl-blob-1{width:520px;height:520px;top:5%;left:-9%;--bx:34px;--by:-150px;}
+.tl-blob-2{width:400px;height:400px;top:41%;right:-7%;--bx:-42px;--by:-260px;}
+.tl-blob-3{width:600px;height:600px;bottom:3%;left:24%;--bx:26px;--by:-90px;}
+/* The scrubbing fill sits over the static gradient spine, so a browser
+   without scroll timelines simply keeps the spine it always had. */
+.tl-line-fill{position:absolute;inset:0;background:linear-gradient(to bottom,var(--sky),var(--sky2));transform-origin:top;transform:scaleY(0);}
+/* One half of every timeline row is empty by construction; the ghost year
+   fills it. Sized so the widest label ("2015 – 16") still clears the half. */
+.tl-ghost{position:absolute;top:-14px;font-family:var(--display);font-size:clamp(46px,5.4vw,88px);font-weight:900;line-height:1;letter-spacing:-.03em;color:var(--faint);white-space:nowrap;pointer-events:none;user-select:none;z-index:0;}
+.tl-right .tl-ghost{right:100%;margin-right:52px;}
+.tl-left .tl-ghost{left:100%;margin-left:52px;}
+.tl-card{position:relative;z-index:1;}
 .tl-wrap{position:relative;padding:20px 0 40px;}
 .tl-line{position:absolute;left:50%;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,var(--pill-b) 10%,var(--pill-b) 90%,transparent);transform:translateX(-50%);}
 .tl-item{display:flex;align-items:flex-start;gap:32px;margin-bottom:48px;position:relative;width:50%;}
@@ -373,14 +455,14 @@ footer{position:relative;z-index:1;background:var(--bg1);padding:56px 56px 32px;
 .tl-card:hover{border-color:var(--card-hb);background:var(--card-hbg);transform:translateY(-3px);box-shadow:var(--glass-edge),var(--shadow);}
 .tl-highlight .tl-card{border-color:var(--pill-b);background:var(--card-hbg);}
 .tl-active .tl-card{border-color:var(--card-hb);background:var(--card-hbg);}
-.tl-year{font-family:var(--display);font-size:28px;font-weight:900;color:var(--sky2);line-height:1;margin-bottom:8px;letter-spacing:-.02em;}
+.tl-year{display:none;font-family:var(--display);font-size:28px;font-weight:900;color:var(--sky2);line-height:1;margin-bottom:8px;letter-spacing:-.02em;}
 .tl-title{font-family:var(--display);font-size:17px;font-weight:800;color:var(--white);margin-bottom:10px;line-height:1.3;letter-spacing:-.01em;}
 .tl-desc{font-size:13.5px;font-weight:400;line-height:1.75;color:var(--soft);margin-bottom:14px;}
 .tl-tags{display:flex;flex-wrap:wrap;gap:6px;}
 .tl-left .tl-tags{justify-content:flex-end;}
 .tl-tag{font-family:var(--mono);font-size:9px;font-weight:500;padding:3px 10px;border-radius:100px;background:var(--faint);color:var(--white);letter-spacing:.03em;opacity:.78;}
 @keyframes tlFadeIn{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-.tl-fadeIn{animation:tlFadeIn .55s cubic-bezier(.16,1,.3,1) both;}
+.tl-fadeIn{animation:tlFadeIn .55s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0s);}
 
 /* ════════════════════════════════════════════════════════════════
    REVEAL — 3D "Inception" entrance (one-shot, never a visibility gate)
@@ -464,6 +546,9 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
   /* Back-to-top becomes a bottom-right button on mobile (sidebar is hidden). */
   .to-top{top:auto;bottom:18px;right:16px;transform:translateY(0) translateX(16px);width:44px;height:44px;}
   .to-top.visible{transform:translateY(0) translateX(0);}
+  .tl-ghost{display:none;}
+  .tl-year{display:block;}
+  .tl-blob{opacity:.55;filter:blur(60px);}
   .tl-line{left:20px;}
   .tl-item{width:100%;margin-left:0!important;padding-left:52px!important;padding-right:0!important;flex-direction:row!important;text-align:left!important;}
   .tl-dot{left:13px!important;right:auto!important;transform:translateX(0)!important;}
@@ -496,115 +581,214 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
   .tl-pulse,.scroll-cue{display:none;}
 }
 
-/* ── Photo Slideshow Section ── */
+/* ── Memories (coverflow) ── */
 #photos {
   padding-bottom: 0;
 }
-.slideshow-container {
-  max-width: 400px;
+
+/* ── Memories: 3-up coverflow ──────────────────────────────────────
+   Three slides read as visible. The pair at depth 2 is mounted but at
+   opacity 0 — it exists so a drag never mounts a card mid-gesture.
+
+   Every slide reads the same two inherited values: `--o` (its discrete
+   signed offset from the centre, set per-slide in React) and `--dragx`
+   (live pointer travel, written imperatively on the stage). Because the
+   scale/rotate/opacity are keyed to the DISCRETE depth and only the
+   translate carries `--dragx`, releasing the pointer is just an index
+   change — and the snap is this transition, on the compositor. */
+.cf {
+  max-width: 760px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 26px;
+  /* The flanks deliberately overhang the stage on narrow screens; clip
+     (not hidden) keeps that from becoming a page-level scrollbar without
+     turning the stage into a scroll container. */
+  overflow-x: clip;
 }
-.slideshow-viewport {
+.cf-stage {
+  --slide-w: clamp(200px, 19vw, 272px);
+  --step: calc(var(--slide-w) * 0.82);
+  --dragx: 0px;
   position: relative;
-  aspect-ratio: 9/16;
+  height: calc(var(--slide-w) * 16 / 9);
+  perspective: 1500px;
+  perspective-origin: 50% 50%;
+  /* Vertical page scroll still belongs to the page; only the horizontal
+     axis is ours. */
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.cf-stage.is-dragging { cursor: grabbing; }
+.cf-stage:focus-visible {
+  outline: 2px solid var(--sky);
+  outline-offset: 14px;
   border-radius: var(--r2xl);
+}
+.cf-slide {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--slide-w);
+  height: 100%;
+  margin-left: calc(var(--slide-w) / -2);
+  border-radius: var(--r2xl);
+  overflow: hidden;
   border: 1px solid var(--card-b);
   background: var(--card-bg);
-  overflow: hidden;
   box-shadow: var(--glass-edge);
+  will-change: transform, opacity;
+  transition:
+    transform 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.72s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.slideshow-slide {
-  position: relative;
-  width: 100%;
-  height: 100%;
+/* 1:1 with the finger — a transition here would read as lag. */
+.cf-stage.is-dragging .cf-slide { transition: none; }
+
+.cf-slide[data-depth="0"] {
+  transform: translate3d(var(--dragx), 0, 0) rotateY(0deg) scale(1);
+  opacity: 1;
+  z-index: 3;
+  box-shadow: var(--glass-edge), var(--shadow);
 }
-.slideshow-img {
+.cf-slide[data-depth="1"] {
+  transform:
+    translate3d(calc(var(--o) * var(--step) + var(--dragx)), 0, 0)
+    rotateY(calc(var(--o) * -20deg))
+    scale(0.8);
+  opacity: 0.5;
+  z-index: 2;
+}
+.cf-slide[data-depth="2"] {
+  transform:
+    translate3d(calc(var(--o) * var(--step) * 0.94 + var(--dragx)), 0, 0)
+    rotateY(calc(var(--o) * -26deg))
+    scale(0.62);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.cf-img {
   object-fit: cover;
-  transition: opacity 0.5s ease-in-out;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
-.slideshow-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
+
+.cf-skeleton {
+  /* Mirrors .cf-stage's height exactly so the code-split swap costs no CLS. */
+  --slide-w: clamp(200px, 19vw, 272px);
+  height: calc(var(--slide-w) * 16 / 9);
+  max-width: 760px;
+  margin: 0 auto;
+  border-radius: var(--r2xl);
+  background: var(--card-bg);
+  border: 1px solid var(--card-b);
+}
+@media (max-width: 700px) {
+  .cf-skeleton { --slide-w: clamp(158px, 52vw, 230px); }
+}
+
+.cf-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.cf-nav {
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: rgba(4, 18, 28, 0.6);
+  background: var(--card-bg);
   border: 1px solid var(--card-b);
   color: var(--white);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(4px);
+  box-shadow: var(--glass-edge);
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.35s ease,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.slideshow-nav:hover {
-  background: var(--sky);
-  color: #04121c;
-  border-color: var(--sky);
+.cf-nav:hover {
+  background: var(--card-hbg);
+  border-color: var(--card-hb);
+  color: var(--sky);
+  transform: translateY(-2px);
 }
-.slideshow-nav.prev {
-  left: 20px;
-}
-.slideshow-nav.next {
-  right: 20px;
-}
-.slideshow-nav svg {
-  width: 24px;
-  height: 24px;
+.cf-nav svg {
+  width: 20px;
+  height: 20px;
   stroke: currentColor;
   fill: none;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.slideshow-indicator {
-  align-self: center;
+.cf-indicator {
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--sky);
-  background: var(--pill-bg);
-  border: 1px solid var(--pill-b);
-  padding: 4px 12px;
-  border-radius: 100px;
-  letter-spacing: 0.05em;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  min-width: 62px;
+  text-align: center;
 }
-.slideshow-thumbs {
+.cf-indicator-n { color: var(--sky); font-weight: 600; }
+.cf-indicator-sep { opacity: 0.4; margin: 0 4px; }
+
+.cf-dots {
   display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding: 4px 0 12px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--pill-b) transparent;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px;
 }
-.slideshow-thumb {
-  flex: 0 0 54px;
-  aspect-ratio: 9/16;
-  border-radius: var(--r);
-  border: 2px solid transparent;
-  overflow: hidden;
-  cursor: pointer;
+.cf-dot {
+  width: 7px;
+  height: 7px;
   padding: 0;
-  background: none;
-  transition: all 0.2s ease;
+  border-radius: 100px;
+  border: none;
+  background: var(--line);
+  cursor: pointer;
+  transition:
+    width 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.35s ease;
 }
-.slideshow-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.cf-dot:hover { background: var(--card-hb); }
+.cf-dot.active { width: 24px; background: var(--sky); }
+
+@media (max-width: 700px) {
+  .cf { gap: 20px; }
+  .cf-stage { --slide-w: clamp(158px, 52vw, 230px); }
+  /* The flanks tuck in tighter so a peek survives a 375px viewport. */
+  .cf-slide[data-depth="1"] {
+    transform:
+      translate3d(calc(var(--o) * var(--step) * 0.92 + var(--dragx)), 0, 0)
+      rotateY(calc(var(--o) * -16deg))
+      scale(0.78);
+  }
 }
-.slideshow-thumb.active {
-  border-color: var(--sky);
-  transform: scale(1.05);
+
+@media (prefers-reduced-motion: reduce) {
+  /* Flat, still, and instant: no perspective, no Y-rotation, no snap
+     animation. The carousel remains fully operable by button and key. */
+  .cf-stage { perspective: none; }
+  .cf-slide { transition: none; }
+  .cf-slide[data-depth="1"] {
+    transform: translate3d(calc(var(--o) * var(--step)), 0, 0) scale(0.8);
+  }
+  .cf-slide[data-depth="2"] {
+    transform: translate3d(calc(var(--o) * var(--step) * 0.94), 0, 0) scale(0.62);
+  }
+  .cf-dot { transition: none; }
 }
-.slideshow-thumb:hover:not(.active) {
-  border-color: var(--card-hb);
-}
+
 
 /* ── Merged Achievements & Credentials Section ── */
 .merged-grid {

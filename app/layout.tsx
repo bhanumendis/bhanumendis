@@ -5,6 +5,7 @@ import "./motion.css";
 import Footer from "./Footer";
 import EasterEgg from "./EasterEgg";
 import SwaraEgg from "./SwaraEgg";
+import SmoothScroll from "./SmoothScroll";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // ── Self-hosted fonts (next/font/local) ──────────────────────────────
@@ -59,8 +60,10 @@ export const metadata: Metadata = {
     default: "Bhanu Mendis",
     template: "%s | Bhanu Mendis",
   },
+  // Kept under ~160 characters: everything past that is truncated in the SERP,
+  // and the old 263-character version spent a third of itself invisibly.
   description:
-    "Bhanu Mendis — Educator and tutor of Science, Mathematics & Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery, Boralesgamuwa. Also a public speaker, audio engineer, Sangeetha Visharadha and three-time All-Island champion from Colombo, Sri Lanka.",
+    "Bhanu Mendis — tutor of Science, Maths & Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery, Boralesgamuwa. Educator, speaker, audio engineer.",
   keywords: [
     "Bhanu Mendis", "Bhanu Mendis tutor", "Science Maths Computing tutor Sri Lanka",
     "Pearson Edexcel tutor Colombo", "The Science Brainery", "Boralesgamuwa tutor",
@@ -82,19 +85,17 @@ export const metadata: Metadata = {
     siteName: "Bhanu Mendis",
     locale: "en_US",
     type: "profile",
-    images: [{
-      url: "/og-image.jpg",
-      width: 1200,
-      height: 630,
-      alt: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer, Colombo, Sri Lanka",
-    }],
+    // No `images` here on purpose: app/opengraph-image.tsx and
+    // app/timeline/opengraph-image.tsx supply them per-route via the file
+    // convention. An explicit entry here would override both and put the
+    // homepage card on the timeline.
   },
   twitter: {
     card: "summary_large_image",
     title: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer",
     description:
       "Educator · Tutor (Science · Maths · Computing) · Public Speaker · Audio Engineer · Visharadha — Colombo, Sri Lanka.",
-    images: ["/og-image.jpg"],
+    // Falls through to the per-route opengraph-image, same as above.
   },
   robots: {
     index: true,
@@ -120,10 +121,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  colorScheme: "light dark",
+  colorScheme: "dark light",
+  // Dark is the default now, so the bare themeColor (used by browsers that
+  // ignore the media variants) must be the dark ground, not the light one.
   themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#05070c" },
-    { media: "(prefers-color-scheme: light)", color: "#f5f7fb" },
+    { color: "#000000" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
   ],
 };
 
@@ -140,7 +143,17 @@ const graph = {
       name: "Bhanu Mendis",
       alternateName: ["භානු මෙන්ඩිස්", "Bhanu"],
       url: "https://bhanumendis.com",
-      image: "https://bhanumendis.com/portrait.jpg",
+      image: {
+        "@type": "ImageObject",
+        "@id": "https://bhanumendis.com/#portrait",
+        url: "https://bhanumendis.com/portrait.jpg",
+        caption: "Bhanu Mendis",
+      },
+      mainEntityOfPage: { "@id": "https://bhanumendis.com/#webpage" },
+      knowsLanguage: [
+        { "@type": "Language", name: "English", alternateName: "en" },
+        { "@type": "Language", name: "Sinhala", alternateName: "si" },
+      ],
       jobTitle: "Educator, Public Speaker, Audio Engineer & Founder",
       description:
         "Bhanu Mendis — Educator and private tutor of Science, Mathematics and Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery in Boralesgamuwa. Also a public speaker, audio engineer, performing artist and Sangeetha Visharadha from Colombo, Sri Lanka; founder of the Swara and Padura concerts.",
@@ -191,6 +204,7 @@ const graph = {
         "Teaching", "Science Education", "Mathematics", "Computing", "Pearson Edexcel",
         "Public Speaking", "Audio Engineering", "Event Production", "Music Production",
         "Eastern Music", "Choral Music", "Leadership", "Compering", "DAW Architecture",
+        "Cubase", "Music Composition", "Mixing & Mastering", "Community Service",
       ],
       award: [
         "All-Island Dancing Champion (2018, 2019, 2023)",
@@ -199,8 +213,34 @@ const graph = {
         "British-Lanka Festival of Performing Arts - First Place",
         "National Chess Championship - First Place (2016)",
       ],
+      hasCredential: [
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Sangeetha Visharadha (First Division)",
+          credentialCategory: "degree",
+          educationalLevel: "Visharadha",
+          about: "Eastern classical music — vocal and instrumental",
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Certified Audio Engineer",
+          credentialCategory: "certificate",
+          about: "Music production, mixing and mastering",
+        },
+      ],
       makesOffer: { "@id": "https://bhanumendis.com/#tutoring" },
       founder: [{ "@id": "https://bhanumendis.com/#swara" }, { "@id": "https://bhanumendis.com/#padura" }],
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://bhanumendis.com/#website",
+      url: "https://bhanumendis.com",
+      name: "Bhanu Mendis",
+      description:
+        "The official portfolio of Bhanu Mendis — educator, public speaker, audio engineer and performing artist from Colombo, Sri Lanka.",
+      inLanguage: "en",
+      publisher: { "@id": "https://bhanumendis.com/#person" },
+      copyrightHolder: { "@id": "https://bhanumendis.com/#person" },
     },
     {
       "@type": "EducationalOrganization",
@@ -256,8 +296,6 @@ const graph = {
   ],
 } as const;
 
-// Runs before paint: applies the saved theme so there is no flash.
-// Default is the light theme; only an explicit prior choice of "dark" opts in.
 // Pre-paint boot script. Two jobs, both must land BEFORE first paint:
 //  1. adopt the persisted theme (avoids a light-to-dark flash)
 //  2. stamp data-motion="native" when the browser supports scroll-driven
@@ -265,7 +303,12 @@ const graph = {
 //     and page.tsx skips its IntersectionObserver entirely when it is set —
 //     so modern browsers run the whole motion system on the compositor
 //     with zero main-thread work, and older ones keep the JS fallback.
-const bootInit = `(function(){try{var t=localStorage.getItem('bm-theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}try{if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()')){document.documentElement.setAttribute('data-motion','native');}}catch(e){}})();`;
+//  3. DARK IS THE DEFAULT. <html> ships with class="dark" from the server, so
+//     the pre-paint job is the inverse of what it used to be: REMOVE the class
+//     when the visitor previously chose light. Doing it this way (rather than
+//     adding the class) is what keeps the first paint black for everyone who
+//     has never touched the toggle, with no flash for those who chose light.
+const bootInit = `(function(){var d=document.documentElement;try{if(localStorage.getItem('bm-theme')==='light'){d.classList.remove('dark');}}catch(e){}try{if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()')){d.setAttribute('data-motion','native');}}catch(e){}try{if(window.matchMedia&&matchMedia('(pointer:fine)').matches&&matchMedia('(min-width:901px)').matches&&!matchMedia('(prefers-reduced-motion:reduce)').matches){d.setAttribute('data-smooth','on');}}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -273,7 +316,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable} ${mono.variable} ${sinhala.variable}`}
+      className={`dark ${display.variable} ${sans.variable} ${mono.variable} ${sinhala.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -291,6 +334,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://maps.gstatic.com" />
       </head>
       <body>
+        <SmoothScroll />
         {children}
         <Footer />
         <EasterEgg />

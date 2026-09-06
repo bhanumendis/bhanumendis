@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 type TimelineEvent = {
   year: string;
   title: string;
@@ -102,25 +104,47 @@ const ALL_EVENTS: readonly TimelineEvent[] = [
 export default function Timeline() {
   return (
     <section id="timeline" aria-labelledby="timeline-heading">
+      {/* Ambient pads. Purely decorative depth behind the spine — they drift
+          at three different rates off a scroll(root) timeline, which is what
+          keeps the page from reading as a static list between cards. */}
+      <div className="tl-ambient" aria-hidden="true">
+        <span className="tl-blob tl-blob-1" />
+        <span className="tl-blob tl-blob-2" />
+        <span className="tl-blob tl-blob-3" />
+      </div>
       <div className="sw">
         <div className="eyebrow">The Journey</div>
-        <h2 className="sh" id="timeline-heading">14 Years in the <em>Making</em></h2>
+        {/* This is the page's only top-level heading, so it must be the h1.
+            It was an h2, which left /timeline with no h1 whatsoever. */}
+        <h1 className="sh" id="timeline-heading">14 Years in the <em>Making</em></h1>
 
         <div className="tl-wrap">
-          <div className="tl-line" aria-hidden="true" />
+          {/* The spine draws itself as the wrapper scrolls through. The outer
+              element is the track, the fill is what scrubs. */}
+          <div className="tl-line" aria-hidden="true"><span className="tl-line-fill" /></div>
 
           {ALL_EVENTS.map((ev, i) => (
             <div
               key={ev.year}
               className={`tl-item tl-${ev.side} tl-fadeIn ${ev.highlight ? "tl-highlight" : ""} ${ev.active ? "tl-active" : ""}`}
-              style={{ animationDelay: `${i * 0.06}s` }}
+              // --d is the FALLBACK stagger only (a time ladder for browsers
+              // without scroll timelines); the native block zeroes it. It is a
+              // custom property rather than an inline `animationDelay` because
+              // an inline delay would outrank the stylesheet and leak a time
+              // offset onto a scroll-driven animation, where it is meaningless.
+              // --drift varies the parallax rate per card so the pads sit at
+              // different depths instead of moving as one slab.
+              style={{ "--d": `${i * 0.06}s`, "--drift": `${7 + (i % 3) * 6}px` } as CSSProperties}
             >
+              {/* The layout is 50/50 and one half of every row is empty; the
+                  ghost year fills it and hands off to the next as you scroll. */}
+              <span className="tl-ghost" aria-hidden="true">{ev.year}</span>
               <div className="tl-dot" aria-hidden="true">
                 {ev.active && <span className="tl-pulse" />}
               </div>
               <div className="tl-card">
                 <div className="tl-year">{ev.year}</div>
-                <div className="tl-title">{ev.title}</div>
+                <h2 className="tl-title">{ev.title}</h2>
                 <div className="tl-desc">{ev.desc}</div>
                 <div className="tl-tags">
                   {ev.tags.map((t) => <span key={t} className="tl-tag">{t}</span>)}
