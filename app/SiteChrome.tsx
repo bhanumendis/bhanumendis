@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import MagneticButton from "./MagneticButton";
 
 // ── Shared site chrome ───────────────────────────────────────────────
 // Everything that must be identical on every route: the skip link, the
@@ -17,7 +18,7 @@ import { useEffect, useState } from "react";
 // point: on the homepage they are in-page fragments, everywhere else they
 // have to travel home first.
 
-const LMS_URL = "https://thesciencebrainery.mrdemo.link/";
+const LMS_URL = "https://lms.bhanumendis.com";
 
 export default function SiteChrome({ home = false }: { home?: boolean }) {
   const [isDark, setIsDark] = useState(true);
@@ -226,7 +227,11 @@ export default function SiteChrome({ home = false }: { home?: boolean }) {
           <li><a href={to("#exp")}>Experience</a></li>
           <li><a href={to("#achieve")}>Awards</a></li>
           <li><a href="/timeline" className={home ? undefined : "nav-cta"}>Timeline</a></li>
-          <li><a href={LMS_URL} target="_blank" rel="noopener noreferrer" className="nav-cta-fill">Student Portal</a></li>
+          <li>
+            <MagneticButton href={LMS_URL} external className="nav-cta-fill" ariaLabel="Open the Student Portal">
+              Student Portal
+            </MagneticButton>
+          </li>
           <li><a href={to("#contact")} className="nav-cta">Contact</a></li>
         </ul>
         {/* Compact theme toggle — shown on mobile where the sidebar toggle is hidden. */}
