@@ -515,6 +515,12 @@ footer{position:relative;z-index:1;background:var(--bg1);padding:56px 56px 32px;
 .skip-link:focus{top:16px;}
 :focus-visible{outline:2px solid var(--sky);outline-offset:3px;border-radius:6px;}
 body.using-mouse :focus:not(:focus-visible){outline:none;}
+/* Pill/circle buttons are already border-radius:100px or 50% — the generic
+   6px above would force their corners square while focused, leaving a boxy
+   outline sitting behind the round shape. Match each their own curve. */
+.nav-cta:focus-visible,.nav-cta-fill:focus-visible,.btn-fill:focus-visible,.btn-out:focus-visible,
+.show-more-btn:focus-visible,.cb:focus-visible,.student-reg:focus-visible,.swara-close:focus-visible,
+.nav-theme:focus-visible,.theme-btn:focus-visible,.to-top:focus-visible{border-radius:100px;}
 
 /* ════════════════════════════════════════════════════════════════
    RESPONSIVE
