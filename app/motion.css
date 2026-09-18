@@ -807,3 +807,72 @@ html[data-smooth="on"]{scroll-behavior:auto;}
   }
   #timeline .tl-line-fill{opacity:0!important;}
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   WORD FILL — headings that resolve as they cross the viewport
+   ═══════════════════════════════════════════════════════════════════════
+   A gradient clipped to the glyphs, with its position scrubbed by the
+   section's own view() timeline. Scroll-driven timelines are inherently
+   bidirectional, so this fills on the way down and un-fills on the way
+   back up with no extra work and no JS.
+
+   The unanimated state is the FILLED one, on purpose: if the timeline
+   never runs — no support, reduced motion, no data-motion flag — the
+   heading is simply a normal solid heading. The text is never left
+   invisible by a failed animation.
+
+   `em` carries its own gradient rather than inheriting the parent's, so
+   the two-tone heading identity (white statement, blue accent) survives
+   the treatment instead of flattening to one colour.
+   ═══════════════════════════════════════════════════════════════════════ */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    html[data-motion="native"] .sh.wordfill,
+    html[data-motion="native"] .cth.wordfill{
+      background-image:linear-gradient(100deg,var(--white) 0 34%,var(--wf-dim) 68% 100%);
+      background-size:300% 100%;background-repeat:no-repeat;
+      -webkit-background-clip:text;background-clip:text;
+      color:transparent;
+      animation:wfSweep linear both;
+      animation-timeline:view();animation-range:entry 12% entry 88%;
+    }
+    html[data-motion="native"] .sh.wordfill em,
+    html[data-motion="native"] .cth.wordfill em{
+      background-image:linear-gradient(100deg,var(--sky) 0 34%,var(--wf-dim) 68% 100%);
+      background-size:300% 100%;background-repeat:no-repeat;
+      -webkit-background-clip:text;background-clip:text;
+      color:transparent;
+      animation:wfSweep linear both;
+      animation-timeline:view();animation-range:entry 12% entry 88%;
+      /* A glow behind a transparent glyph renders as a blur with nothing
+         in front of it. It has to go while the text is clipped. */
+      text-shadow:none;
+    }
+  }
+}
+@keyframes wfSweep{
+  from{background-position:100% 0;}
+  to{background-position:0% 0;}
+}
+
+/* ── Back-to-top progress ring ─────────────────────────────────────────
+   stroke-dashoffset scrubbed by the document's own scroll timeline. Same
+   family as #prog above it, and the reason the ring is aria-hidden: #prog
+   is already the announced progressbar.
+
+   pathLength="100" on the circle normalises the geometry, so the dash
+   maths is a plain percentage and does not depend on the radius. Change
+   the radius freely; this keeps working. */
+@supports (animation-timeline: scroll()){
+  .to-top .tt-ring-fill{
+    animation:ttRing linear both;
+    animation-timeline:scroll(root block);
+  }
+}
+@keyframes ttRing{
+  from{stroke-dashoffset:100;}
+  to{stroke-dashoffset:0;}
+}
+/* Reduced motion keeps the ring — it is information, not decoration, and
+   scrubbing it produces no vestibular motion. Only the arrow's hover lift
+   is suppressed, which happens in globals.css. */

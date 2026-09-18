@@ -8,7 +8,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 **bhanumendis.com** is the official website of **Bhanu Mendis** (Sinhala: භානු මෙන්ඩිස්) — a Sri Lankan multi-disciplinary leader, performing artist, audio engineer, public speaker, and educator based in Colombo (Boralesgamuwa), Sri Lanka.
 
-Primary entity: `Person` — Bhanu Mendis. Key facts: currently an Educator at The Science Brainery — tutoring Science, Mathematics & Computing (Pearson Edexcel, Grades 6–8, group & individual); 2024/2025 Senior Head Prefect of Lyceum International School Nugegoda; Sangeetha Visharadha (First Division); certified Audio Engineer; founder of the Swara and Padura concerts; three-time All-Island Dancing and Music champion; first place at the Malaysian World Choral Competition. O/L & A/L past papers are linked out to hiroshmendis.com.
+Primary entity: `Person` — Bhanu Mendis. Key facts: currently an Educator at The Science Brainery — tutoring Science, Mathematics & Computing (Pearson Edexcel, Grades 5–8, group & individual); 2024/2025 Senior Head Prefect of Lyceum International School Nugegoda; Sangeetha Visharadha (First Division); certified Audio Engineer; founder of the Swara and Padura concerts; three-time All-Island Dancing and Music champion; first place at the Malaysian World Choral Competition. O/L & A/L past papers are linked out to hiroshmendis.com.
 
 ## SEO / discoverability assets (where on-page indexing actually lives)
 

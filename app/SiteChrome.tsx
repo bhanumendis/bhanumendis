@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import MagneticButton from "./MagneticButton";
+import NavIsland from "./NavIsland";
 
 // ── Shared site chrome ───────────────────────────────────────────────
 // Everything that must be identical on every route: the skip link, the
@@ -17,8 +17,6 @@ import MagneticButton from "./MagneticButton";
 // The only thing that legitimately differs per route is where the anchors
 // point: on the homepage they are in-page fragments, everywhere else they
 // have to travel home first.
-
-const LMS_URL = "https://lms.bhanumendis.com";
 
 export default function SiteChrome({ home = false }: { home?: boolean }) {
   const [isDark, setIsDark] = useState(true);
@@ -46,14 +44,11 @@ export default function SiteChrome({ home = false }: { home?: boolean }) {
   //    reveals, back-to-top. All transform/opacity. ──
   useEffect(() => {
     const prog = document.getElementById("prog");
-    const nav = document.getElementById("nav");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const wide = window.matchMedia("(min-width: 901px)");
 
     const parLayers = Array.from(document.querySelectorAll<HTMLElement>("[data-par]"));
     let raf = 0, ticking = false;
-    let lastY = window.scrollY;
-    const NAV_GRACE = 6;
 
     const render = () => {
       ticking = false;
@@ -64,18 +59,18 @@ export default function SiteChrome({ home = false }: { home?: boolean }) {
       // fight it and re-introduce the per-frame layout cost.
       if (prog && document.documentElement.getAttribute("data-motion") !== "native")
         prog.style.width = `${h > 0 ? (y / h) * 100 : 0}%`;
-      if (nav) {
-        nav.classList.toggle("scrolled", y > 40);
-        // Down past the hero hides the bar; any upward movement brings it
-        // straight back. Near the top it is always shown, and CSS keeps it
-        // pinned open whenever focus is inside it.
-        const delta = y - lastY;
-        if (y < 140) nav.classList.remove("nav-hide");
-        else if (delta > NAV_GRACE) nav.classList.add("nav-hide");
-        else if (delta < -NAV_GRACE) nav.classList.remove("nav-hide");
-      }
-      lastY = y;
+      // The nav is a permanently visible island now. It owns its own
+      // scroll-depth class and its own indicator, so nothing about it is
+      // driven from here — deliberately, because the old bar hid itself on
+      // scroll-down and that is exactly the behaviour being removed.
       setShowTop(y > window.innerHeight * 0.9);
+      // The fixed side rails overlap the footer's social strip, so they
+      // stand down over the last stretch of the page. Folded into the
+      // existing scroll pass rather than given a listener of its own.
+      document.body.classList.toggle(
+        "at-end",
+        y + window.innerHeight > document.documentElement.scrollHeight - 200
+      );
       if (!reduce && wide.matches) {
         for (const el of parLayers) {
           const speed = parseFloat(el.dataset.par || "0");
@@ -217,36 +212,21 @@ export default function SiteChrome({ home = false }: { home?: boolean }) {
         </div>
       </div>
 
-      <nav id="nav" aria-label="Main navigation">
-        <a href={home ? "#hero" : "/"} className="logo" aria-label="භානු මෙන්ඩිස් — Bhanu Mendis, home">
-          <span className="logo-dot" aria-hidden="true" />
-          <span className="logo-text sinhala">භානු මෙන්ඩිස්</span>
-        </a>
-        <ul className="nav-links" role="list">
-          <li><a href={to("#about")}>About</a></li>
-          <li><a href={to("#exp")}>Experience</a></li>
-          <li><a href={to("#achieve")}>Awards</a></li>
-          <li><a href="/timeline" className={home ? undefined : "nav-cta"}>Timeline</a></li>
-          <li>
-            <MagneticButton href={LMS_URL} external className="nav-cta-fill" ariaLabel="Open the Student Portal">
-              Student Portal
-            </MagneticButton>
-          </li>
-          <li><a href={to("#contact")} className="nav-cta">Contact</a></li>
-        </ul>
-        {/* Compact theme toggle — shown on mobile where the sidebar toggle is hidden. */}
-        <button
-          type="button"
-          className="nav-theme"
-          onClick={() => applyTheme(!isDark)}
-          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          {isDark ? "☀" : "☾"}
-        </button>
-      </nav>
+      <NavIsland home={home} isDark={isDark} onToggleTheme={() => applyTheme(!isDark)} />
 
+      {/* Back to top, wrapped in a ring that fills as the page scrolls.
+          The ring is driven entirely by a native scroll timeline in
+          motion.css — no JS, no per-frame write, and it degrades to a
+          plain static circle where scroll-driven animation is unsupported.
+          It is aria-hidden because #prog above is already the announced
+          progressbar; two elements reporting one value would have screen
+          readers say it twice. */}
       <button type="button" className={`to-top ${showTop ? "visible" : ""}`} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Back to top">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+        <svg className="tt-ring" viewBox="0 0 44 44" aria-hidden="true" focusable="false">
+          <circle className="tt-ring-track" cx="22" cy="22" r="20" />
+          <circle className="tt-ring-fill" cx="22" cy="22" r="20" pathLength="100" />
+        </svg>
+        <svg className="tt-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
       </button>
     </>
   );

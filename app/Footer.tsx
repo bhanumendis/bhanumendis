@@ -48,16 +48,36 @@ const SOCIALS = [
   },
 ] as const;
 
+// The four names that get the full-bleed strip treatment. Deliberately not
+// all seven socials: the strip is a closing gesture, and seven cells at
+// display size would be a wall rather than a punctuation mark. The rest
+// stay as icons above.
+const STRIP = [
+  { label: "Instagram", href: "https://www.instagram.com/bhanu_mendis" },
+  { label: "Facebook", href: "https://linktr.ee/bhanu_mendis" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/bhanumendis" },
+  { label: "Linktree", href: "https://linktr.ee/bhanu_mendis" },
+] as const;
+
+const ELSEWHERE = [
+  { label: "Student Portal", href: "https://lms.bhanumendis.com" },
+  { label: "Photography", href: "http://bhanumendis.godaddysites.com" },
+  { label: "Linktree", href: "https://linktr.ee/bhanu_mendis" },
+] as const;
+
 export default function Footer() {
   return (
     <footer aria-label="Site footer">
       <div className="foot-top">
-        <div>
+        <div className="foot-brand">
           <div className="foot-logo">
             <span className="foot-logo-dot" aria-hidden="true" />
             <span className="foot-logo-text">Bhanu Mendis</span>
           </div>
-          <p className="foot-tagline">Break the Frame.<br />Colombo, Sri Lanka · 2025</p>
+          <p className="foot-tagline">
+            Teacher, builder and performer in Colombo — Science, Maths and
+            Computing for grades 5&ndash;8, and the systems behind them.
+          </p>
           <div className="socials-row" aria-label="Social media links">
             {SOCIALS.map((s) => (
               <a
@@ -75,7 +95,7 @@ export default function Footer() {
         </div>
 
         <nav aria-label="Footer navigation">
-          <div className="foot-col-title">Navigate</div>
+          <div className="foot-col-title impact-sm">Navigate</div>
           <div className="foot-links">
             {NAV_LINKS.map((l) => (
               <Link key={l.href} href={l.href} className="foot-link">
@@ -86,20 +106,44 @@ export default function Footer() {
         </nav>
 
         <address style={{ fontStyle: "normal" }}>
-          <div className="foot-col-title">Connect</div>
+          <div className="foot-col-title impact-sm">Connect</div>
           <div className="foot-links">
             <a href="mailto:bhanumendis@gmail.com" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />bhanumendis@gmail.com</a>
             <a href="tel:+94777124152" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />+94 77 712 4152</a>
             <a href="https://www.linkedin.com/in/bhanumendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />LinkedIn</a>
             <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Instagram</a>
-            <a href="http://bhanumendis.godaddysites.com" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Photography Portfolio</a>
-            <a href="https://linktr.ee/bhanu_mendis" target="_blank" rel="noopener noreferrer" className="foot-link"><span className="foot-link-dot" aria-hidden="true" />Linktree</a>
           </div>
         </address>
+
+        <div>
+          <div className="foot-col-title impact-sm">Elsewhere</div>
+          <div className="foot-links">
+            {ELSEWHERE.map((l) => (
+              <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer" className="foot-link">
+                <span className="foot-link-dot" aria-hidden="true" />{l.label}
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
+
       <div className="foot-bottom">
-        <span className="foot-copy">© 2025 Bhanu Mendis. All rights reserved.</span>
+        <span className="foot-copy">&copy; 2025 Bhanu Mendis. All rights reserved.</span>
         <span className="foot-copy">Colombo, Sri Lanka</span>
+      </div>
+
+      {/* The closing strip. Full-bleed, hairline-divided, each cell filling
+          from the bottom on hover. It is the last thing on the page, so it
+          is allowed to be the loudest. */}
+      <div className="foot-strip" aria-label="Social profiles">
+        {STRIP.map((s) => (
+          <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="foot-strip-cell">
+            <span className="foot-strip-label impact">{s.label}</span>
+            <svg className="foot-strip-arrow" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 17L17 7M17 7H8M17 7v9" />
+            </svg>
+          </a>
+        ))}
       </div>
     </footer>
   );

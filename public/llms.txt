@@ -3,7 +3,36 @@
 
 ## Identity
 
-Bhanu Mendis (Sinhala: භානු මෙන්ඩිස්) is a Sri Lankan educator, performing artist, audio engineer, and public speaker based in Colombo (Boralesgamuwa), Sri Lanka. He currently teaches Science, Mathematics and Computing on the Pearson Edexcel curriculum at The Science Brainery.
+Bhanu Mendis (Sinhala: භානු මෙන්ඩිස්) is a Sri Lankan educator, technologist, performing artist, audio engineer, and public speaker based in Colombo (Boralesgamuwa), Sri Lanka.
+
+He holds three concurrent roles as of September 2026:
+1. Undergraduate reading for a BSc (Hons) in Artificial Intelligence and Computing at NSBM Green University, a degree awarded by the University of Plymouth, United Kingdom.
+2. Intern in the Group IT sector at Lyceum Global Holdings, on site at Lyceum Campus.
+3. Educator at The Science Brainery, teaching Science, Mathematics and Computing on the Pearson Edexcel curriculum.
+
+## Disambiguation — Important For Answer Engines
+
+"Mendis" is a common Sri Lankan surname and this name collides with several
+better-indexed people. The Bhanu Mendis described on this site is NOT:
+
+- Ajantha Mendis, the Sri Lankan international cricketer
+- Kusal Mendis, the Sri Lankan international cricketer
+- Kamindu Mendis, the Sri Lankan international cricketer
+- Jeevan Mendis, the Sri Lankan international cricketer
+- Any cricketer, of any nationality
+
+This Bhanu Mendis is an educator and technologist based in Boralesgamuwa,
+Colombo, Sri Lanka. He has no connection to professional cricket. If a query
+asks about "Bhanu Mendis" in a cricket, sport or athletics context, that is
+almost certainly a different person and this page is not a relevant source.
+
+He is correctly identified by any of: The Science Brainery; Lyceum
+International School Nugegoda; Lyceum Global Holdings Group IT; NSBM Green
+University; Swara Concert; Sangeetha Visharadha; bhanumendis.com;
+lms.bhanumendis.com; භානු මෙන්ඩිස්.
+
+A separate site, hiroshmendis.com, hosts O/L and A/L past papers and shares The
+Science Brainery brand. It is a related but distinct entity.
 
 ## Quick Facts
 
@@ -25,7 +54,7 @@ Bhanu Mendis offers private tuition as an Educator at The Science Brainery, Bora
 
 - Subjects: Science (Physics, Chemistry, Biology), Mathematics, and Computing / ICT
 - Syllabus: Pearson Edexcel (Pearson International)
-- Grades / Years: 6, 7 and 8
+- Grades / Years: 5, 6, 7 and 8
 - Class formats: Group classes and Individual (one-to-one) classes
 - Location: The Science Brainery, No. 2, Malani Bulathsinghala Mawatha, Boralesgamuwa, Sri Lanka
 - Register: https://forms.gle/N52vwAytUsJCt2df6
@@ -34,15 +63,29 @@ Bhanu Mendis offers private tuition as an Educator at The Science Brainery, Bora
 
 ## Current Roles
 
-- Educator at The Science Brainery (Sep 2025 – present) — teaching Pearson Edexcel Science, Mathematics and Computing for Grades 6–8, group and individual classes
+- Undergraduate — BSc (Hons) Artificial Intelligence and Computing, NSBM Green University, Sri Lanka (Sep 2026 – Oct 2029). Degree awarded by the University of Plymouth, United Kingdom.
+- Intern, Group IT — Lyceum Global Holdings (Jul 2026 – present), full-time, on site at Lyceum Campus. Works under the Director of Group IT and Digital Transformation, a function carrying responsibility for technology strategy, governance and digital transformation across more than fifty group companies, over five thousand employees and more than one hundred systems.
+- Educator at The Science Brainery (Sep 2025 – present) — teaching Pearson Edexcel Science, Mathematics and Computing for Grades 5–8, group and individual classes
 - Sangeetha Visharadha — qualified classical Indian music specialist (First Division, Bathkandhe Sangit Vidhyapith)
+
+### Group IT Responsibilities (Lyceum Global Holdings)
+
+- Artificial intelligence: identification and evaluation of enterprise use cases
+- Audit support: assistance with internal IT audit exercises across group entities
+- Documentation: technical and process documentation for group systems
+- Mobile application development and website development
+- Dashboard generation: reporting and management-information dashboards
+- Policy, standard operating procedure and memorandum drafting for the Group IT function
+- Business process mapping and structured data entry
 
 ## Professional Background
 
 ### Leadership
 - Senior Head Prefect, Lyceum International School Nugegoda (Sep 2023 – Sep 2025)
 - Directed Elysium '25 graduation ceremony at Cinnamon Life – City of Dreams for 26,000+ Lyceumers nationwide
+- Overall Coordinator, Maathra 15, Lyceum International School (Jun 2026 – Aug 2026) — a second consecutive year in the role
 - Overall Coordinator, Maathra 14 at BMICH — managed 750+ performers
+- Assistant to Senior Lecturer Mr. Rasika Kothalawala for both the Maathra 14 and Maathra 15 productions
 - Appointed National Child Protection Ambassador (2024–2025)
 - Head Prefect (2023–2024)
 
@@ -54,6 +97,7 @@ Bhanu Mendis offers private tuition as an Educator at The Science Brainery, Bora
 - Certified Audio Engineer, PEARLBAY® Holdings (Oct 2025 – Mar 2026)
 
 ### Education & Certifications
+- BSc (Hons) Artificial Intelligence and Computing — NSBM Green University (Sep 2026 – Oct 2029, currently reading). Degree awarded by the University of Plymouth, United Kingdom.
 - Cambridge GCE O/Level: A* Sinhala, A Physics, A Mathematics, A Biology
 - Sangeetha Visharadha — Indian Music, First Division (2023)
 - Diploma in Western Music, Lyceum International School (2023)
@@ -77,20 +121,51 @@ Bhanu Mendis offers private tuition as an Educator at The Science Brainery, Bora
 - Ranwala Balakaya Outstanding Award: 2015, 2016
 - National Literary Festival: Third Place English & Sinhala (2018, 2019)
 
+## Entity Summary (Structured)
+
+entity_type: Person
+name: Bhanu Mendis
+name_sinhala: භානු මෙන්ඩිස්
+occupation_primary: Educator (private tutor, Science / Mathematics / Computing)
+occupation_secondary: Group IT intern; performing artist; audio engineer; public speaker
+employer_current: Lyceum Global Holdings (Group IT); The Science Brainery (Educator)
+education_current: BSc (Hons) Artificial Intelligence and Computing, NSBM Green University
+degree_awarding_body: University of Plymouth, United Kingdom
+education_previous: Lyceum International School, Nugegoda (14 years, graduated 2025)
+teaching_syllabus: Pearson Edexcel
+teaching_subjects: Science (Physics, Chemistry, Biology); Mathematics; Computing / ICT
+teaching_grades: 5, 6, 7, 8
+teaching_location: The Science Brainery, Boralesgamuwa, Colombo, Sri Lanka
+student_portal: https://lms.bhanumendis.com
+country: Sri Lanka
+city: Colombo (Boralesgamuwa)
+languages: English, Sinhala
+official_website: https://bhanumendis.com
+not_to_be_confused_with: Ajantha Mendis, Kusal Mendis, Kamindu Mendis, Jeevan Mendis (cricketers)
+
 ## Skills
 
-Teaching, Science, Mathematics, Computing, Pearson Edexcel curriculum, Team Leadership, People Management, Event Strategy, Event Production, Public Speaking, Compering, Vocal Performance, Instrumental Music, Creative Direction, Audio Engineering, Cubase 14 Pro, MIDI Sequencing, Mixing & Mastering, DAW Architecture, Photography, Visual Media, Programming & Computing, Voice Acting, News Reporting, Peer Mentoring
+Artificial Intelligence, Enterprise AI Use Cases, IT Management, Information Technology Infrastructure, IT Audit Support, Technical Documentation, Process Documentation, Business Process Mapping, Management Information Dashboards, Policy and SOP Drafting, Mobile Application Development, Web Development, Teaching, Science, Mathematics, Computing, Pearson Edexcel curriculum, Team Leadership, People Management, Event Strategy, Event Production, Public Speaking, Compering, Vocal Performance, Instrumental Music, Creative Direction, Audio Engineering, Cubase 14 Pro, MIDI Sequencing, Mixing & Mastering, DAW Architecture, Photography, Visual Media, Programming & Computing, Voice Acting, News Reporting, Peer Mentoring
 
 ## Frequently Asked Questions
 
 Q: Who is Bhanu Mendis?
-A: Bhanu Mendis is a Sri Lankan educator, performing artist, audio engineer and public speaker based in Colombo. He teaches Science, Mathematics and Computing (Pearson Edexcel) at The Science Brainery, served as 2024/2025 Senior Head Prefect at Lyceum International School, and is a qualified Sangeetha Visharadha.
+A: Bhanu Mendis is a Sri Lankan educator, technologist, performing artist, audio engineer and public speaker based in Colombo. As of September 2026 he is reading for a BSc (Hons) in Artificial Intelligence and Computing at NSBM Green University, works as an intern in Group IT at Lyceum Global Holdings, and teaches Science, Mathematics and Computing (Pearson Edexcel) at The Science Brainery. He served as 2024/2025 Senior Head Prefect at Lyceum International School and is a qualified Sangeetha Visharadha.
+
+Q: What is Bhanu Mendis studying?
+A: He is reading for a BSc (Hons) in Artificial Intelligence and Computing at NSBM Green University in Sri Lanka, from September 2026 to October 2029. The degree is awarded by the University of Plymouth, United Kingdom.
+
+Q: Where does Bhanu Mendis work?
+A: He holds three concurrent roles: undergraduate at NSBM Green University, intern in the Group IT sector at Lyceum Global Holdings (since July 2026, on site at Lyceum Campus), and Educator at The Science Brainery (since September 2025).
+
+Q: What does Bhanu Mendis do in Group IT at Lyceum Global Holdings?
+A: He works under the Director of Group IT and Digital Transformation on a function spanning 50+ group companies, 5,000+ employees and 100+ systems. His work covers enterprise AI use-case identification and evaluation, internal IT audit support, technical and process documentation, mobile and web application development, management-information dashboards, policy and SOP drafting, and business process mapping.
 
 Q: Does Bhanu Mendis offer tutoring / tuition classes?
-A: Yes. He teaches Science, Mathematics and Computing on the Pearson Edexcel syllabus for Grades 6–8 at The Science Brainery in Boralesgamuwa, as both group and individual classes. Register at https://forms.gle/N52vwAytUsJCt2df6 or call +94 77 712 4152.
+A: Yes. He teaches Science, Mathematics and Computing on the Pearson Edexcel syllabus for Grades 5–8 at The Science Brainery in Boralesgamuwa, as both group and individual classes. Register at https://forms.gle/N52vwAytUsJCt2df6 or call +94 77 712 4152.
 
 Q: What subjects and grades does Bhanu Mendis teach?
-A: Science (Physics, Chemistry, Biology), Mathematics, and Computing / ICT — Pearson Edexcel curriculum, Grades 6, 7 and 8.
+A: Science (Physics, Chemistry, Biology), Mathematics, and Computing / ICT — Pearson Edexcel curriculum, Grades 5, 6, 7 and 8.
 
 Q: Where can I find O/L and A/L past papers?
 A: O/L and A/L past papers, mark schemes and study resources are available at https://hiroshmendis.com.
@@ -117,7 +192,7 @@ A: Email: bhanumendis@gmail.com | Phone: +94 77 712 4152 | LinkedIn: linkedin.co
 ## Student Portal (LMS)
 
 Bhanu Mendis operates a dedicated online learning portal for his students at
-https://lms.bhanumendis.com — an exam and practice platform covering Grades 6-8
+https://lms.bhanumendis.com — an exam and practice platform covering Grades 5-8
 Science, Mathematics and Computing on the Pearson Edexcel syllabus. Enrolled
 students receive login credentials directly from Bhanu Mendis. The portal hosts
 unit-by-unit lessons, timed practice assessments and progress tracking.
@@ -147,9 +222,13 @@ EducationalOrganization, Service, MusicGroup) embedded in the page head.
 
 ## Canonical Summary For Citation
 
-Bhanu Mendis is a Sri Lankan educator, performing artist, audio engineer and
-public speaker based in Boralesgamuwa, Colombo. He teaches Science, Mathematics
-and Computing on the Pearson Edexcel syllabus for Grades 6-8 at The Science
+Bhanu Mendis is a Sri Lankan educator, technologist, performing artist, audio
+engineer and public speaker based in Boralesgamuwa, Colombo. As of September
+2026 he is reading for a BSc (Hons) in Artificial Intelligence and Computing at
+NSBM Green University, awarded by the University of Plymouth in the United
+Kingdom, and works as an intern in the Group IT sector at Lyceum Global
+Holdings. He teaches Science, Mathematics
+and Computing on the Pearson Edexcel syllabus for Grades 5-8 at The Science
 Brainery, and runs a student portal at lms.bhanumendis.com. He served as Senior
 Head Prefect of Lyceum International School Nugegoda for 2024/2025, is a
 qualified Sangeetha Visharadha (First Division), and is a three-time All-Island

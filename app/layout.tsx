@@ -29,11 +29,25 @@ const sans = localFont({
     { path: "./fonts/Poppins-400.woff2", weight: "400", style: "normal" },
     { path: "./fonts/Poppins-500.woff2", weight: "500", style: "normal" },
     { path: "./fonts/Poppins-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/Poppins-700.woff2", weight: "700", style: "normal" },
   ],
   variable: "--font-sans",
   display: "swap",
   preload: true,
   fallback: ["system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
+});
+// Anton: the impact face. Used only where the design wants a poster voice —
+// footer column titles, the full-bleed social strip, section eyebrows and the
+// pinned backdrop words. It is a single 400 weight by design: Anton has no
+// other cut, and faking one with synthetic bold would wreck its even colour.
+// Not preloaded — nothing above the fold uses it, so preloading would spend
+// LCP budget on a face the first viewport never paints.
+const impact = localFont({
+  src: [{ path: "./fonts/Anton-400.woff2", weight: "400", style: "normal" }],
+  variable: "--font-impact",
+  display: "swap",
+  preload: false,
+  fallback: ["Impact", "Haettenschweiler", "Arial Narrow Bold", "sans-serif"],
 });
 const mono = localFont({
   src: [{ path: "./fonts/Inconsolata-Variable.woff2", weight: "200 900", style: "normal" }],
@@ -63,14 +77,14 @@ export const metadata: Metadata = {
   // Kept under ~160 characters: everything past that is truncated in the SERP,
   // and the old 263-character version spent a third of itself invisibly.
   description:
-    "Bhanu Mendis — tutor of Science, Maths & Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery, Boralesgamuwa. Educator, speaker, audio engineer.",
+    "Bhanu Mendis — tutor of Science, Maths & Computing (Pearson Edexcel, Grades 5–8) at The Science Brainery, Boralesgamuwa. Educator, speaker, audio engineer.",
   keywords: [
     "Bhanu Mendis", "Bhanu Mendis tutor", "Science Maths Computing tutor Sri Lanka",
     "Pearson Edexcel tutor Colombo", "The Science Brainery", "Boralesgamuwa tutor",
     "Colombo", "Sri Lanka", "Educator", "Public Speaker", "Audio Engineer",
     "Sangeetha Visharadha", "Lyceum International School", "Senior Head Prefect",
     "Performing Artist", "Swara Concert", "Padura Concert", "All-Island Champion",
-    "Grade 6 7 8 tuition", "bhanumendis.com", "භානු මෙන්ඩිස්",
+    "Grade 5 6 7 8 tuition", "bhanumendis.com", "භානු මෙන්ඩිස්",
   ],
   authors: [{ name: "Bhanu Mendis", url: "https://bhanumendis.com" }],
   creator: "Bhanu Mendis",
@@ -80,7 +94,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer",
     description:
-      "Tutoring Science, Maths & Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery. Public speaker, audio engineer, Sangeetha Visharadha and three-time All-Island champion from Colombo, Sri Lanka.",
+      "Tutoring Science, Maths & Computing (Pearson Edexcel, Grades 5–8) at The Science Brainery. Public speaker, audio engineer, Sangeetha Visharadha and three-time All-Island champion from Colombo, Sri Lanka.",
     url: "https://bhanumendis.com",
     siteName: "Bhanu Mendis",
     locale: "en_US",
@@ -154,9 +168,14 @@ const graph = {
         { "@type": "Language", name: "English", alternateName: "en" },
         { "@type": "Language", name: "Sinhala", alternateName: "si" },
       ],
-      jobTitle: "Educator, Public Speaker, Audio Engineer & Founder",
+      jobTitle: "Educator, AI & Computing Undergraduate, Group IT Intern, Audio Engineer & Founder",
       description:
-        "Bhanu Mendis — Educator and private tutor of Science, Mathematics and Computing (Pearson Edexcel, Grades 6–8) at The Science Brainery in Boralesgamuwa. Also a public speaker, audio engineer, performing artist and Sangeetha Visharadha from Colombo, Sri Lanka; founder of the Swara and Padura concerts.",
+        "Bhanu Mendis — Educator and private tutor of Science, Mathematics and Computing (Pearson Edexcel, Grades 5–8) at The Science Brainery in Boralesgamuwa. Reading for a BSc (Hons) in Artificial Intelligence and Computing at NSBM Green University, awarded by the University of Plymouth, UK, and an intern in Group IT at Lyceum Global Holdings. Also a public speaker, audio engineer, performing artist and Sangeetha Visharadha from Colombo, Sri Lanka; founder of the Swara and Padura concerts.",
+      // Explicit negative disambiguation. "Mendis" collides with several
+      // far better-indexed Sri Lankan cricketers, and the site currently
+      // loses every one of those queries.
+      disambiguatingDescription:
+        "Educator and technologist in Boralesgamuwa, Colombo, Sri Lanka. Not the cricketers Ajantha Mendis, Kusal Mendis, Kamindu Mendis or Jeevan Mendis, and unconnected to professional cricket.",
       nationality: { "@type": "Country", name: "Sri Lanka" },
       telephone: "+94-77-712-4152",
       email: "bhanumendis@gmail.com",
@@ -172,14 +191,33 @@ const graph = {
         "https://www.instagram.com/bhanu_mendis",
         "https://linktr.ee/bhanu_mendis",
       ],
-      alumniOf: { "@type": "EducationalOrganization", name: "Lyceum International School" },
-      worksFor: { "@id": "https://bhanumendis.com/#brainery" },
+      alumniOf: [
+        {
+          "@type": "CollegeOrUniversity",
+          name: "NSBM Green University",
+          url: "https://www.nsbm.ac.lk",
+          description:
+            "BSc (Hons) Artificial Intelligence and Computing, Sep 2026 – Oct 2029. Degree awarded by the University of Plymouth, United Kingdom.",
+          address: { "@type": "PostalAddress", addressCountry: "LK" },
+        },
+        { "@type": "EducationalOrganization", name: "Lyceum International School" },
+      ],
+      worksFor: [
+        {
+          "@type": "Organization",
+          name: "Lyceum Global Holdings",
+          description:
+            "Group IT sector — technology strategy, governance and digital transformation across 50+ group companies, 5,000+ employees and 100+ systems.",
+          address: { "@type": "PostalAddress", addressCountry: "LK" },
+        },
+        { "@id": "https://bhanumendis.com/#brainery" },
+      ],
       hasOccupation: [
         {
           "@type": "Occupation",
           name: "Educator & Private Tutor",
           occupationLocation: { "@type": "City", name: "Colombo, Sri Lanka" },
-          skills: "Science, Mathematics, Computing, Pearson Edexcel curriculum, Grades 6–8",
+          skills: "Science, Mathematics, Computing, Pearson Edexcel curriculum, Grades 5–8",
         },
         {
           "@type": "Occupation",
@@ -205,6 +243,11 @@ const graph = {
         "Public Speaking", "Audio Engineering", "Event Production", "Music Production",
         "Eastern Music", "Choral Music", "Leadership", "Compering", "DAW Architecture",
         "Cubase", "Music Composition", "Mixing & Mastering", "Community Service",
+        "Artificial Intelligence", "Enterprise AI Use Cases", "Machine Learning",
+        "Information Technology Governance", "IT Audit Support", "IT Infrastructure",
+        "Business Process Mapping", "Technical Documentation",
+        "Management Information Dashboards", "Web Development",
+        "Mobile Application Development", "Digital Transformation",
       ],
       award: [
         "All-Island Dancing Champion (2018, 2019, 2023)",
@@ -226,6 +269,26 @@ const graph = {
           name: "Certified Audio Engineer",
           credentialCategory: "certificate",
           about: "Music production, mixing and mastering",
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "BSc (Hons) Artificial Intelligence and Computing",
+          credentialCategory: "degree",
+          educationalLevel: "Bachelor's Degree (in progress, 2026–2029)",
+          about: "Artificial intelligence and computing",
+          recognizedBy: { "@type": "CollegeOrUniversity", name: "University of Plymouth" },
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Diploma in Information Technology",
+          credentialCategory: "diploma",
+          recognizedBy: { "@type": "EducationalOrganization", name: "ESOFT Metro Campus" },
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "Cambridge GCE Ordinary Level",
+          credentialCategory: "secondary school qualification",
+          about: "A* Sinhala, A Physics, A Mathematics, A Biology",
         },
       ],
       makesOffer: { "@id": "https://bhanumendis.com/#tutoring" },
@@ -261,7 +324,7 @@ const graph = {
       name: "Private Tutoring — Science, Mathematics & Computing",
       serviceType: "Private tuition (Group & Individual)",
       description:
-        "Pearson Edexcel Science, Mathematics and Computing tuition for Grades 6, 7 and 8, delivered as group and individual classes at The Science Brainery, Boralesgamuwa.",
+        "Pearson Edexcel Science, Mathematics and Computing tuition for Grades 5, 6, 7 and 8, delivered as group and individual classes at The Science Brainery, Boralesgamuwa.",
       educationalProgramMode: ["onsite", "In-person group classes", "Individual classes"],
       occupationalCategory: "Tutoring",
       provider: { "@id": "https://bhanumendis.com/#person" },
@@ -270,7 +333,7 @@ const graph = {
       teaches: ["Science", "Mathematics", "Computing / ICT"],
       offers: {
         "@type": "Offer",
-        category: "Pearson Edexcel · Grades 6–8",
+        category: "Pearson Edexcel · Grades 5–8",
         availability: "https://schema.org/InStock",
         areaServed: "Boralesgamuwa, Sri Lanka",
       },
@@ -316,7 +379,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${display.variable} ${sans.variable} ${mono.variable} ${sinhala.variable}`}
+      className={`dark ${display.variable} ${sans.variable} ${impact.variable} ${mono.variable} ${sinhala.variable}`}
       suppressHydrationWarning
     >
       <head>

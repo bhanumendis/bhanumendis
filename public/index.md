@@ -1,9 +1,9 @@
 # Bhanu Mendis
 
-> Educator · Public Speaker · Audio Engineer · Performing Artist · Sangeetha Visharadha
+> Educator · AI & Computing Undergraduate · Group IT · Audio Engineer · Performing Artist · Sangeetha Visharadha
 > Colombo (Boralesgamuwa), Sri Lanka · https://bhanumendis.com
 
-Bhanu Mendis (Sinhala: භානු මෙන්ඩිස්) is a Sri Lankan educator, performing artist, audio engineer and public speaker based in Colombo. He teaches Science, Mathematics and Computing on the Pearson Edexcel curriculum at The Science Brainery, and is a qualified Sangeetha Visharadha (First Division) and three-time All-Island champion.
+Bhanu Mendis (Sinhala: භානු මෙන්ඩිස්) is a Sri Lankan educator, technologist, performing artist, audio engineer and public speaker based in Colombo. As of September 2026 he is reading for a BSc (Hons) in Artificial Intelligence and Computing at NSBM Green University — a degree awarded by the University of Plymouth, United Kingdom — and works as an intern in the Group IT sector at Lyceum Global Holdings. He teaches Science, Mathematics and Computing on the Pearson Edexcel curriculum at The Science Brainery, and is a qualified Sangeetha Visharadha (First Division) and three-time All-Island champion.
 
 ## Tutoring & Classes
 
@@ -11,7 +11,7 @@ Private tuition at **The Science Brainery**, Boralesgamuwa.
 
 - **Subjects:** Science (Physics, Chemistry, Biology), Mathematics, Computing / ICT
 - **Syllabus:** Pearson Edexcel
-- **Grades:** 6, 7 and 8
+- **Grades:** 5, 6, 7 and 8
 - **Formats:** Group and individual (one-to-one) classes
 - **Register:** https://forms.gle/N52vwAytUsJCt2df6
 - **Contact to register:** +94 77 712 4152 (0777 124 152)
@@ -19,7 +19,7 @@ Private tuition at **The Science Brainery**, Boralesgamuwa.
 
 ## About
 
-Educator, performing artist and audio engineer based in Colombo, Sri Lanka. Currently teaching Science, Maths and Computing at The Science Brainery.
+Educator, technologist, performing artist and audio engineer based in Colombo, Sri Lanka. Reading for a BSc (Hons) in Artificial Intelligence and Computing at NSBM Green University (Sep 2026 – Oct 2029, awarded by the University of Plymouth, UK), working in Group IT at Lyceum Global Holdings, and teaching Science, Maths and Computing at The Science Brainery.
 
 - **Leadership** — 2024/2025 Senior Head Prefect of Lyceum International School. Overall coordinator for *Maathra 14* at the BMICH, a production of 750+ performers, and director of the *Elysium '25* graduation at Cinnamon Life for 26,000+ Lyceumers.
 - **Audio and the arts** — Sangeetha Visharadha, First Division. Founding President of the Eastern Music Club and founder of the *Swara* concert series. Works in Cubase 14 Pro, from composition through to final master.
@@ -27,7 +27,9 @@ Educator, performing artist and audio engineer based in Colombo, Sri Lanka. Curr
 
 ## Experience
 
-- **Educator** — The Science Brainery, Boralesgamuwa (Sep 2025 – Present). Teaching Pearson Edexcel Science, Mathematics and Computing, Grades 6–8.
+- **Intern, Group IT** — Lyceum Global Holdings, Lyceum Campus, on-site (Jul 2026 – Present). Under the Director of Group IT & Digital Transformation, a function spanning 50+ group companies, 5,000+ employees and 100+ systems. Enterprise AI use cases, internal IT audit support, technical and process documentation, mobile and web application development, management-information dashboards, policy and SOP drafting, and business process mapping.
+- **Overall Coordinator — Maathra 15** — Lyceum International School (Jun 2026 – Aug 2026). A second consecutive year in the role. Assistant to Senior Lecturer Mr. Rasika Kothalawala across both Maathra 14 and 15.
+- **Educator** — The Science Brainery, Boralesgamuwa (Sep 2025 – Present). Teaching Pearson Edexcel Science, Mathematics and Computing, Grades 5–8.
 - **Senior Head Prefect** — Lyceum International School, Nugegoda (Sep 2023 – Sep 2025). Directed Elysium '25 (26,000+ audience); coordinated Maathra 14 (750+ performers); National Child Protection Ambassador.
 - **Audio Engineer** — PEARLBAY® Holdings (Oct 2025 – Mar 2026). DAW architecture, MIDI, mixing & mastering.
 - **Founder — Swara Concert** (Dec 2023 – Sep 2025). Sri Lanka's largest island-wide school Eastern music concert; 700+ performers.
