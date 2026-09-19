@@ -1,4 +1,6 @@
 "use client";
+
+import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import FeaturedIn from "./FeaturedIn";
@@ -35,6 +37,19 @@ const SKILLS: readonly string[] = [
   "Execution Under Deadline", "Stage & Audience Presence", "Peer Mentoring",
   "Voice Acting", "News Reporting", "MIDI Sequencing", "Mixing & Mastering", "DAW Architecture",
 ];
+
+const PALMARES: readonly { year: string; event: string; place: string; field: string }[] = [
+  { year: "2024", event: "All-Island Music Competition", place: "Island 1st", field: "Music" },
+  { year: "2023", event: "All-Island Dancing Competition", place: "Island 1st", field: "Dance" },
+  { year: "2023", event: "All-Island Music Competition", place: "Island 1st", field: "Music" },
+  { year: "2019", event: "All-Island Dancing Competition", place: "Island 1st", field: "Dance" },
+  { year: "2019", event: "All-Island Music Competition", place: "Island 1st", field: "Music" },
+  { year: "2018", event: "All-Island Dancing Competition", place: "Island 1st", field: "Dance" },
+  { year: "2016", event: "National Chess Championship", place: "1st Place", field: "Chess" },
+  { year: "", event: "Malaysian World Choral Competition", place: "1st Place", field: "Choral / International" },
+  { year: "", event: "British-Lanka Festival of Performing Arts", place: "1st Place", field: "Performing Arts" },
+  { year: "", event: "WWF \u00b7 United Nations Resolution", place: "1st Place", field: "Model UN" },
+] as const;
 
 const SUBJECTS = [
   { name: "Science", tag: "Physics · Chemistry · Biology", body: "Physics, chemistry and biology. Derive it first and memorise it second, so an exam question is never the first time you have met the idea." },
@@ -304,22 +319,53 @@ export default function Home() {
         {/* ── TUTORING (feature) ── */}
         <section id="tutoring" aria-labelledby="tutoring-heading">
           <div className="sw" data-tilt>
-            <div className="eyebrow reveal">Tutoring &amp; Teaching</div>
-            <h2 className="sh wordfill reveal m-display d1" id="tutoring-heading">Learn <em>Science, Maths<br />&amp; Computing</em></h2>
-            <p className="lead reveal d2">
-              <strong>Pearson Edexcel</strong> for <strong>Grades 5–8</strong>, at The Science
-              Brainery in Boralesgamuwa. Group classes and one-to-one sessions, with the same
-              starting point either way: understand the mechanism, and the questions get easier.
-            </p>
+            <div className="wb-scroll">
+              <div className="wb-stage">
+                <div className="wb-grid">
+                  <div className="wb-board">
+                    <svg className="wb-svg" viewBox="0 0 560 520" role="img"
+                         aria-label="A visual proof of Pythagoras' theorem: squares drawn on the two shorter sides of a right triangle together equal the square on its longest side.">
+                      <g className="wb-fills" aria-hidden="true">
+                        <rect className="wb-fill wb-fa" x="60" y="180" width="120" height="120" />
+                        <rect className="wb-fill wb-fb" x="180" y="300" width="160" height="160" />
+                        <polygon className="wb-fill wb-fc" points="180,180 340,300 460,140 300,20" />
+                      </g>
+                      <polyline className="wb-ln wb-legs" pathLength={1} points="180,180 180,300 340,300" />
+                      <line className="wb-ln wb-hyp" pathLength={1} x1="180" y1="180" x2="340" y2="300" />
+                      <polyline className="wb-ln wb-rt" pathLength={1} points="180,278 202,278 202,300" />
+                      <rect className="wb-ln wb-sa" pathLength={1} x="60" y="180" width="120" height="120" />
+                      <rect className="wb-ln wb-sb" pathLength={1} x="180" y="300" width="160" height="160" />
+                      <polygon className="wb-ln wb-sc" pathLength={1} points="180,180 340,300 460,140 300,20" />
+                      <text className="wb-lbl wb-la" x="166" y="246" textAnchor="end">a</text>
+                      <text className="wb-lbl wb-lb" x="260" y="324">b</text>
+                      <text className="wb-lbl wb-lc" x="272" y="226">c</text>
+                      <text className="wb-eq" x="280" y="505" textAnchor="middle">a&#178; + b&#178; = c&#178;</text>
+                    </svg>
+                  </div>
 
-            <div className="subj-grid stagger">
-              {SUBJECTS.map((s, i) => (
-                <article key={s.name} className={`subj-card reveal d${i + 1}`}>
-                  <div className="subj-name">{s.name}</div>
-                  <div className="subj-tag">{s.tag}</div>
-                  <p className="subj-body">{s.body}</p>
-                </article>
-              ))}
+                  <div className="wb-side">
+                    <div className="eyebrow">Tutoring &amp; Teaching</div>
+                    <h2 className="sh wordfill m-display" id="tutoring-heading">Learn <em>Science, Maths<br />&amp; Computing</em></h2>
+                    <p className="wb-lead">
+                      <strong>Pearson Edexcel</strong> for <strong>Grades 5&ndash;8</strong>, at The Science
+                      Brainery in Boralesgamuwa. Group classes and one-to-one sessions, with the same
+                      starting point either way: understand the mechanism, and the questions get easier.
+                    </p>
+                    <ol className="wb-notes" role="list">
+                      {SUBJECTS.map((s, i) => (
+                        <li key={s.name} className={`wb-note wb-n${i + 1}`}>
+                          <span className="wb-note-i" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                          <div>
+                            <div className="wb-note-n">{s.name}</div>
+                            <div className="wb-note-t">{s.tag}</div>
+                            <p className="wb-note-b">{s.body}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="tut-facts reveal d2" role="list" aria-label="Class details">
@@ -530,14 +576,24 @@ export default function Home() {
             <div className="merged-grid reveal d1">
               <div className="merged-col">
                 <h3 className="merged-subheading">Honours &amp; Awards</h3>
-                <div className="agrid stagger">
-                  <article className="acard reveal d1"><div className="amed" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 5h2.5a2.5 2.5 0 0 1 0 5H17M7 5H4.5a2.5 2.5 0 0 0 0 5H7"/></svg></div><div className="atitle">All-Island Dancing Champion</div><div className="abadge">Island 1st · 2018, 2019, 2023</div><p className="abody">First in 2018, again in 2019, then a third time in 2023. Five years, three different fields.</p></article>
-                  <article className="acard reveal d2"><div className="amed" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><div className="atitle">All-Island Music Champion</div><div className="abadge">Island 1st · 2019, 2023, 2024</div><p className="abody">2019 was a double year: this title and the dancing one in the same season.</p></article>
-                  <article className="acard reveal d3"><div className="amed" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9.5" cy="7.5" r="3.1"/><path d="M15.7 4.8a3.1 3.1 0 0 1 0 5.4"/><path d="M15.8 20v-1.6a3.6 3.6 0 0 0-3.6-3.6H6.9a3.6 3.6 0 0 0-3.6 3.6V20"/><path d="M20.7 20v-1.6a3.6 3.6 0 0 0-2.7-3.5"/></svg></div><div className="atitle">Malaysian World Choral Competition</div><div className="abadge">1st Place · International</div><p className="abody">Sri Lanka&apos;s entry, placed first. Eight years of Senior Choir behind it.</p></article>
-                  <article className="acard reveal d4"><div className="amed" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 3.5h13V11c0 3.6-2.9 6.6-6.5 6.6S5.5 14.6 5.5 11V3.5z"/><path d="M9.3 8.6h.02M14.7 8.6h.02"/><path d="M10 12.6h4"/><path d="M9 20.5h6"/></svg></div><div className="atitle">British-Lanka Festival of Performing Arts</div><div className="abadge">1st Place</div><p className="abody">A British Council&ndash;linked festival judged on stage performance. First place, against entries from across the island.</p></article>
-                  <article className="acard reveal d5"><div className="amed" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/></svg></div><div className="atitle">WWF · United Nations Resolution</div><div className="abadge">1st Place</div><p className="abody">A WWF-affiliated Model UN, judged on international policy debate.</p></article>
-                  <article className="acard reveal d6"><div className="amed" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="6.2" r="2.9"/><path d="M9.4 9.1h5.2l-.9 2.1c-.3.7-.1 1.4.4 1.9 1.2 1.3 1.9 3 1.9 4.8H8c0-1.8.7-3.5 1.9-4.8.5-.5.7-1.2.4-1.9L9.4 9.1z"/><path d="M6.5 20.6h11"/></svg></div><div className="atitle">National Chess Championship</div><div className="abadge">1st Place · 2016</div><p className="abody">The earliest title on this page. Also the only one won sitting down.</p></article>
-                </div>
+                <table className="pal">
+                  <caption className="pal-cap">Competition results, most recent first</caption>
+                  <thead>
+                    <tr><th scope="col">Year</th><th scope="col">Competition</th><th scope="col">Result</th><th scope="col">Field</th></tr>
+                  </thead>
+                  <tbody>
+                    {PALMARES.map((r, i) => (
+                      <tr key={`${r.year}-${r.event}`} className="pal-row" style={{ "--i": i } as CSSProperties}>
+                        <td className="pal-year">
+                          {r.year ? r.year : <span className="pal-nd" title="Year not recorded">&ndash;</span>}
+                        </td>
+                        <th scope="row" className="pal-event">{r.event}</th>
+                        <td className="pal-place">{r.place}</td>
+                        <td className="pal-field">{r.field}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
               
               <div className="merged-col" id="certs">

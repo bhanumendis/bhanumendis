@@ -1376,3 +1376,226 @@ body.at-end .sidebar-left{opacity:0;pointer-events:none;transition:opacity .35s 
 .amed svg{width:20px;height:20px;stroke:var(--sky);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
 .acard:hover .amed{background:var(--card-hbg);border-color:var(--card-hb);}
 .amed{transition:background .25s ease,border-color .25s ease;}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   THE WHITEBOARD  ·  a section that performs instead of describing
+   ═══════════════════════════════════════════════════════════════════════
+   The tutoring section used to be a heading, a paragraph and three
+   identical cards — the shape that made it read as generated no matter
+   how the copy was written. It is now a pinned stage: a visual proof of
+   Pythagoras draws itself across the scroll, and each subject note lands
+   on the stage that earns it.
+
+   Pinned with position:sticky inside a tall parent, and every step driven
+   by ONE view() timeline on that parent. No JS, no scroll listener, and
+   bidirectional for free — scroll back up and the proof un-draws itself.
+
+   The resting state (no scroll-timeline support, or reduced motion) is
+   the FINISHED diagram, fully drawn and fully legible. Nothing here can
+   fail into an empty box.
+   ═══════════════════════════════════════════════════════════════════════ */
+.wb-scroll{position:relative;}
+.wb-stage{padding:8px 0 28px;}
+.wb-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,4vw,64px);align-items:center;}
+
+.wb-board{position:relative;}
+.wb-svg{width:100%;height:auto;max-height:70vh;overflow:visible;display:block;}
+
+.wb-ln{fill:none;stroke:var(--sky);stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;}
+.wb-rt{stroke-width:1.6;opacity:.75;}
+.wb-sa,.wb-sb,.wb-sc{stroke-width:1.9;opacity:.92;}
+.wb-fill{stroke:none;}
+.wb-fa{fill:var(--sky);fill-opacity:.15;}
+.wb-fb{fill:var(--sky);fill-opacity:.10;}
+.wb-fc{fill:var(--sky);fill-opacity:.2;}
+.wb-lbl{font-family:var(--mono);font-size:21px;font-weight:600;fill:var(--sky2);}
+.wb-eq{font-family:var(--impact);font-size:40px;letter-spacing:.04em;fill:var(--white);}
+:root:not(.dark) .wb-lbl{fill:var(--sky);}
+
+.wb-side{min-width:0;}
+.wb-side .eyebrow{margin-bottom:14px;}
+.wb-lead{font-size:15px;line-height:1.75;color:var(--soft);max-width:46ch;margin:18px 0 30px;}
+
+.wb-notes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:20px;counter-reset:wb;}
+.wb-note{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
+  padding-top:18px;border-top:1px solid var(--line);}
+.wb-note-i{font-family:var(--impact);font-size:15px;letter-spacing:.08em;color:var(--sky);opacity:.85;padding-top:2px;}
+.wb-note-n{font-family:var(--display);font-size:17px;font-weight:800;color:var(--white);letter-spacing:-.01em;}
+.wb-note-t{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--sky);margin:5px 0 8px;}
+.wb-note-b{font-size:13.5px;line-height:1.68;color:var(--soft);margin:0;}
+
+/* Pinned stages. `contain` is exactly the window where the tall parent
+   fully covers the viewport, which is exactly how long the sticky child
+   stays pinned — so the proof's timeline and the pin are the same thing. */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
+    html[data-motion="native"] .wb-scroll{
+      height:300vh;view-timeline-name:--wb;view-timeline-axis:block;
+    }
+    html[data-motion="native"] .wb-stage{
+      position:sticky;top:0;min-height:100vh;display:flex;align-items:center;
+    }
+    html[data-motion="native"] .wb-ln{
+      stroke-dasharray:1;stroke-dashoffset:1;
+      animation:wbDraw linear both;animation-timeline:--wb;
+    }
+    html[data-motion="native"] .wb-legs{animation-range:contain 2%  contain 14%;}
+    html[data-motion="native"] .wb-hyp {animation-range:contain 14% contain 24%;}
+    html[data-motion="native"] .wb-rt  {animation-range:contain 24% contain 30%;}
+    html[data-motion="native"] .wb-sa  {animation-range:contain 32% contain 50%;}
+    html[data-motion="native"] .wb-sb  {animation-range:contain 50% contain 68%;}
+    html[data-motion="native"] .wb-sc  {animation-range:contain 68% contain 86%;}
+
+    html[data-motion="native"] .wb-lbl,
+    html[data-motion="native"] .wb-fill,
+    html[data-motion="native"] .wb-eq{
+      opacity:0;animation:wbIn linear both;animation-timeline:--wb;
+    }
+    html[data-motion="native"] .wb-la{animation-range:contain 26% contain 32%;}
+    html[data-motion="native"] .wb-lb{animation-range:contain 28% contain 34%;}
+    html[data-motion="native"] .wb-lc{animation-range:contain 30% contain 36%;}
+    html[data-motion="native"] .wb-fa{animation-range:contain 44% contain 52%;}
+    html[data-motion="native"] .wb-fb{animation-range:contain 62% contain 70%;}
+    html[data-motion="native"] .wb-fc{animation-range:contain 80% contain 88%;}
+    html[data-motion="native"] .wb-eq{animation-range:contain 88% contain 97%;}
+
+    /* Each note arrives with the square it belongs to. */
+    html[data-motion="native"] .wb-note{
+      opacity:0;transform:translate3d(0,16px,0);
+      animation:wbNote linear both;animation-timeline:--wb;
+    }
+    html[data-motion="native"] .wb-n1{animation-range:contain 30% contain 44%;}
+    html[data-motion="native"] .wb-n2{animation-range:contain 48% contain 62%;}
+    html[data-motion="native"] .wb-n3{animation-range:contain 66% contain 80%;}
+  }
+}
+@keyframes wbDraw{from{stroke-dashoffset:1;}to{stroke-dashoffset:0;}}
+@keyframes wbIn{from{opacity:0;}to{opacity:1;}}
+@keyframes wbNote{from{opacity:0;transform:translate3d(0,16px,0);}to{opacity:1;transform:none;}}
+
+@media (max-width:900px){
+  .wb-grid{grid-template-columns:1fr;gap:30px;}
+  .wb-board{order:2;}
+  .wb-side{order:1;}
+  .wb-svg{max-height:none;}
+  .wb-eq{font-size:46px;}
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PALMARES  ·  a results record, not a card grid
+   ═══════════════════════════════════════════════════════════════════════
+   Six identical cards were the problem; restyling them was never going to
+   solve it. This is the same information as a competition record: dated,
+   ranked, scannable, and boring in the way a real honours table is boring.
+   Grouped entries are split into their individual years, so the three
+   "three-time champion" cards become six dated rows — more specific, and
+   more impressive for it.
+   ═══════════════════════════════════════════════════════════════════════ */
+.pal{width:100%;border-collapse:collapse;text-align:left;}
+.pal-cap{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+.pal thead th{
+  font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--sky);opacity:.8;padding:0 16px 14px 0;border-bottom:1px solid var(--card-b);
+}
+.pal thead th:first-child{width:104px;}
+.pal thead th:nth-child(3){width:132px;}
+.pal thead th:last-child{width:190px;}
+
+.pal-row{border-bottom:1px solid var(--line);}
+.pal-row > *{padding:17px 16px 17px 0;vertical-align:baseline;transition:color .25s ease;}
+.pal-year{font-family:var(--impact);font-size:27px;line-height:1;letter-spacing:.02em;color:var(--white);
+  font-variant-numeric:tabular-nums;}
+.pal-nd{color:var(--muted);font-family:var(--mono);font-size:19px;}
+.pal-event{font-family:var(--display);font-size:16.5px;font-weight:700;color:var(--white);letter-spacing:-.005em;}
+.pal-place{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--sky);white-space:nowrap;}
+.pal-field{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+
+/* The row lights up as one object. A rule slides in from the left rather
+   than the whole row shifting, so nothing below it moves. */
+.pal-row{position:relative;}
+.pal-row::after{
+  content:"";position:absolute;left:0;bottom:-1px;height:1px;width:100%;
+  background:var(--skyg);transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .5s cubic-bezier(.22,1,.28,1);
+}
+.pal-row:hover::after{transform:scaleX(1);}
+.pal-row:hover .pal-year{color:var(--sky2);}
+.pal-row:hover .pal-field{color:var(--soft);}
+
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    html[data-motion="native"] .pal-row{
+      opacity:0;transform:translate3d(0,14px,0);
+      animation:palIn linear both;animation-timeline:view();
+      animation-range:entry 4% entry 46%;
+    }
+  }
+}
+@keyframes palIn{from{opacity:0;transform:translate3d(0,14px,0);}to{opacity:1;transform:none;}}
+
+/* The ledger wants the full measure, so the two halves of this section
+   stack instead of splitting the width. */
+.merged-grid{grid-template-columns:1fr;gap:clamp(40px,5vw,68px);}
+
+@media (max-width:760px){
+  .pal thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  .pal,.pal tbody,.pal-row{display:block;width:100%;}
+  .pal-row{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;padding:16px 0;}
+  .pal-row > *{padding:0;}
+  .pal-year{grid-row:1 / span 2;align-self:center;font-size:30px;}
+  .pal-event{grid-column:2;}
+  .pal-place{grid-column:2;grid-row:2;}
+  .pal-field{grid-column:2;grid-row:3;margin-top:4px;}
+}
+
+/* ── Whiteboard, balance pass ───────────────────────────────────────────
+   First build stacked all three notes in flow, which made the right column
+   ~1130px against an 860px stage: the pinned content overflowed its own
+   viewport and pushed the diagram off centre.
+
+   Fixing it produced the better design. Only ONE note shows at a time, in
+   place, swapping as the proof advances — so each subject is tied to the
+   square being drawn instead of competing with the other two. The column
+   now has a fixed height and the stage holds.
+
+   Without scroll-driven animation the notes stay in normal flow and all
+   three are simply visible, stacked. The stacking only engages inside the
+   supports+motion gate, where something is there to drive it. */
+.wb-grid{align-items:center;}
+.wb-board{display:flex;align-items:center;justify-content:center;min-width:0;}
+.wb-svg{width:100%;max-width:520px;max-height:62vh;}
+.wb-side .sh{font-size:clamp(30px,3.4vw,50px);line-height:1.04;}
+.wb-lead{font-size:14.5px;line-height:1.7;margin:16px 0 26px;max-width:44ch;}
+.wb-note-b{font-size:13px;}
+
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
+    html[data-motion="native"] .wb-notes{position:relative;min-height:212px;display:block;}
+    html[data-motion="native"] .wb-note{
+      position:absolute;inset:0 0 auto 0;margin:0;
+      animation-name:wbNoteSwap;
+    }
+    /* Each note holds through its own square, then hands over. */
+    html[data-motion="native"] .wb-n1{animation-range:contain 28% contain 52%;}
+    html[data-motion="native"] .wb-n2{animation-range:contain 46% contain 70%;}
+    html[data-motion="native"] .wb-n3{animation-range:contain 64% contain 100%;}
+  }
+}
+/* In then out, so two notes never sit on top of each other. The last one
+   holds to the end of the stage rather than fading into nothing. */
+@keyframes wbNoteSwap{
+  0%   {opacity:0;transform:translate3d(0,14px,0);}
+  22%  {opacity:1;transform:none;}
+  74%  {opacity:1;transform:none;}
+  100% {opacity:0;transform:translate3d(0,-12px,0);}
+}
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
+    html[data-motion="native"] .wb-n3{animation-name:wbNoteLast;}
+  }
+}
+@keyframes wbNoteLast{
+  0%  {opacity:0;transform:translate3d(0,14px,0);}
+  26% {opacity:1;transform:none;}
+  100%{opacity:1;transform:none;}
+}
