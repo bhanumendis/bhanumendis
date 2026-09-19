@@ -40,15 +40,15 @@ const SKILLS: readonly string[] = [
 
 const PALMARES: readonly { year: string; event: string; place: string; field: string }[] = [
   { year: "2024", event: "All-Island Music Competition", place: "Island 1st", field: "Music" },
+  { year: "2024", event: "WWF \u00b7 United Nations Resolution", place: "1st Place", field: "Model UN" },
   { year: "2023", event: "All-Island Dancing Competition", place: "Island 1st", field: "Dance" },
   { year: "2023", event: "All-Island Music Competition", place: "Island 1st", field: "Music" },
+  { year: "2023", event: "Malaysian World Choral Competition", place: "1st Place", field: "Choral / International" },
+  { year: "2022", event: "British-Lanka Festival of Performing Arts", place: "1st Place", field: "Performing Arts" },
   { year: "2019", event: "All-Island Dancing Competition", place: "Island 1st", field: "Dance" },
   { year: "2019", event: "All-Island Music Competition", place: "Island 1st", field: "Music" },
   { year: "2018", event: "All-Island Dancing Competition", place: "Island 1st", field: "Dance" },
   { year: "2016", event: "National Chess Championship", place: "1st Place", field: "Chess" },
-  { year: "", event: "Malaysian World Choral Competition", place: "1st Place", field: "Choral / International" },
-  { year: "", event: "British-Lanka Festival of Performing Arts", place: "1st Place", field: "Performing Arts" },
-  { year: "", event: "WWF \u00b7 United Nations Resolution", place: "1st Place", field: "Model UN" },
 ] as const;
 
 const SUBJECTS = [
