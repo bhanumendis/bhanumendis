@@ -41,7 +41,7 @@ function rng(seed: number) {
   };
 }
 
-type P = { r: number; phi: number; size: number; hue: number; twinkle: number; born: number };
+type P = { r: number; phi: number; size: number; hue: number; warm: number; twinkle: number; born: number };
 
 function build(n: number): P[] {
   const rand = rng(20260919);
@@ -53,12 +53,21 @@ function build(n: number): P[] {
     // Scatter widens with radius: arms are tight near the core and
     // fray at the rim, which is what makes it read as a galaxy rather
     // than as three drawn curves.
-    const scatter = (rand() - 0.5) * (0.22 + r * 0.95);
+    // Gaussian-ish cross-arm scatter: summing two uniforms clusters
+    // stars on the arm and thins them out to either side, which is what
+    // gives an arm a soft edge instead of a drawn line.
+    const g2 = (rand() + rand() - 1);
+    const inArm = rand() > 0.24;                    // ~24% halo population
+    const spread = inArm ? 0.30 + r * 1.15 : 3.4;
+    const scatter = g2 * spread;
     const phi = (arm * TAU) / ARMS + Math.log(r / CORE) * TIGHT + scatter;
     out.push({
       r, phi,
-      size: 0.5 + rand() * rand() * rand() * 3.6,
+      // Power law: mostly faint, a few genuinely bright. 1.5% of the
+      // reference reads as near-white blowout, so a handful must be big.
+      size: 0.3 + Math.pow(rand(), 3.4) * 2.2,
       hue: rand(),
+      warm: rand(),
       twinkle: rand() * TAU,
       born: rand() * 0.42,
     });
@@ -79,7 +88,7 @@ export default function GravityField() {
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    const N = window.innerWidth < 900 ? 460 : 1250;
+    const N = window.innerWidth < 900 ? 550 : 1400;
     const parts = build(N);
 
     // Three sprites: plain, soft, and haloed. Drawn once, reused forever.
@@ -105,10 +114,14 @@ export default function GravityField() {
       g.beginPath(); g.arc(m, m, S * 0.11, 0, TAU); g.fill();
       return c;
     };
+    // Five temperatures, warm through hot, matching the sampled mix.
     const SPR = [
-      sprite("79,157,255", 0),      // rim blue
-      sprite("168,205,255", 0),     // mid
-      sprite("248,252,255", 1),     // hot, with halo baked in
+      sprite("255,196,140", 1),   // 0  cool giant, orange
+      sprite("255,226,190", 0),   // 1  warm
+      sprite("255,252,246", 0),   // 2  white, the bulk
+      sprite("252,254,255", 1),   // 3  white with halo
+      sprite("176,212,255", 0),   // 4  hot blue
+      sprite("206,230,255", 1),   // 5  hot blue with halo
     ];
 
     let w = 0, h = 0, dpr = 1;
@@ -116,6 +129,8 @@ export default function GravityField() {
     let px = 0, py = 0, pOn = 0;     // pointer, and how present it is
     let tx = 0, ty = 0, tOn = 0;     // its eased target
     let raf = 0, running = false, dirty = true;
+    let onScreen = false;
+    const t0Spin = performance.now();
     let lastT = -1;
 
     const resize = () => {
@@ -157,6 +172,7 @@ export default function GravityField() {
 
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
+      const spin = onScreen && !reduce ? (performance.now() - t0Spin) * 0.0000145 : 0;
       const cx = w / 2, cy = h / 2;
       const R = Math.min(w, h) * 0.46;
       const ease = t < 0.5 ? 2 * t * t : t * (2 - t) * 1.0;
@@ -188,9 +204,11 @@ export default function GravityField() {
         // Kepler: omega proportional to r^-1.5. This single line is why
         // the spokes wind into arms.
         const omega = Math.pow(CORE / p.r, 1.5);
-        const theta = p.phi + omega * ease * SWIRL;
+        const theta = p.phi + omega * ease * SWIRL + spin * (0.4 + omega * 0.6);
         // Particles drift inward as they wind, so the disc tightens.
-        const rr = p.r * (1.28 - 0.3 * ease);
+        // Stars pile up toward the centre as the disc settles, which is
+        // what builds the bulge rather than faking it with one gradient.
+        const rr = p.r * (1.26 - 0.3 * ease) * (1 - 0.22 * Math.pow(1 - p.r, 2.2) * ease);
 
         let x = cx + Math.cos(theta) * rr * R;
         let y = cy + Math.sin(theta) * rr * R * 0.94;
@@ -198,21 +216,35 @@ export default function GravityField() {
         // The pointer bends the field around itself, like mass warping
         // the paths near it. Falls off fast so it stays local.
         if (tOn > 0.001) {
+          // A magnetic pole, not a lens. Pure radial repulsion: every
+          // star moves directly away from the pointer along the line
+          // joining them, by a distance that falls off with range.
+          //
+          // The two earlier versions were wrong in the same way. Scaling
+          // by dx and dy made the displacement grow with distance, so
+          // distant stars flew further than near ones and the disc
+          // sheared. Normalising by the distance first is what makes it
+          // a field: strength depends on range, direction does not.
           const dx = x - tx, dy = y - ty;
           const d2 = dx * dx + dy * dy;
-          // Smooth, bounded, and mostly rotational. Capped so no particle
-          // can be flung, which is what made the old one look broken.
-          const g = Math.min(0.42, 14000 / (d2 + 12000)) * tOn;
-          const sw = g * 0.85;
-          x += dx * g * 0.3 - dy * sw;
-          y += dy * g * 0.3 + dx * sw;
+          const d = Math.sqrt(d2) || 1;
+          const push = Math.min(74, 260000 / (d2 + 3000)) * tOn;
+          x += (dx / d) * push;
+          y += (dy / d) * push;
         }
 
         const tw = 0.72 + 0.28 * Math.sin(p.twinkle + ease * 5.2);
         const sz = p.size * (0.55 + 0.45 * a) * tw;
-        const kind = p.hue > 0.82 ? 2 : p.hue > 0.5 ? 1 : 0;
-        // Haloed sprites need more box than the core dot does.
-        const d = sz * (kind === 2 ? 13 : 6.5);
+        // 6% warm, 25% blue, 69% white, per the sampled reference. The
+        // brightest of each get the haloed sprite.
+        const big = sz > 2.5;
+        const kind =
+          p.warm < 0.06 ? 0
+          : p.warm < 0.12 ? 1
+          : p.warm > 0.75 ? (big ? 5 : 4)
+          : big ? 3 : 2;
+        const haloed = kind === 0 || kind === 3 || kind === 5;
+        const d = sz * (haloed ? 6.5 : 3.4);
         // Only a gentle radial falloff, so the arms stay legible all the
         // way to the rim. A few run hot white, the rest carry the brand
         // blue. Deliberately no amber: this palette is blue by decision.
@@ -238,7 +270,11 @@ export default function GravityField() {
         dirty = true;
       } else if (tOn !== pOn) { tOn = pOn; tx = px; ty = py; dirty = true; }
 
-      if (dirty) { draw(); dirty = false; raf = requestAnimationFrame(frame); return; }
+      // While the section is on screen the slow spin means every frame
+      // is a new frame; off screen the loop parks as before.
+      if (dirty || (onScreen && !reduce)) {
+        draw(); dirty = false; raf = requestAnimationFrame(frame); return;
+      }
       running = false;
     };
     function start() { if (!running) { running = true; raf = requestAnimationFrame(frame); } }
@@ -252,6 +288,12 @@ export default function GravityField() {
     const onLeave = () => { pOn = 0; start(); };
     const onTheme = () => { SKY = ink(); dirty = true; start(); };
 
+    const io = new IntersectionObserver(
+      (es) => { onScreen = es.some((e) => e.isIntersecting); if (onScreen) start(); },
+      { rootMargin: "120px" }
+    );
+    io.observe(wrap);
+
     const ro = new ResizeObserver(resize);
     ro.observe(wrap);
     resize();
@@ -264,7 +306,7 @@ export default function GravityField() {
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
     return () => {
-      ro.disconnect(); mo.disconnect();
+      ro.disconnect(); mo.disconnect(); io.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", resize);
       wrap.removeEventListener("pointermove", onMove);

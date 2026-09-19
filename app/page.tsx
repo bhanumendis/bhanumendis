@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import GravityField from "./GravityField";
+import ScrubSky from "./ScrubSky";
 import FeaturedIn from "./FeaturedIn";
 import MagneticButton from "./MagneticButton";
 import LinkedInPosts from "./LinkedInPosts";
@@ -53,8 +54,8 @@ const PALMARES: readonly { year: string; event: string; place: string; field: st
 ] as const;
 
 const SUBJECTS = [
-  { name: "Science", tag: "Physics · Chemistry · Biology", body: "Physics, chemistry and biology. Derive it first and memorise it second, so an exam question is never the first time you have met the idea." },
-  { name: "Mathematics", tag: "Number · Algebra · Geometry", body: "Number, algebra and geometry, worked against past papers from week one. Edexcel asks in patterns, and patterns can be taught." },
+  { name: "Science", tag: "Physics · Chemistry · Biology", body: "Derive it first, memorise it second. An exam question is never the first time you meet the idea." },
+  { name: "Mathematics", tag: "Number · Algebra · Geometry", body: "Past papers from week one. Edexcel asks in patterns, and patterns can be taught." },
   { name: "Computing", tag: "Computational thinking · Code", body: "Computational thinking, then real code on a real machine." },
 ] as const;
 
@@ -322,12 +323,13 @@ export default function Home() {
           <div className="sw" data-tilt>
             <div className="wb-scroll">
               <div className="wb-stage">
-                <div className="wb-grid">
-                  <div className="wb-board">
-                    <GravityField />
-                  </div>
+                <div className="wb-sky" aria-hidden="true">
+                  <ScrubSky srcs={["/galaxy.webm", "/galaxy.mp4"]} poster="/galaxy-poster.webp" />
+                  <GravityField />
+                </div>
 
-                  <div className="wb-side">
+                <div className="wb-fg">
+                  <div className="wb-fg-l">
                     <div className="eyebrow">Tutoring &amp; Teaching</div>
                     <h2 className="sh wordfill m-display" id="tutoring-heading">Learn <em>Science, Maths<br />&amp; Computing</em></h2>
                     <p className="wb-lead">
@@ -335,19 +337,20 @@ export default function Home() {
                       Brainery in Boralesgamuwa. Group classes and one-to-one sessions, with the same
                       starting point either way: understand the mechanism, and the questions get easier.
                     </p>
-                    <ol className="wb-notes" role="list">
-                      {SUBJECTS.map((s, i) => (
-                        <li key={s.name} className={`wb-note wb-n${i + 1}`}>
-                          <span className="wb-note-i" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                          <div>
-                            <div className="wb-note-n">{s.name}</div>
-                            <div className="wb-note-t">{s.tag}</div>
-                            <p className="wb-note-b">{s.body}</p>
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
                   </div>
+
+                  <ol className="wb-notes wb-fg-r" role="list">
+                    {SUBJECTS.map((sub, i) => (
+                      <li key={sub.name} className={`wb-note wb-n${i + 1}`}>
+                        <span className="wb-note-i" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                        <div>
+                          <div className="wb-note-n">{sub.name}</div>
+                          <div className="wb-note-t">{sub.tag}</div>
+                          <p className="wb-note-b">{sub.body}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
               </div>
             </div>

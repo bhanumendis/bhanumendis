@@ -49,3 +49,10 @@ _conflict_backups/
 # Local working sources for image generation (not served)
 design-src/
 bhanu_lh.json
+
+# Large reference captures: GitHub rejects files over 100MB
+*.mp4
+*.mov
+_bm_src.tgz
+# ...but the hero video is a real asset and must ship.
+!public/galaxy.mp4

@@ -1714,3 +1714,107 @@ body.at-end .sidebar-left{opacity:0;pointer-events:none;transition:opacity .35s 
 }
 :root:not(.dark) .gf-neb{opacity:.2;}
 @media (prefers-reduced-transparency: reduce){ .gf-neb{display:none;} }
+
+/* ── Astra layout ──────────────────────────────────────────────────────
+   The reference makes the field the hero: full-bleed, centred, with the
+   words pushed to the outer edges. The two-column panel version kept the
+   galaxy boxed in half the width, which is most of why it read small.
+
+   The sky breaks out of the page's max-width. body already clips
+   overflow-x, so 100vw introduces no scrollbar. */
+.wb-stage{position:relative;padding:0;}
+.wb-sky{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:100vw;height:100%;z-index:0;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+}
+/* Only the disc itself takes the pointer, so the text stays selectable. */
+.wb-sky .gf{pointer-events:none;}
+.wb-sky .gf-disc{pointer-events:auto;}
+.gf{width:100%;max-width:none;}
+.gf-disc{width:min(86vh,62vw);max-width:none;}
+
+.wb-fg{
+  position:relative;z-index:2;display:grid;
+  grid-template-columns:minmax(0,1fr) min(52vw,640px) minmax(0,1fr);
+  align-items:center;gap:0;min-height:100vh;pointer-events:none;
+}
+.wb-fg-l{grid-column:1;pointer-events:auto;max-width:34ch;}
+.wb-fg-r{grid-column:3;pointer-events:auto;justify-self:end;max-width:34ch;}
+
+/* The words sit over a luminous field, so they carry their own shadow
+   rather than relying on the background staying dark. */
+.wb-fg-l .sh,.wb-fg-l .eyebrow,.wb-fg-r{text-shadow:0 2px 22px rgba(0,0,0,.85);}
+.wb-lead{text-shadow:0 2px 18px rgba(0,0,0,.8);}
+
+@media (max-width:1100px){
+  .gf-disc{width:min(70vh,74vw);}
+  .wb-fg{grid-template-columns:minmax(0,1fr) min(44vw,420px) minmax(0,1fr);}
+}
+@media (max-width:900px){
+  /* Stacked: the field becomes a backdrop the content sits on, which is
+     the only way both stay legible at this width. */
+  .wb-fg{grid-template-columns:1fr;min-height:0;gap:26px;padding:8px 0 4px;}
+  .wb-fg-l,.wb-fg-r{grid-column:1;justify-self:start;max-width:none;}
+  .wb-sky{position:relative;top:auto;left:auto;transform:none;height:auto;margin-bottom:8px;}
+  .gf-disc{width:min(84vw,440px);}
+}
+
+/* ── Video base, interactive stars on top ──────────────────────────────
+   The video is the painted backdrop and carries the cinematic weight.
+   The canvas sits over it and is the part that answers the pointer,
+   because pixels cannot be repelled. Each layer does what only it can.
+
+   The video is masked to a soft disc so it never shows a rectangle edge
+   against the page, and dimmed slightly so the live stars stay the
+   brightest thing in frame. */
+.sky{position:absolute;inset:0;z-index:0;pointer-events:none;display:grid;place-items:center;}
+.sky-v{
+  width:min(96vh,78vw);height:auto;aspect-ratio:16/9;object-fit:cover;
+  opacity:.85;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 38%,rgba(0,0,0,.6) 60%,transparent 76%);
+  mask-image:radial-gradient(circle at 50% 50%,#000 38%,rgba(0,0,0,.6) 60%,transparent 76%);
+}
+.wb-sky .gf{position:relative;z-index:1;}
+/* With a real galaxy behind it the canvas is the interactive overlay,
+   not the whole picture: fewer, brighter stars so the two layers read as
+   one field instead of competing. */
+.wb-sky .gf-neb{display:none;}
+.wb-sky .gf-cvs{opacity:.92;}
+
+@media (prefers-reduced-motion: reduce){
+  /* No scrubbing: the video holds one frame and the still carries it. */
+  .sky-v{opacity:.8;}
+}
+@media (max-width:900px){
+  .sky-v{width:100%;}
+}
+
+/* ── Side columns were being crushed ───────────────────────────────────
+   The outer tracks were plain 1fr, so the centre column took what it
+   wanted and the text got whatever was left: at some widths that was
+   about fourteen characters, which is one word per line. A minimum on
+   each side track means the field gives way to the words, not the other
+   way round. */
+.wb-fg{grid-template-columns:minmax(248px,1fr) minmax(0,min(46vw,540px)) minmax(248px,1fr);}
+.wb-fg-l,.wb-fg-r{max-width:38ch;min-width:0;}
+.wb-note-b{text-wrap:pretty;}
+
+/* The law caption was landing right on top of the class-detail tabs
+   below it. They are separate thoughts and need to read that way. */
+.gf-law{margin-top:20px;}
+.tut-facts{margin-top:clamp(40px,6vh,84px);}
+
+@media (max-width:1180px){
+  .wb-fg{grid-template-columns:minmax(230px,1fr) minmax(0,34vw) minmax(230px,1fr);}
+}
+
+/* The centre track was still taking more than it needed, pinning the
+   side columns to their 248px floor at 1440. Narrower centre, readable
+   sides. */
+.wb-fg{grid-template-columns:minmax(260px,1fr) minmax(0,min(38vw,470px)) minmax(260px,1fr);}
+
+/* The video is the picture now; the canvas is the layer you can touch.
+   Held back so the two read as one field rather than two galaxies. */
+.wb-sky .gf-cvs{opacity:.6;}
+.sky-v{opacity:.95;}
