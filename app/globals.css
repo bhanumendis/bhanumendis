@@ -844,7 +844,6 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
 }
 
 
-
 /* ── LinkedIn facade (click-to-load; see app/LinkedInPosts.tsx) ── */
 .li-facade{
   width:100%;height:540px;border-radius:var(--rl);
@@ -1394,91 +1393,17 @@ body.at-end .sidebar-left{opacity:0;pointer-events:none;transition:opacity .35s 
    the FINISHED diagram, fully drawn and fully legible. Nothing here can
    fail into an empty box.
    ═══════════════════════════════════════════════════════════════════════ */
-.wb-scroll{position:relative;}
-.wb-stage{padding:8px 0 28px;}
-.wb-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,4vw,64px);align-items:center;}
 
-.wb-board{position:relative;}
-.wb-svg{width:100%;height:auto;max-height:70vh;overflow:visible;display:block;}
-
-.wb-ln{fill:none;stroke:var(--sky);stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;}
-.wb-rt{stroke-width:1.6;opacity:.75;}
-.wb-sa,.wb-sb,.wb-sc{stroke-width:1.9;opacity:.92;}
-.wb-fill{stroke:none;}
-.wb-fa{fill:var(--sky);fill-opacity:.15;}
-.wb-fb{fill:var(--sky);fill-opacity:.10;}
-.wb-fc{fill:var(--sky);fill-opacity:.2;}
-.wb-lbl{font-family:var(--mono);font-size:21px;font-weight:600;fill:var(--sky2);}
-.wb-eq{font-family:var(--impact);font-size:40px;letter-spacing:.04em;fill:var(--white);}
-:root:not(.dark) .wb-lbl{fill:var(--sky);}
-
-.wb-side{min-width:0;}
-.wb-side .eyebrow{margin-bottom:14px;}
-.wb-lead{font-size:15px;line-height:1.75;color:var(--soft);max-width:46ch;margin:18px 0 30px;}
-
-.wb-notes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:20px;counter-reset:wb;}
-.wb-note{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;
-  padding-top:18px;border-top:1px solid var(--line);}
-.wb-note-i{font-family:var(--impact);font-size:15px;letter-spacing:.08em;color:var(--sky);opacity:.85;padding-top:2px;}
-.wb-note-n{font-family:var(--display);font-size:17px;font-weight:800;color:var(--white);letter-spacing:-.01em;}
-.wb-note-t{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--sky);margin:5px 0 8px;}
-.wb-note-b{font-size:13.5px;line-height:1.68;color:var(--soft);margin:0;}
 
 /* Pinned stages. `contain` is exactly the window where the tall parent
    fully covers the viewport, which is exactly how long the sticky child
    stays pinned — so the proof's timeline and the pin are the same thing. */
 @supports (animation-timeline: view()){
   @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
-    html[data-motion="native"] .wb-scroll{
-      height:460vh;view-timeline-name:--wb;view-timeline-axis:block;
-    }
-    html[data-motion="native"] .wb-stage{
-      position:sticky;top:0;min-height:100vh;display:flex;align-items:center;
-    }
-    html[data-motion="native"] .wb-ln{
-      stroke-dasharray:1;stroke-dashoffset:1;
-      animation:wbDraw linear both;animation-timeline:--wb;
-    }
-    html[data-motion="native"] .wb-legs{animation-range:contain 2%  contain 14%;}
-    html[data-motion="native"] .wb-hyp {animation-range:contain 14% contain 24%;}
-    html[data-motion="native"] .wb-rt  {animation-range:contain 24% contain 30%;}
-    html[data-motion="native"] .wb-sa  {animation-range:contain 32% contain 50%;}
-    html[data-motion="native"] .wb-sb  {animation-range:contain 50% contain 68%;}
-    html[data-motion="native"] .wb-sc  {animation-range:contain 68% contain 86%;}
-
-    html[data-motion="native"] .wb-lbl,
-    html[data-motion="native"] .wb-fill,
-    html[data-motion="native"] .wb-eq{
-      opacity:0;animation:wbIn linear both;animation-timeline:--wb;
-    }
-    html[data-motion="native"] .wb-la{animation-range:contain 26% contain 32%;}
-    html[data-motion="native"] .wb-lb{animation-range:contain 28% contain 34%;}
-    html[data-motion="native"] .wb-lc{animation-range:contain 30% contain 36%;}
-    html[data-motion="native"] .wb-fa{animation-range:contain 44% contain 52%;}
-    html[data-motion="native"] .wb-fb{animation-range:contain 62% contain 70%;}
-    html[data-motion="native"] .wb-fc{animation-range:contain 80% contain 88%;}
-    html[data-motion="native"] .wb-eq{animation-range:contain 88% contain 97%;}
 
     /* Each note arrives with the square it belongs to. */
-    html[data-motion="native"] .wb-note{
-      opacity:0;transform:translate3d(0,16px,0);
-      animation:wbNote linear both;animation-timeline:--wb;
-    }
-    html[data-motion="native"] .wb-n1{animation-range:contain 30% contain 44%;}
-    html[data-motion="native"] .wb-n2{animation-range:contain 48% contain 62%;}
-    html[data-motion="native"] .wb-n3{animation-range:contain 66% contain 80%;}
-  }
-}
-@keyframes wbDraw{from{stroke-dashoffset:1;}to{stroke-dashoffset:0;}}
-@keyframes wbIn{from{opacity:0;}to{opacity:1;}}
-@keyframes wbNote{from{opacity:0;transform:translate3d(0,16px,0);}to{opacity:1;transform:none;}}
 
-@media (max-width:900px){
-  .wb-grid{grid-template-columns:1fr;gap:30px;}
-  .wb-board{order:2;}
-  .wb-side{order:1;}
-  .wb-svg{max-height:none;}
-  .wb-eq{font-size:46px;}
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -1547,274 +1472,23 @@ body.at-end .sidebar-left{opacity:0;pointer-events:none;transition:opacity .35s 
   .pal-place{grid-column:2;grid-row:2;}
   .pal-field{grid-column:2;grid-row:3;margin-top:4px;}
 }
-
-/* ── Whiteboard, balance pass ───────────────────────────────────────────
-   First build stacked all three notes in flow, which made the right column
-   ~1130px against an 860px stage: the pinned content overflowed its own
-   viewport and pushed the diagram off centre.
-
-   Fixing it produced the better design. Only ONE note shows at a time, in
-   place, swapping as the proof advances — so each subject is tied to the
-   square being drawn instead of competing with the other two. The column
-   now has a fixed height and the stage holds.
-
-   Without scroll-driven animation the notes stay in normal flow and all
-   three are simply visible, stacked. The stacking only engages inside the
-   supports+motion gate, where something is there to drive it. */
-.wb-grid{align-items:center;}
-.wb-board{display:flex;align-items:center;justify-content:center;min-width:0;}
-.wb-svg{width:100%;max-width:520px;max-height:62vh;}
-.wb-side .sh{font-size:clamp(30px,3.4vw,50px);line-height:1.04;}
-.wb-lead{font-size:14.5px;line-height:1.7;margin:16px 0 26px;max-width:44ch;}
-.wb-note-b{font-size:13px;}
-
-@supports (animation-timeline: view()){
-  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
-    html[data-motion="native"] .wb-notes{position:relative;min-height:212px;display:block;}
-    html[data-motion="native"] .wb-note{
-      position:absolute;inset:0 0 auto 0;margin:0;
-      animation-name:wbNoteSwap;
-    }
-    /* Each note holds through its own square, then hands over. */
-    html[data-motion="native"] .wb-n1{animation-range:contain 28% contain 52%;}
-    html[data-motion="native"] .wb-n2{animation-range:contain 46% contain 70%;}
-    html[data-motion="native"] .wb-n3{animation-range:contain 64% contain 100%;}
-  }
-}
-/* In then out, so two notes never sit on top of each other. The last one
-   holds to the end of the stage rather than fading into nothing. */
-@keyframes wbNoteSwap{
-  0%   {opacity:0;transform:translate3d(0,14px,0);}
-  22%  {opacity:1;transform:none;}
-  74%  {opacity:1;transform:none;}
-  100% {opacity:0;transform:translate3d(0,-12px,0);}
-}
-@supports (animation-timeline: view()){
-  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
-    html[data-motion="native"] .wb-n3{animation-name:wbNoteLast;}
-  }
-}
-@keyframes wbNoteLast{
-  0%  {opacity:0;transform:translate3d(0,14px,0);}
-  26% {opacity:1;transform:none;}
-  100%{opacity:1;transform:none;}
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   THE GRAVITY FIELD
-   ═══════════════════════════════════════════════════════════════════════
-   Replaces the drawn geometry proof. Same pinned-scroll mechanic, which
-   was the part worth keeping; a different subject, which was the part
-   that was not landing.
-
-   The canvas draws itself from one number, the scroll progress, so this
-   layer owns almost nothing. Sizing, the law caption and the resting
-   state live here.
-   ═══════════════════════════════════════════════════════════════════════ */
-.gf{position:relative;width:100%;aspect-ratio:1/1;max-width:600px;margin-inline:auto;}
-.gf-cvs{display:block;width:100%;height:100%;}
-
-/* A faint gravitational well under the disc, so the field sits in
-   something rather than floating on flat black. */
-.gf::before{
-  content:"";position:absolute;inset:-6%;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle at 50% 50%,
-    color-mix(in srgb,var(--sky) 13%,transparent) 0%,
-    color-mix(in srgb,var(--sky) 5%,transparent) 34%,
-    transparent 66%);
-}
-
-.gf-law{
-  position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:center;gap:7px;
-  text-align:center;pointer-events:none;width:100%;
-}
-.gf-eq{
-  font-family:var(--impact);font-size:clamp(26px,3.3vw,40px);letter-spacing:.03em;
-  color:var(--white);line-height:1;
-}
-.gf-eq sup{font-size:.52em;}
-.gf-cap{
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
-  color:var(--sky);opacity:.85;max-width:34ch;line-height:1.6;
-}
-
-/* The law resolves with the disc rather than sitting there from the
-   start, so the caption reads as the conclusion of what just happened. */
-@supports (animation-timeline: view()){
-  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
-    html[data-motion="native"] .gf-law{
-      opacity:0;animation:wbIn linear both;
-      animation-timeline:--wb;animation-range:contain 74% contain 92%;
-    }
-  }
-}
-
-@media (max-width:900px){
-  .gf{max-width:440px;aspect-ratio:1/1;}
-  .gf-law{position:static;transform:none;margin-top:18px;}
-}
-
-/* The canvas cannot render without JavaScript, so the section must not
-   depend on it: the heading, the lead and all three subject notes are
-   plain markup and stand on their own. This only reserves the space so
-   the layout does not jump when the canvas mounts. */
-@media (prefers-reduced-transparency: reduce){
-  .gf::before{display:none;}
-}
-
-/* The law sat over the disc's lower arm and its caption wrapped into the
-   particles. It belongs under the field, not on it. */
-.gf-law{position:static;transform:none;margin-top:14px;}
-.gf-cap{max-width:38ch;}
-.gf{margin-bottom:6px;}
-
-/* The measured box holds only the canvas. Nothing else may live here or
-   the ResizeObserver feeds back into its own input. */
-.gf{aspect-ratio:auto;display:flex;flex-direction:column;align-items:center;}
-.gf-disc{position:relative;width:100%;max-width:600px;aspect-ratio:1/1;}
-.gf-cvs{position:absolute;inset:0;width:100%;height:100%;}
-.gf::before{inset:-6% 0;}
-@media (max-width:900px){ .gf-disc{max-width:440px;} }
-
-/* ── The nebula plate ──────────────────────────────────────────────────
-   Generated once with Higgsfield (1 credit), then downscaled and
-   re-encoded to webp: 1.1MB PNG to 7.4KB, 148x smaller.
-
-   It exists because the particles alone sat on flat black, and depth is
-   most of what makes the Astra hero read as space rather than as dots.
-   A static plate is the right tool for that: the code cannot draw
-   volumetric gas cheaply, and an image cannot be interactive, so each
-   does the half it is good at. Runtime cost is one small decode.
-
-   Masked radially so it never shows an edge, and held well under the
-   particles in brightness so it stays atmosphere rather than subject. */
-.gf-neb{
-  position:absolute;inset:-14%;z-index:0;pointer-events:none;
-  background:url("/nebula.webp") center/cover no-repeat;
-  opacity:.5;
-  filter:saturate(115%);
-  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 24%,rgba(0,0,0,.55) 52%,transparent 78%);
-  mask-image:radial-gradient(circle at 50% 50%,#000 24%,rgba(0,0,0,.55) 52%,transparent 78%);
-}
-.gf-cvs{position:absolute;inset:0;z-index:1;}
-/* The plate drifts very slightly against the disc as the section runs,
-   which reads as parallax depth. One transform, on the compositor. */
-@supports (animation-timeline: view()){
-  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
-    html[data-motion="native"] .gf-neb{
-      animation:nebDrift linear both;
-      animation-timeline:--wb;animation-range:contain 0% contain 100%;
-    }
-  }
-}
-@keyframes nebDrift{
-  from{transform:scale(1.02) translate3d(-1.2%,1.4%,0);opacity:.24;}
-  to  {transform:scale(1.12) translate3d(1.4%,-1.6%,0);opacity:.58;}
-}
-:root:not(.dark) .gf-neb{opacity:.2;}
-@media (prefers-reduced-transparency: reduce){ .gf-neb{display:none;} }
-
-/* ── Astra layout ──────────────────────────────────────────────────────
-   The reference makes the field the hero: full-bleed, centred, with the
-   words pushed to the outer edges. The two-column panel version kept the
-   galaxy boxed in half the width, which is most of why it read small.
-
-   The sky breaks out of the page's max-width. body already clips
-   overflow-x, so 100vw introduces no scrollbar. */
-.wb-stage{position:relative;padding:0;}
-.wb-sky{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:100vw;height:100%;z-index:0;pointer-events:none;
-  display:flex;align-items:center;justify-content:center;
-}
-/* Only the disc itself takes the pointer, so the text stays selectable. */
-.wb-sky .gf{pointer-events:none;}
-.wb-sky .gf-disc{pointer-events:auto;}
-.gf{width:100%;max-width:none;}
-.gf-disc{width:min(86vh,62vw);max-width:none;}
-
-.wb-fg{
-  position:relative;z-index:2;display:grid;
-  grid-template-columns:minmax(0,1fr) min(52vw,640px) minmax(0,1fr);
-  align-items:center;gap:0;min-height:100vh;pointer-events:none;
-}
-.wb-fg-l{grid-column:1;pointer-events:auto;max-width:34ch;}
-.wb-fg-r{grid-column:3;pointer-events:auto;justify-self:end;max-width:34ch;}
-
-/* The words sit over a luminous field, so they carry their own shadow
-   rather than relying on the background staying dark. */
-.wb-fg-l .sh,.wb-fg-l .eyebrow,.wb-fg-r{text-shadow:0 2px 22px rgba(0,0,0,.85);}
-.wb-lead{text-shadow:0 2px 18px rgba(0,0,0,.8);}
-
-@media (max-width:1100px){
-  .gf-disc{width:min(70vh,74vw);}
-  .wb-fg{grid-template-columns:minmax(0,1fr) min(44vw,420px) minmax(0,1fr);}
-}
 @media (max-width:900px){
   /* Stacked: the field becomes a backdrop the content sits on, which is
      the only way both stay legible at this width. */
-  .wb-fg{grid-template-columns:1fr;min-height:0;gap:26px;padding:8px 0 4px;}
-  .wb-fg-l,.wb-fg-r{grid-column:1;justify-self:start;max-width:none;}
-  .wb-sky{position:relative;top:auto;left:auto;transform:none;height:auto;margin-bottom:8px;}
-  .gf-disc{width:min(84vw,440px);}
+
 }
 
-/* ── Video base, interactive stars on top ──────────────────────────────
-   The video is the painted backdrop and carries the cinematic weight.
-   The canvas sits over it and is the part that answers the pointer,
-   because pixels cannot be repelled. Each layer does what only it can.
-
-   The video is masked to a soft disc so it never shows a rectangle edge
-   against the page, and dimmed slightly so the live stars stay the
-   brightest thing in frame. */
-.sky{position:absolute;inset:0;z-index:0;pointer-events:none;display:grid;place-items:center;}
-.sky-v{
-  width:min(96vh,78vw);height:auto;aspect-ratio:16/9;object-fit:cover;
-  opacity:.85;
-  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 38%,rgba(0,0,0,.6) 60%,transparent 76%);
-  mask-image:radial-gradient(circle at 50% 50%,#000 38%,rgba(0,0,0,.6) 60%,transparent 76%);
-}
-.wb-sky .gf{position:relative;z-index:1;}
 /* With a real galaxy behind it the canvas is the interactive overlay,
    not the whole picture: fewer, brighter stars so the two layers read as
    one field instead of competing. */
-.wb-sky .gf-neb{display:none;}
-.wb-sky .gf-cvs{opacity:.92;}
+
 
 @media (prefers-reduced-motion: reduce){
   /* No scrubbing: the video holds one frame and the still carries it. */
-  .sky-v{opacity:.8;}
-}
-@media (max-width:900px){
-  .sky-v{width:100%;}
-}
 
-/* ── Side columns were being crushed ───────────────────────────────────
-   The outer tracks were plain 1fr, so the centre column took what it
-   wanted and the text got whatever was left: at some widths that was
-   about fourteen characters, which is one word per line. A minimum on
-   each side track means the field gives way to the words, not the other
-   way round. */
-.wb-fg{grid-template-columns:minmax(248px,1fr) minmax(0,min(46vw,540px)) minmax(248px,1fr);}
-.wb-fg-l,.wb-fg-r{max-width:38ch;min-width:0;}
-.wb-note-b{text-wrap:pretty;}
+}
 
 /* The law caption was landing right on top of the class-detail tabs
    below it. They are separate thoughts and need to read that way. */
-.gf-law{margin-top:20px;}
+
 .tut-facts{margin-top:clamp(40px,6vh,84px);}
-
-@media (max-width:1180px){
-  .wb-fg{grid-template-columns:minmax(230px,1fr) minmax(0,34vw) minmax(230px,1fr);}
-}
-
-/* The centre track was still taking more than it needed, pinning the
-   side columns to their 248px floor at 1440. Narrower centre, readable
-   sides. */
-.wb-fg{grid-template-columns:minmax(260px,1fr) minmax(0,min(38vw,470px)) minmax(260px,1fr);}
-
-/* The video is the picture now; the canvas is the layer you can touch.
-   Held back so the two read as one field rather than two galaxies. */
-.wb-sky .gf-cvs{opacity:.6;}
-.sky-v{opacity:.95;}

@@ -3,8 +3,6 @@
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import GravityField from "./GravityField";
-import ScrubSky from "./ScrubSky";
 import FeaturedIn from "./FeaturedIn";
 import MagneticButton from "./MagneticButton";
 import LinkedInPosts from "./LinkedInPosts";
@@ -321,38 +319,22 @@ export default function Home() {
         {/* ── TUTORING (feature) ── */}
         <section id="tutoring" aria-labelledby="tutoring-heading">
           <div className="sw" data-tilt>
-            <div className="wb-scroll">
-              <div className="wb-stage">
-                <div className="wb-sky" aria-hidden="true">
-                  <ScrubSky srcs={["/galaxy.webm", "/galaxy.mp4"]} poster="/galaxy-poster.webp" />
-                  <GravityField />
-                </div>
+            <div className="eyebrow reveal">Tutoring &amp; Teaching</div>
+            <h2 className="sh wordfill reveal m-display d1" id="tutoring-heading">Learn <em>Science, Maths<br />&amp; Computing</em></h2>
+            <p className="lead reveal d2">
+              <strong>Pearson Edexcel</strong> for <strong>Grades 5–8</strong>, at The Science
+              Brainery in Boralesgamuwa. Group classes and one-to-one sessions, with the same
+              starting point either way: understand the mechanism, and the questions get easier.
+            </p>
 
-                <div className="wb-fg">
-                  <div className="wb-fg-l">
-                    <div className="eyebrow">Tutoring &amp; Teaching</div>
-                    <h2 className="sh wordfill m-display" id="tutoring-heading">Learn <em>Science, Maths<br />&amp; Computing</em></h2>
-                    <p className="wb-lead">
-                      <strong>Pearson Edexcel</strong> for <strong>Grades 5&ndash;8</strong>, at The Science
-                      Brainery in Boralesgamuwa. Group classes and one-to-one sessions, with the same
-                      starting point either way: understand the mechanism, and the questions get easier.
-                    </p>
-                  </div>
-
-                  <ol className="wb-notes wb-fg-r" role="list">
-                    {SUBJECTS.map((sub, i) => (
-                      <li key={sub.name} className={`wb-note wb-n${i + 1}`}>
-                        <span className="wb-note-i" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                        <div>
-                          <div className="wb-note-n">{sub.name}</div>
-                          <div className="wb-note-t">{sub.tag}</div>
-                          <p className="wb-note-b">{sub.body}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </div>
+            <div className="subj-grid stagger">
+              {SUBJECTS.map((s, i) => (
+                <article key={s.name} className={`subj-card reveal d${i + 1}`}>
+                  <div className="subj-name">{s.name}</div>
+                  <div className="subj-tag">{s.tag}</div>
+                  <p className="subj-body">{s.body}</p>
+                </article>
+              ))}
             </div>
 
             <div className="tut-facts reveal d2" role="list" aria-label="Class details">
