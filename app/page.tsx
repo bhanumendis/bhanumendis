@@ -3,6 +3,7 @@
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import GravityField from "./GravityField";
 import FeaturedIn from "./FeaturedIn";
 import MagneticButton from "./MagneticButton";
 import LinkedInPosts from "./LinkedInPosts";
@@ -323,24 +324,7 @@ export default function Home() {
               <div className="wb-stage">
                 <div className="wb-grid">
                   <div className="wb-board">
-                    <svg className="wb-svg" viewBox="0 0 560 520" role="img"
-                         aria-label="A visual proof of Pythagoras' theorem: squares drawn on the two shorter sides of a right triangle together equal the square on its longest side.">
-                      <g className="wb-fills" aria-hidden="true">
-                        <rect className="wb-fill wb-fa" x="60" y="180" width="120" height="120" />
-                        <rect className="wb-fill wb-fb" x="180" y="300" width="160" height="160" />
-                        <polygon className="wb-fill wb-fc" points="180,180 340,300 460,140 300,20" />
-                      </g>
-                      <polyline className="wb-ln wb-legs" pathLength={1} points="180,180 180,300 340,300" />
-                      <line className="wb-ln wb-hyp" pathLength={1} x1="180" y1="180" x2="340" y2="300" />
-                      <polyline className="wb-ln wb-rt" pathLength={1} points="180,278 202,278 202,300" />
-                      <rect className="wb-ln wb-sa" pathLength={1} x="60" y="180" width="120" height="120" />
-                      <rect className="wb-ln wb-sb" pathLength={1} x="180" y="300" width="160" height="160" />
-                      <polygon className="wb-ln wb-sc" pathLength={1} points="180,180 340,300 460,140 300,20" />
-                      <text className="wb-lbl wb-la" x="166" y="246" textAnchor="end">a</text>
-                      <text className="wb-lbl wb-lb" x="260" y="324">b</text>
-                      <text className="wb-lbl wb-lc" x="272" y="226">c</text>
-                      <text className="wb-eq" x="280" y="505" textAnchor="middle">a&#178; + b&#178; = c&#178;</text>
-                    </svg>
+                    <GravityField />
                   </div>
 
                   <div className="wb-side">

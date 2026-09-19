@@ -1430,7 +1430,7 @@ body.at-end .sidebar-left{opacity:0;pointer-events:none;transition:opacity .35s 
 @supports (animation-timeline: view()){
   @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
     html[data-motion="native"] .wb-scroll{
-      height:300vh;view-timeline-name:--wb;view-timeline-axis:block;
+      height:460vh;view-timeline-name:--wb;view-timeline-axis:block;
     }
     html[data-motion="native"] .wb-stage{
       position:sticky;top:0;min-height:100vh;display:flex;align-items:center;
@@ -1599,3 +1599,118 @@ body.at-end .sidebar-left{opacity:0;pointer-events:none;transition:opacity .35s 
   26% {opacity:1;transform:none;}
   100%{opacity:1;transform:none;}
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   THE GRAVITY FIELD
+   ═══════════════════════════════════════════════════════════════════════
+   Replaces the drawn geometry proof. Same pinned-scroll mechanic, which
+   was the part worth keeping; a different subject, which was the part
+   that was not landing.
+
+   The canvas draws itself from one number, the scroll progress, so this
+   layer owns almost nothing. Sizing, the law caption and the resting
+   state live here.
+   ═══════════════════════════════════════════════════════════════════════ */
+.gf{position:relative;width:100%;aspect-ratio:1/1;max-width:600px;margin-inline:auto;}
+.gf-cvs{display:block;width:100%;height:100%;}
+
+/* A faint gravitational well under the disc, so the field sits in
+   something rather than floating on flat black. */
+.gf::before{
+  content:"";position:absolute;inset:-6%;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 50% 50%,
+    color-mix(in srgb,var(--sky) 13%,transparent) 0%,
+    color-mix(in srgb,var(--sky) 5%,transparent) 34%,
+    transparent 66%);
+}
+
+.gf-law{
+  position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:7px;
+  text-align:center;pointer-events:none;width:100%;
+}
+.gf-eq{
+  font-family:var(--impact);font-size:clamp(26px,3.3vw,40px);letter-spacing:.03em;
+  color:var(--white);line-height:1;
+}
+.gf-eq sup{font-size:.52em;}
+.gf-cap{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--sky);opacity:.85;max-width:34ch;line-height:1.6;
+}
+
+/* The law resolves with the disc rather than sitting there from the
+   start, so the caption reads as the conclusion of what just happened. */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
+    html[data-motion="native"] .gf-law{
+      opacity:0;animation:wbIn linear both;
+      animation-timeline:--wb;animation-range:contain 74% contain 92%;
+    }
+  }
+}
+
+@media (max-width:900px){
+  .gf{max-width:440px;aspect-ratio:1/1;}
+  .gf-law{position:static;transform:none;margin-top:18px;}
+}
+
+/* The canvas cannot render without JavaScript, so the section must not
+   depend on it: the heading, the lead and all three subject notes are
+   plain markup and stand on their own. This only reserves the space so
+   the layout does not jump when the canvas mounts. */
+@media (prefers-reduced-transparency: reduce){
+  .gf::before{display:none;}
+}
+
+/* The law sat over the disc's lower arm and its caption wrapped into the
+   particles. It belongs under the field, not on it. */
+.gf-law{position:static;transform:none;margin-top:14px;}
+.gf-cap{max-width:38ch;}
+.gf{margin-bottom:6px;}
+
+/* The measured box holds only the canvas. Nothing else may live here or
+   the ResizeObserver feeds back into its own input. */
+.gf{aspect-ratio:auto;display:flex;flex-direction:column;align-items:center;}
+.gf-disc{position:relative;width:100%;max-width:600px;aspect-ratio:1/1;}
+.gf-cvs{position:absolute;inset:0;width:100%;height:100%;}
+.gf::before{inset:-6% 0;}
+@media (max-width:900px){ .gf-disc{max-width:440px;} }
+
+/* ── The nebula plate ──────────────────────────────────────────────────
+   Generated once with Higgsfield (1 credit), then downscaled and
+   re-encoded to webp: 1.1MB PNG to 7.4KB, 148x smaller.
+
+   It exists because the particles alone sat on flat black, and depth is
+   most of what makes the Astra hero read as space rather than as dots.
+   A static plate is the right tool for that: the code cannot draw
+   volumetric gas cheaply, and an image cannot be interactive, so each
+   does the half it is good at. Runtime cost is one small decode.
+
+   Masked radially so it never shows an edge, and held well under the
+   particles in brightness so it stays atmosphere rather than subject. */
+.gf-neb{
+  position:absolute;inset:-14%;z-index:0;pointer-events:none;
+  background:url("/nebula.webp") center/cover no-repeat;
+  opacity:.5;
+  filter:saturate(115%);
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 24%,rgba(0,0,0,.55) 52%,transparent 78%);
+  mask-image:radial-gradient(circle at 50% 50%,#000 24%,rgba(0,0,0,.55) 52%,transparent 78%);
+}
+.gf-cvs{position:absolute;inset:0;z-index:1;}
+/* The plate drifts very slightly against the disc as the section runs,
+   which reads as parallax depth. One transform, on the compositor. */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
+    html[data-motion="native"] .gf-neb{
+      animation:nebDrift linear both;
+      animation-timeline:--wb;animation-range:contain 0% contain 100%;
+    }
+  }
+}
+@keyframes nebDrift{
+  from{transform:scale(1.02) translate3d(-1.2%,1.4%,0);opacity:.24;}
+  to  {transform:scale(1.12) translate3d(1.4%,-1.6%,0);opacity:.58;}
+}
+:root:not(.dark) .gf-neb{opacity:.2;}
+@media (prefers-reduced-transparency: reduce){ .gf-neb{display:none;} }
