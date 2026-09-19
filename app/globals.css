@@ -1366,3 +1366,13 @@ footer{padding-bottom:0;}
 body.at-end .sidebar-right,
 body.at-end .sidebar-left{opacity:0;pointer-events:none;transition:opacity .35s ease;}
 .sidebar-right,.sidebar-left{transition:opacity .35s ease;}
+
+/* Awards icons: line art, not emoji. Emoji render as full-colour raster
+   glyphs that differ per OS and sit at a different optical weight to the
+   rest of the page — and the Credentials grid directly below this one was
+   already using stroked SVGs, so the two halves of the section disagreed.
+   Stroke width is 1.9 against .cico's 1.8 because this tile is 46px to
+   its 40px: the same visual weight needs slightly more line at size. */
+.amed svg{width:20px;height:20px;stroke:var(--sky);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+.acard:hover .amed{background:var(--card-hbg);border-color:var(--card-hb);}
+.amed{transition:background .25s ease,border-color .25s ease;}
