@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -7,29 +13,35 @@ import type { NextRequest } from "next/server";
 // (browsers never send that Accept type) get the normal HTML. The Markdown
 // lives as a static file in /public, so it is also directly fetchable at
 // /index.md and /timeline.md.
-export async function proxy(request: NextRequest) {
-  const accept = request.headers.get("accept") || "";
-  const wantsMarkdown = /\btext\/markdown\b/i.test(accept);
+//
+// This is a REWRITE, not a fetch. The previous version fetched its own
+// public URL from inside the proxy and relayed the body. That worked on
+// localhost and silently failed in production — verified live on 2026-09-21:
+// `curl -H "Accept: text/markdown" https://bhanumendis.com/` returned
+// text/html, while /index.md itself served fine. The self-request has to leave
+// Vercel and re-enter through Cloudflare as an anonymous server-side client
+// (the same edge answers 403 to several bot user-agents), and any non-200
+// made the `upstream.ok` guard fall through to HTML without a trace. A rewrite
+// is resolved inside the platform's own router: no second network hop to be
+// refused, and no added latency.
+const MIRRORS: Record<string, string> = {
+  "/": "/index.md",
+  "/timeline": "/timeline.md",
+};
 
-  if (wantsMarkdown) {
+export function proxy(request: NextRequest) {
+  const accept = request.headers.get("accept") || "";
+
+  if (/\btext\/markdown\b/i.test(accept)) {
     const path = request.nextUrl.pathname.replace(/\/+$/, "") || "/";
-    const mdPath = path === "/" ? "/index.md" : `${path}.md`;
-    try {
-      const upstream = await fetch(new URL(mdPath, request.url));
-      if (upstream.ok) {
-        const body = await upstream.text();
-        return new NextResponse(body, {
-          status: 200,
-          headers: {
-            "Content-Type": "text/markdown; charset=utf-8",
-            "Vary": "Accept",
-            "X-Content-Negotiation": "markdown",
-            "Cache-Control": "public, max-age=3600",
-          },
-        });
-      }
-    } catch {
-      /* fall through to HTML */
+    const mirror = MIRRORS[path];
+    if (mirror) {
+      const res = NextResponse.rewrite(new URL(mirror, request.url));
+      res.headers.set("Content-Type", "text/markdown; charset=utf-8");
+      res.headers.set("Vary", "Accept");
+      res.headers.set("X-Content-Negotiation", "markdown");
+      res.headers.set("Cache-Control", "public, max-age=3600");
+      return res;
     }
   }
 

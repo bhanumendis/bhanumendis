@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -15,13 +21,25 @@ export default function SwaraEgg() {
   const acRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const rafRef = useRef<number>(0);
+  const closeRef = useRef<HTMLButtonElement | null>(null);
+  const returnFocus = useRef<HTMLElement | null>(null);
+  const openRef = useRef(false);
 
   const stop = () => {
+    // Escape is heard page-wide, so this runs even when the egg was never
+    // opened — in which case there is nothing to undo, and in particular no
+    // scroll lock of ours to release.
+    if (!openRef.current) return;
+    openRef.current = false;
     setActive(false);
     cancelAnimationFrame(rafRef.current);
     const a = audioRef.current;
     if (a) { a.pause(); a.currentTime = 0; }
     document.body.style.overflow = "";
+    // aria-modal promises focus lives inside the dialog while it is open, so
+    // it has to go back where it came from when the dialog closes.
+    returnFocus.current?.focus?.();
+    returnFocus.current = null;
   };
 
   // ── Keyboard: capture the "swara" sequence ──
@@ -41,6 +59,8 @@ export default function SwaraEgg() {
       if (seq.current.length > TARGET.length) seq.current.shift();
       if (seq.current.join("") === TARGET) {
         seq.current = [];
+        returnFocus.current = document.activeElement as HTMLElement | null;
+        openRef.current = true;
         setActive(true);
       }
     };
@@ -52,6 +72,9 @@ export default function SwaraEgg() {
   useEffect(() => {
     if (!active) return;
     document.body.style.overflow = "hidden";
+    // The dialog is role="dialog" aria-modal="true"; without this, keyboard
+    // focus stayed on the page behind it. preventScroll: the overlay is fixed.
+    closeRef.current?.focus({ preventScroll: true });
     const a = audioRef.current;
     const canvas = canvasRef.current;
     if (!a || !canvas) return;
@@ -107,10 +130,12 @@ export default function SwaraEgg() {
         ctx.clearRect(0, 0, w, h);
         const gap = w / bars;
         const bw = gap * 0.5;
+        // Once per frame, not once per bar: this copies the whole FFT buffer,
+        // and inside the loop below it ran 56 times for the same frame.
+        if (data && analyser) analyser.getByteFrequencyData(data);
         for (let i = 0; i < bars; i++) {
           let v: number;
           if (data && analyser) {
-            analyser.getByteFrequencyData(data);
             const idx = Math.floor((i / bars) * data.length * 0.7);
             v = data[idx] / 255;
           } else {
@@ -172,7 +197,7 @@ export default function SwaraEgg() {
           <div className="swara-title sinhala" lang="si">ස්වර</div>
           <div className="swara-name">Swara — Theme</div>
           <canvas ref={canvasRef} className="swara-canvas" aria-hidden="true" />
-          <button type="button" className="swara-close" onClick={stop} aria-label="Close and stop the music">
+          <button type="button" ref={closeRef} className="swara-close" onClick={stop} aria-label="Close and stop the music">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
             Click anywhere to close
           </button>

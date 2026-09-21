@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -40,14 +46,9 @@ export default function SiteChrome({ home = false }: { home?: boolean }) {
     setIsDark(document.documentElement.classList.contains("dark"));
   }, []);
 
-  // ── Scroll engine: progress rail, nav state, parallax layers, entrance
-  //    reveals, back-to-top. All transform/opacity. ──
+  // ── Scroll engine: progress rail, entrance reveals, back-to-top. ──
   useEffect(() => {
     const prog = document.getElementById("prog");
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const wide = window.matchMedia("(min-width: 901px)");
-
-    const parLayers = Array.from(document.querySelectorAll<HTMLElement>("[data-par]"));
     let raf = 0, ticking = false;
 
     const render = () => {
@@ -71,19 +72,11 @@ export default function SiteChrome({ home = false }: { home?: boolean }) {
         "at-end",
         y + window.innerHeight > document.documentElement.scrollHeight - 200
       );
-      if (!reduce && wide.matches) {
-        for (const el of parLayers) {
-          const speed = parseFloat(el.dataset.par || "0");
-          el.style.transform = `translate3d(0, ${y * speed}px, 0)`;
-        }
-      }
     };
     const onScroll = () => { if (!ticking) { ticking = true; raf = requestAnimationFrame(render); } };
-    const clearParallax = () => { for (const el of parLayers) el.style.transform = ""; };
-    const onResize = () => { if (reduce || !wide.matches) clearParallax(); onScroll(); };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", onScroll);
     render();
 
     // Entrance reveals — one-shot, never a visibility gate. When the browser
@@ -104,7 +97,7 @@ export default function SiteChrome({ home = false }: { home?: boolean }) {
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", onScroll);
       io?.disconnect();
       cancelAnimationFrame(raf);
     };
@@ -156,7 +149,7 @@ export default function SiteChrome({ home = false }: { home?: boolean }) {
     // `data-cursor` is declared in markup; the rest is inferred from what the
     // element already is, so no attribute has to be added to every link.
     const GENERIC =
-      "a,button,.hsc,.srow,.acard,.ccard,.ecard,.sp,.soc-btn,.foot-link,.show-more-btn,.theme-btn,.sidebar-right a,.subj-card,.paper-link,.tut-fact,.tl-card,.cf-nav,.cf-dot";
+      "a,button,.hsc,.srow,.ccard,.ecard,.sp,.soc-btn,.foot-link,.show-more-btn,.theme-btn,.sidebar-right a,.subj-card,.paper-link,.tut-fact,.tl-card,.cf-nav,.cf-dot";
     const EXTERNAL = 'a[target="_blank"]';
     const onPointerOver = (e: Event) => {
       const t = e.target as HTMLElement | null;
@@ -188,29 +181,30 @@ export default function SiteChrome({ home = false }: { home?: boolean }) {
     };
   }, []);
 
-  // On the homepage the nav anchors are in-page fragments; everywhere else
-  // they have to travel home first.
-  const to = (hash: string) => (home ? hash : `/${hash}`);
-
   return (
     <>
-      <a href={to("#hero")} className="skip-link">Skip to content</a>
+      {/* Targets this route's own <main>. It used to be to("#hero"), which on
+          /timeline resolved to "/#hero" — a skip link that left the page
+          instead of skipping the nav. Both routes give <main> this id. */}
+      <a href="#main" className="skip-link">Skip to content</a>
       <div id="cd" aria-hidden="true" />
       <div id="cr" aria-hidden="true" />
       <div id="prog" aria-hidden="true" role="progressbar" aria-label="Page scroll progress" />
 
-      <div className="sidebar-right" aria-label="Social links">
+      {/* Both rails are real landmarks: as bare <div>s their content sat
+          outside every region, and aria-label is not valid on a role-less div. */}
+      <nav className="sidebar-right" aria-label="Social links">
         <a href="https://www.instagram.com/bhanu_mendis" target="_blank" rel="noopener noreferrer" aria-label="Instagram profile">Ig.</a>
-        <a href="https://linktr.ee/bhanu_mendis" target="_blank" rel="noopener noreferrer" aria-label="Facebook via Linktree">Fb.</a>
+        <a href="https://www.facebook.com/profile.php?id=61575861587304" target="_blank" rel="noopener noreferrer" aria-label="Facebook profile">Fb.</a>
         <a href="https://www.linkedin.com/in/bhanumendis" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">In.</a>
-      </div>
+      </nav>
 
-      <div className="sidebar-left" aria-label="Theme controls">
+      <aside className="sidebar-left" aria-label="Theme">
         <div className="theme-toggle" role="group" aria-label="Theme toggle">
           <button type="button" className={`theme-btn ${!isDark ? "active" : ""}`} onClick={() => { if (isDark) applyTheme(false); }} aria-pressed={!isDark} aria-label="Switch to light mode">☀</button>
           <button type="button" className={`theme-btn ${isDark ? "active" : ""}`} onClick={() => { if (!isDark) applyTheme(true); }} aria-pressed={isDark} aria-label="Switch to dark mode">☾</button>
         </div>
-      </div>
+      </aside>
 
       <NavIsland home={home} isDark={isDark} onToggleTheme={() => applyTheme(!isDark)} />
 

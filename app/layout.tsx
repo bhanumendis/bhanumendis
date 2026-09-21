@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -23,13 +29,17 @@ const display = localFont({
   preload: true,
   fallback: ["Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
 });
+// Only the weights the stylesheet actually asks for. `preload: true` preloads
+// EVERY file listed here at high priority, used or not — and 300 and 700 never
+// were (verified in the browser: both FontFaces stayed "unloaded" after a full
+// pass of both routes and both overlays). Listing them cost two wasted
+// high-priority requests competing with the hero on every first visit. The
+// files stay in app/fonts; re-add a line here if a rule ever needs them.
 const sans = localFont({
   src: [
-    { path: "./fonts/Poppins-300.woff2", weight: "300", style: "normal" },
     { path: "./fonts/Poppins-400.woff2", weight: "400", style: "normal" },
     { path: "./fonts/Poppins-500.woff2", weight: "500", style: "normal" },
     { path: "./fonts/Poppins-600.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/Poppins-700.woff2", weight: "700", style: "normal" },
   ],
   variable: "--font-sans",
   display: "swap",
@@ -57,8 +67,8 @@ const mono = localFont({
   fallback: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
 });
 const sinhala = localFont({
+  // 400 is not listed: no rule sets Sinhala text at regular weight.
   src: [
-    { path: "./fonts/NotoSerifSinhala-400.woff2", weight: "400", style: "normal" },
     { path: "./fonts/NotoSerifSinhala-700.woff2", weight: "700", style: "normal" },
     { path: "./fonts/NotoSerifSinhala-900.woff2", weight: "900", style: "normal" },
   ],
@@ -89,7 +99,13 @@ export const metadata: Metadata = {
   authors: [{ name: "Bhanu Mendis", url: "https://bhanumendis.com" }],
   creator: "Bhanu Mendis",
   publisher: "Bhanu Mendis",
-  alternates: { canonical: "https://bhanumendis.com" },
+  // `types` advertises the Markdown mirror (<link rel="alternate"
+  // type="text/markdown">), so an agent reading the HTML can find the clean
+  // version without knowing about llms.txt or content negotiation.
+  alternates: {
+    canonical: "https://bhanumendis.com",
+    types: { "text/markdown": "https://bhanumendis.com/index.md" },
+  },
   icons: { icon: "/favicon.png", apple: "/apple-touch-icon.png", shortcut: "/favicon.ico" },
   openGraph: {
     title: "Bhanu Mendis — Educator, Public Speaker & Audio Engineer",
@@ -125,6 +141,7 @@ export const metadata: Metadata = {
   category: "Personal Portfolio",
   formatDetection: { email: false, address: false, telephone: false },
   other: {
+    copyright: "© 2025–2026 Bhanu Mendis. All rights reserved.",
     "geo.region": "LK-1",
     "geo.placename": "Colombo, Sri Lanka",
     "geo.position": "6.9271;79.8612",
@@ -189,6 +206,11 @@ const graph = {
       sameAs: [
         "https://www.linkedin.com/in/bhanumendis",
         "https://www.instagram.com/bhanu_mendis",
+        "https://www.facebook.com/profile.php?id=61575861587304",
+        "https://www.youtube.com/@Bhanu_Mendis",
+        "https://x.com/bhanu_mendis",
+        "https://www.tiktok.com/@bhanu_mendis",
+        "https://t.me/bhanu_mendis",
         "https://linktr.ee/bhanu_mendis",
       ],
       alumniOf: [
@@ -302,8 +324,14 @@ const graph = {
       description:
         "The official portfolio of Bhanu Mendis — educator, public speaker, audio engineer and performing artist from Colombo, Sri Lanka.",
       inLanguage: "en",
+      // Authorship, stated for machines: the person this site is about is also
+      // the person who designed, built and maintains it.
+      author: { "@id": "https://bhanumendis.com/#person" },
+      creator: { "@id": "https://bhanumendis.com/#person" },
       publisher: { "@id": "https://bhanumendis.com/#person" },
       copyrightHolder: { "@id": "https://bhanumendis.com/#person" },
+      copyrightYear: 2025,
+      copyrightNotice: "© 2025–2026 Bhanu Mendis. All rights reserved.",
     },
     {
       "@type": "EducationalOrganization",
@@ -371,7 +399,11 @@ const graph = {
 //     when the visitor previously chose light. Doing it this way (rather than
 //     adding the class) is what keeps the first paint black for everyone who
 //     has never touched the toggle, with no flash for those who chose light.
-const bootInit = `(function(){var d=document.documentElement;try{if(localStorage.getItem('bm-theme')==='light'){d.classList.remove('dark');}}catch(e){}try{if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()')){d.setAttribute('data-motion','native');}}catch(e){}try{if(window.matchMedia&&matchMedia('(pointer:fine)').matches&&matchMedia('(min-width:901px)').matches&&!matchMedia('(prefers-reduced-motion:reduce)').matches){d.setAttribute('data-smooth','on');}}catch(e){}})();`;
+//  4. stamp data-js. The count-up numbers are server-rendered at their FINAL
+//     value (so crawlers, no-JS visitors and screen readers never read "0+"),
+//     and globals.css uses this flag to hold them invisible until Counter
+//     takes over — otherwise the real number would flash before counting up.
+const bootInit = `(function(){var d=document.documentElement;d.setAttribute('data-js','1');try{if(localStorage.getItem('bm-theme')==='light'){d.classList.remove('dark');}}catch(e){}try{if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()')){d.setAttribute('data-motion','native');}}catch(e){}try{if(window.matchMedia&&matchMedia('(pointer:fine)').matches&&matchMedia('(min-width:901px)').matches&&!matchMedia('(prefers-reduced-motion:reduce)').matches){d.setAttribute('data-smooth','on');}}catch(e){}})();`;
 
 export default function RootLayout({
   children,

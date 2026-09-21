@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 // One-off: shrink the oversized favicon.png (576KB source photo) to 360×360.
 // 360px covers every consumer at retina density: browser/apple icon (≤180px @2x)
 // and the about-photo (120px) which is served via the next/image optimizer anyway.

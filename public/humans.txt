@@ -1,0 +1,16 @@
+/* TEAM */
+Author, designer and developer: Bhanu Mendis
+Site: https://bhanumendis.com
+Contact: bhanumendis@gmail.com
+LinkedIn: https://www.linkedin.com/in/bhanumendis
+Location: Boralesgamuwa, Colombo, Sri Lanka
+
+/* SITE */
+Last update: 2026/09/21
+Language: English, Sinhala
+Standards: HTML5, CSS3, WCAG 2.2 AA, schema.org JSON-LD
+Components: Next.js, React, TypeScript, hand-written CSS
+Typefaces: Raleway, Poppins, Inconsolata, Anton, Noto Serif Sinhala (SIL Open Font Licence)
+
+/* RIGHTS */
+© 2025–2026 Bhanu Mendis. All rights reserved.

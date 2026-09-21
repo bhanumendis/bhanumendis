@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 "use client";
 
 import type { CSSProperties } from "react";
@@ -57,23 +63,26 @@ const SUBJECTS = [
   { name: "Computing", tag: "Computational thinking · Code", body: "Computational thinking, then real code on a real machine." },
 ] as const;
 
+// Every file is a three-photo collage, so each alt lists its three scenes.
+// Described as seen — groups, stages, settings — never by who is in the frame.
+const P = "/Photos-1-001/IMG_20260724_";
 const SLIDESHOW_PHOTOS = [
-  "/Photos-1-001/IMG_20260724_080311_651.jpg",
-  "/Photos-1-001/IMG_20260724_080311_720.jpg",
-  "/Photos-1-001/IMG_20260724_080311_743.jpg",
-  "/Photos-1-001/IMG_20260724_080311_756.jpg",
-  "/Photos-1-001/IMG_20260724_080311_793.jpg",
-  "/Photos-1-001/IMG_20260724_080311_914.jpg",
-  "/Photos-1-001/IMG_20260724_080311_934.jpg",
-  "/Photos-1-001/IMG_20260724_080312_125.jpg",
-  "/Photos-1-001/IMG_20260724_080312_207.jpg",
-  "/Photos-1-001/IMG_20260724_080312_219.jpg",
-  "/Photos-1-001/IMG_20260724_080322_830.jpg",
-  "/Photos-1-001/IMG_20260724_080322_887.jpg",
-  "/Photos-1-001/IMG_20260724_080322_983.jpg",
-  "/Photos-1-001/IMG_20260724_080323_203.jpg",
-  "/Photos-1-001/IMG_20260724_080323_466.jpg"
-];
+  { src: `${P}080311_651.jpg`, alt: "performers in traditional dress greeting the audience, an orchestra and choir on stage, and dancers in teal and red costumes" },
+  { src: `${P}080311_720.jpg`, alt: "a cast in black posing on stage, friends sitting in a row outdoors, and a black-and-white stage performance" },
+  { src: `${P}080311_743.jpg`, alt: "a large group in front of a colonnaded building, students forming a number on a court seen from above, and a group holding car-wash signs" },
+  { src: `${P}080311_756.jpg`, alt: "students in white on stage steps, a large group seated in a hall, and singers in blue on a decorated stage" },
+  { src: `${P}080311_793.jpg`, alt: "a uniformed student band with drums, and two group photos of classmates in light-blue school uniform" },
+  { src: `${P}080311_914.jpg`, alt: "a large group in teal shirts in a hall, a crowd seated on a lawn, and boats full of people on a lake" },
+  { src: `${P}080311_934.jpg`, alt: "friends in colourful T-shirts, a group on a speedboat, and a large group in uniform on a stage" },
+  { src: `${P}080312_125.jpg`, alt: "students assembled in a school courtyard, the Senior Prefects Investiture 2024–2025, and a group outdoors with a flag" },
+  { src: `${P}080312_207.jpg`, alt: "a large choir on stage under warm light, a group portrait in a panelled room, and performers seated across a stage" },
+  { src: `${P}080312_219.jpg`, alt: "students in blazers with hands on their chests, a large group in teal on stage, and classmates holding a number sign in a classroom" },
+  { src: `${P}080322_830.jpg`, alt: "a group in teal T-shirts outdoors, students forming the number 25 on a court seen from above, and a wide group photo on a lawn" },
+  { src: `${P}080322_887.jpg`, alt: "a formal evening crowd under stage lights, a group in formal wear beneath an Elysium '25 sign, and a crowd of students in uniform looking up at the camera" },
+  { src: `${P}080322_983.jpg`, alt: "students carrying flags across a sports field, friends in colourful T-shirts, and a large group in uniform in a courtyard" },
+  { src: `${P}080323_203.jpg`, alt: "a scene from a stage drama, flag bearers at a sports meet, and two presenters in blazers on a dark stage" },
+  { src: `${P}080323_466.jpg`, alt: "a class group in teal and light blue in a garden, friends outdoors with a dog, and students in blazers on a staircase" },
+] as const;
 
 // ── Page-scoped structured data ──────────────────────────────────────
 // The entity graph (Person, WebSite, the tutoring service, the concerts)
@@ -252,10 +261,11 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePage).replace(/</g, "\\u003c") }}
       />
 
-      <main>
+      <main id="main">
         {/* ── HERO ── */}
         <section id="hero" aria-labelledby="hero-name">
-          <Image src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" fill sizes="100vw" priority draggable={false} style={{ pointerEvents: "none" }} />
+          {/* `preload`, not `priority`: Next 16 deprecated the latter. */}
+          <Image src="/hero-bg.jpg" alt="" className="hero-bg-img" aria-hidden="true" fill sizes="100vw" preload draggable={false} style={{ pointerEvents: "none" }} />
           <div className="hero-bg-overlay" aria-hidden="true" />
           {/* Ambient glow that follows the pointer. A composited layer moved
               by transform, not a repainting gradient — the same light source
@@ -545,20 +555,25 @@ export default function Home() {
             <div className="merged-grid reveal d1">
               <div className="merged-col">
                 <h3 className="merged-subheading">Honours &amp; Awards</h3>
-                <table className="pal">
+                {/* The roles look redundant and are not. Below 760px the stylesheet
+                    sets this table to display:block/grid, and a table element that
+                    is no longer display:table is dropped from the accessibility
+                    tree as a table — rows and headers stop being announced.
+                    Explicit roles survive the display change. */}
+                <table className="pal" role="table">
                   <caption className="pal-cap">Competition results, most recent first</caption>
-                  <thead>
-                    <tr><th scope="col">Year</th><th scope="col">Competition</th><th scope="col">Result</th><th scope="col">Field</th></tr>
+                  <thead role="rowgroup">
+                    <tr role="row"><th scope="col" role="columnheader">Year</th><th scope="col" role="columnheader">Competition</th><th scope="col" role="columnheader">Result</th><th scope="col" role="columnheader">Field</th></tr>
                   </thead>
-                  <tbody>
+                  <tbody role="rowgroup">
                     {PALMARES.map((r, i) => (
-                      <tr key={`${r.year}-${r.event}`} className="pal-row" style={{ "--i": i } as CSSProperties}>
-                        <td className="pal-year">
+                      <tr key={`${r.year}-${r.event}`} role="row" className="pal-row" style={{ "--i": i } as CSSProperties}>
+                        <td role="cell" className="pal-year">
                           {r.year ? r.year : <span className="pal-nd" title="Year not recorded">&ndash;</span>}
                         </td>
-                        <th scope="row" className="pal-event">{r.event}</th>
-                        <td className="pal-place">{r.place}</td>
-                        <td className="pal-field">{r.field}</td>
+                        <th scope="row" role="rowheader" className="pal-event">{r.event}</th>
+                        <td role="cell" className="pal-place">{r.place}</td>
+                        <td role="cell" className="pal-field">{r.field}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 "use client";
 import { useState } from "react";
 
@@ -58,11 +64,13 @@ function FaviconLogo({ favicon, domain, initials }: { favicon: string | null; do
   return (
     <div className="press-logo press-logo-img">
       {/* Plain <img> on purpose: these are 28px ~8KB AVIFs (already optimal) and the
-          remote Google-favicon fallback would otherwise need remotePatterns config. */}
+          remote Google-favicon fallback would otherwise need remotePatterns config.
+          alt is empty because the logo is decorative: the outlet's name is the
+          very next text node and the card's aria-label already names it. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
-        alt={initials}
+        alt=""
         width={28}
         height={28}
         loading="lazy"

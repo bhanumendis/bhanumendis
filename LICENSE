@@ -1,0 +1,41 @@
+bhanumendis.com — the official website of Bhanu Mendis
+Copyright © 2025–2026 Bhanu Mendis. All rights reserved.
+
+Author and owner: Bhanu Mendis <bhanumendis@gmail.com>, https://bhanumendis.com
+Designed, built and maintained by Bhanu Mendis.
+
+1. OWNERSHIP
+   The source code, design, layout, motion system, written content, biography,
+   photographs, audio recordings, graphics and every other original work in
+   this repository and on https://bhanumendis.com are the property of
+   Bhanu Mendis and are protected by copyright law and international treaties.
+
+2. NO LICENCE IS GRANTED
+   This repository is published so that the work can be seen, not so that it
+   can be reused. No permission is given to copy, modify, merge, publish,
+   redistribute, sublicense, sell, host, mirror, or create derivative works
+   from any part of it, in whole or in part, in any form, without the prior
+   written permission of Bhanu Mendis.
+
+   In particular, the name "Bhanu Mendis", his likeness, photographs,
+   biography and the "Swara" theme recording may not be used to suggest
+   authorship, endorsement or affiliation.
+
+3. AUTOMATED USE
+   Retrieval and answer engines may fetch the published site to answer a
+   question about Bhanu Mendis, with attribution and a link to
+   https://bhanumendis.com. Collection of this work for model-training
+   corpora is not permitted. The policy is set out in /robots.txt and
+   /llms.txt on the live site.
+
+4. THIRD-PARTY COMPONENTS
+   This notice covers the original work only. Open-source software the site
+   depends on (including Next.js, React and sharp) and the typefaces in
+   app/fonts (Raleway, Poppins, Inconsolata, Anton and Noto Serif Sinhala,
+   each under the SIL Open Font Licence) remain the property of their
+   respective authors under their own licences.
+
+5. PERMISSIONS
+   Requests to reuse any part of this work: bhanumendis@gmail.com
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.

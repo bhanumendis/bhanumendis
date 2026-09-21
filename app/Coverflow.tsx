@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 "use client";
 
 import Image from "next/image";
@@ -34,7 +40,9 @@ const COMMIT_RATIO = 0.22;
 const FLICK_VELOCITY = 0.45;
 
 interface CoverflowProps {
-  photos: readonly string[];
+  // Each file is a collage, so `alt` says what is in it — "Memory 3 of 15"
+  // alone told a screen-reader user (and an image index) nothing at all.
+  photos: readonly { src: string; alt: string }[];
 }
 
 export default function Coverflow({ photos }: CoverflowProps) {
@@ -164,7 +172,7 @@ export default function Coverflow({ photos }: CoverflowProps) {
           const isCentre = off === 0;
           return (
             <div
-              key={photo}
+              key={photo.src}
               className="cf-slide"
               style={{ "--o": off } as CSSProperties}
               data-depth={Math.abs(off)}
@@ -173,13 +181,16 @@ export default function Coverflow({ photos }: CoverflowProps) {
               // decoration until they become the centre.
               inert={!isCentre}
             >
+              {/* No `preload`/eager here. This section is thousands of pixels
+                  below the fold; the old `priority` on slide 0 put a gallery
+                  photo in <head> as a high-priority preload, competing with
+                  the hero for the first bytes of every visit. */}
               <Image
-                src={photo}
-                alt={isCentre ? `Memory ${i + 1} of ${len}` : ""}
+                src={photo.src}
+                alt={isCentre ? `Memory ${i + 1} of ${len}: ${photo.alt}` : ""}
                 fill
                 sizes="(max-width: 700px) 62vw, 300px"
                 quality={82}
-                priority={i === 0}
                 draggable={false}
                 className="cf-img"
               />
@@ -192,7 +203,10 @@ export default function Coverflow({ photos }: CoverflowProps) {
         <button type="button" className="cf-nav" onClick={() => go(-1)} aria-label="Previous memory">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 19l-7-7 7-7" /></svg>
         </button>
-        <p className="cf-indicator" aria-live="polite" aria-atomic="true">
+        {/* Silent while autoplay is running: a polite region that changes every
+            five seconds reads "2 / 15… 3 / 15…" over whatever the visitor is
+            actually listening to. It announces only when they are driving. */}
+        <p className="cf-indicator" aria-live={reduced || paused || dragging ? "polite" : "off"} aria-atomic="true">
           <span className="cf-indicator-n">{active + 1}</span>
           <span className="cf-indicator-sep">/</span>
           {len}
@@ -205,7 +219,7 @@ export default function Coverflow({ photos }: CoverflowProps) {
       <div className="cf-dots" role="tablist" aria-label="Choose a memory">
         {photos.map((photo, i) => (
           <button
-            key={photo}
+            key={photo.src}
             type="button"
             role="tab"
             className={`cf-dot${i === active ? " active" : ""}`}

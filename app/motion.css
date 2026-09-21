@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 /* ══════════════════════════════════════════════════════════════════
    MOTION SYSTEM — "Signal"
    ──────────────────────────────────────────────────────────────────
@@ -211,10 +217,8 @@
   html[data-motion="native"] .pin-word,
   html[data-motion="native"] .subj-card,
   html[data-motion="native"] .ecard,
-  html[data-motion="native"] .acard,
   html[data-motion="native"] .ccard,
   html[data-motion="native"] .press-card,
-  html[data-motion="native"] .slideshow-viewport,
   html[data-motion="native"] .spills > *,
   html[data-motion="native"] .eyebrow{
     animation:none !important;opacity:1 !important;transform:none !important;
@@ -291,20 +295,11 @@
      resolve over a long scroll range so the movement is legible. */
   html[data-motion="native"] .subj-card,
   html[data-motion="native"] .ecard,
-  html[data-motion="native"] .acard,
   html[data-motion="native"] .ccard,
   html[data-motion="native"] .press-card{
     animation:cardArrive linear both;
     animation-timeline:view();animation-range:entry 0% entry 62%;
     transform-origin:50% 100%;
-  }
-
-  /* ── 4. The gallery opens up ─────────────────────────────────────
-     The slideshow grows into place and its corners relax, so the section
-     reads as a reveal rather than a block that was always there. */
-  html[data-motion="native"] .slideshow-viewport{
-    animation:mediaOpen linear both;
-    animation-timeline:view();animation-range:entry 0% cover 38%;
   }
 
   /* ── 5. Skills cascade ───────────────────────────────────────────
@@ -359,10 +354,6 @@
   from{opacity:0;transform:perspective(1100px) translate3d(0,86px,0) rotateX(9deg) scale(.94);}
   to{opacity:1;transform:perspective(1100px) translate3d(0,0,0) rotateX(0) scale(1);}
 }
-@keyframes mediaOpen{
-  from{opacity:.3;transform:scale(.84);border-radius:64px;}
-  to{opacity:1;transform:scale(1);border-radius:var(--rl);}
-}
 
 /* ══════════════════════════════════════════════════════════════════
    SCROLL MOTION v3
@@ -389,19 +380,11 @@
    this rule and still animate. */
 html[data-smooth="on"]{scroll-behavior:auto;}
 
-/* ── 2. Hide-on-scroll navigation ────────────────────────────────
-   Transform only — never `top`, which would force layout every frame.
-   The bar is pinned open whenever focus is inside it, because tabbing
-   into an off-screen nav is a WCAG 2.4.11 failure, not a nicety. */
-#nav{
-  transform:translate3d(0,0,0);
-  transition:background .4s ease,backdrop-filter .4s ease,padding .3s ease,
-             transform .52s var(--ease-expo);
-  will-change:transform;
-}
-#nav.nav-hide{transform:translate3d(0,-118%,0);}
-#nav:focus-within,
-#nav:hover{transform:translate3d(0,0,0)!important;}
+/* ── 2. (retired) Hide-on-scroll navigation ──────────────────────
+   Removed with the full-width bar. The island (NavIsland.tsx) is
+   permanently visible by design, nothing ever set `.nav-hide`, and the
+   leftover `will-change:transform` kept a full-width compositor layer
+   alive over the page for no reason. */
 
 /* ── 3a. Clip-path reveals ───────────────────────────────────────
    A wipe reads as deliberate where a fade reads as loading. `.m-clip`
@@ -686,7 +669,6 @@ html[data-smooth="on"]{scroll-behavior:auto;}
     animation:none!important;opacity:1!important;transform:none!important;
     clip-path:none!important;filter:none!important;
   }
-  #nav,#nav.nav-hide{transform:none!important;transition:none!important;}
 }
 
 /* ══════════════════════════════════════════════════════════════════

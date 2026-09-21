@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 /* ══════════════════════════════════════════════════════════════════
    bhanumendis.com — vertical, cinematic redesign
    Light theme = clean & professional (default).
@@ -76,8 +82,8 @@ em{font-style:italic;}
 img{max-width:100%;}
 
 /* Colour/edge transitions for interactive surfaces on theme change */
-.srow,.sp,.ecard,.acard,.ccard,.hsc,.press-card,.tl-card,.cb,.nav-cta,.nav-cta-fill,.btn-out,.btn-fill,
-.et,.edate,.abadge,.tl-tag,.subj-card,.tut-fact,.paper-link,.soc-btn,.student-reg,.show-more-btn{
+.srow,.sp,.ecard,.ccard,.hsc,.press-card,.tl-card,.cb,.btn-out,.btn-fill,
+.et,.edate,.tl-tag,.subj-card,.tut-fact,.paper-link,.soc-btn,.show-more-btn{
   transition:background-color .45s ease,border-color .45s cubic-bezier(.16,1,.3,1),color .4s ease,
              transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s cubic-bezier(.16,1,.3,1);
 }
@@ -149,7 +155,6 @@ body.using-mouse .sidebar-right a,body.using-mouse .theme-btn{cursor:none;}
    NAV
    ════════════════════════════════════════════════════════════════ */
 #nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:20px 56px;transition:background .4s ease,backdrop-filter .4s ease,padding .3s ease;}
-#nav.scrolled{background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:saturate(160%) blur(26px);-webkit-backdrop-filter:saturate(160%) blur(26px);border-bottom:1px solid var(--line);padding-top:14px;padding-bottom:14px;}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .logo-dot{width:9px;height:9px;border-radius:50%;background:var(--skyg);box-shadow:0 0 12px rgba(56,150,230,0.7);flex-shrink:0;}
 .logo-text{font-family:var(--display);font-size:17px;font-weight:800;letter-spacing:.01em;color:var(--white);}
@@ -158,16 +163,6 @@ body.using-mouse .sidebar-right a,body.using-mouse .theme-btn{cursor:none;}
 .nav-links{display:flex;gap:32px;list-style:none;align-items:center;}
 .nav-links a{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--white);text-decoration:none;letter-spacing:.02em;transition:color .2s,opacity .2s;opacity:.78;}
 .nav-links a:hover{opacity:1;color:var(--sky);}
-.nav-cta{padding:9px 22px;background:var(--pill-bg);border:1px solid var(--pill-b);border-radius:100px;font-family:var(--mono);font-size:13px;color:var(--sky);text-decoration:none;transition:all .25s;opacity:1!important;}
-.nav-cta:hover{background:var(--card-hbg);box-shadow:0 0 18px rgba(56,150,230,0.18);}
-/* Solid-filled nav CTA — deliberately heavier than the outlined .nav-cta
-   (Contact), same emphasis the Student Portal button gets in hiroshmendis.com's
-   own nav: a solid button that stands apart from the plain text links,
-   instead of blending in as one more of them. */
-.nav-cta-fill{padding:9px 22px;background:var(--skyg);border:1px solid transparent;border-radius:100px;font-family:var(--mono);font-size:13px;font-weight:700;color:#04121c!important;text-decoration:none;transition:all .25s;opacity:1!important;box-shadow:0 4px 16px -6px rgba(56,150,230,0.5);}
-.nav-cta-fill:hover{box-shadow:0 6px 22px -6px rgba(56,150,230,0.7);transform:translateY(-1px);}
-/* Compact theme toggle in the nav — desktop uses the sidebar toggle instead */
-.nav-theme{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--card-b);background:var(--card-bg);color:var(--sky);font-size:18px;align-items:center;justify-content:center;-webkit-backdrop-filter:var(--glass);backdrop-filter:var(--glass);box-shadow:var(--glass-edge);}
 
 /* ── Sidebars ── */
 .sidebar-right{position:fixed;right:26px;bottom:22px;z-index:150;display:flex;flex-direction:row;align-items:center;gap:18px;}
@@ -229,7 +224,7 @@ body.using-mouse #hero .hero-glow{opacity:1;}
 .btn-magnetic-inner{display:inline-flex;align-items:center;justify-content:center;gap:8px;position:relative;z-index:1;transition:transform .25s cubic-bezier(.16,1,.3,1);}
 .btn-magnetic::after{content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(130px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.45),transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none;}
 .btn-magnetic:hover::after{opacity:.9;}
-.dark .btn-out.btn-magnetic::after,.dark .student-reg.btn-magnetic::after{background:radial-gradient(150px circle at var(--mx,50%) var(--my,50%),rgba(79,157,255,.28),transparent 60%);}
+.dark .btn-out.btn-magnetic::after{background:radial-gradient(150px circle at var(--mx,50%) var(--my,50%),rgba(79,157,255,.28),transparent 60%);}
 .btn-fill{display:inline-flex;align-items:center;justify-content:center;padding:15px 34px;border-radius:100px;background:var(--skyg);color:#04121c;font-family:var(--sans);font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 8px 30px -8px rgba(56,150,230,0.55);white-space:nowrap;flex-shrink:0;}
 .btn-fill:hover{box-shadow:0 12px 42px -8px rgba(56,150,230,0.7);}
 .btn-out{display:inline-flex;align-items:center;justify-content:center;padding:14px 28px;border-radius:100px;border:1px solid var(--card-b);background:var(--card-bg);color:var(--soft);font-family:var(--sans);font-size:14px;font-weight:500;text-decoration:none;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--glass-edge);white-space:nowrap;flex-shrink:0;}
@@ -324,15 +319,6 @@ body.using-mouse #hero .hero-glow{opacity:1;}
 .li-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
 .li-grid iframe{width:100%;height:540px;border-radius:var(--rl);border:1px solid var(--card-b);background:var(--card-bg);box-shadow:var(--glass-edge);}
 
-/* ── Achievements ── */
-.agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-.acard{padding:30px;border-radius:var(--r2xl);background:var(--card-bg);border:1px solid var(--card-b);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--glass-edge);}
-.acard:hover{border-color:var(--card-hb);background:var(--card-hbg);transform:translateY(-5px);box-shadow:var(--glass-edge),var(--shadow);}
-.amed{width:46px;height:46px;border-radius:var(--rl);background:var(--pill-bg);border:1px solid var(--pill-b);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;}
-.atitle{font-family:var(--display);font-size:18px;font-weight:800;color:var(--white);margin-bottom:8px;line-height:1.28;letter-spacing:-.01em;}
-.abadge{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;padding:4px 11px;border-radius:100px;color:var(--sky);background:var(--pill-bg);border:1px solid var(--pill-b);margin-bottom:12px;letter-spacing:.04em;}
-.abody{font-size:13.5px;font-weight:400;line-height:1.65;color:var(--soft);}
-
 /* ── Credentials ── */
 .cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .ccard{padding:22px 24px;border-radius:var(--rl);background:var(--card-bg);border:1px solid var(--card-b);display:flex;align-items:flex-start;gap:16px;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--glass-edge);}
@@ -353,8 +339,6 @@ body.using-mouse #hero .hero-glow{opacity:1;}
 .cb:hover{background:var(--card-hbg);border-color:var(--card-hb);color:var(--sky);transform:translateY(-3px);opacity:1;}
 .cb.prim{background:var(--skyg);color:#04121c;border:none;font-weight:600;box-shadow:0 8px 26px -8px rgba(56,150,230,0.5);opacity:1;}
 .cb.prim:hover{box-shadow:0 12px 40px -8px rgba(56,150,230,0.7);transform:translateY(-3px);color:#04121c;}
-.student-reg{display:inline-flex;align-items:center;gap:8px;padding:14px 30px;border-radius:100px;background:var(--card-bg);border:1px solid var(--pill-b);font-family:var(--mono);font-size:12px;font-weight:500;color:var(--sky);text-decoration:none;letter-spacing:.03em;box-shadow:var(--glass-edge);}
-.student-reg:hover{background:var(--card-hbg);}
 
 /* ── Find us / map ── */
 #findus .map-panel{max-width:1120px;margin:0 auto;padding:0 56px 120px;display:grid;grid-template-columns:0.9fr 1.1fr;gap:0;}
@@ -518,9 +502,9 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
 /* Pill/circle buttons are already border-radius:100px or 50% — the generic
    6px above would force their corners square while focused, leaving a boxy
    outline sitting behind the round shape. Match each their own curve. */
-.nav-cta:focus-visible,.nav-cta-fill:focus-visible,.btn-fill:focus-visible,.btn-out:focus-visible,
-.show-more-btn:focus-visible,.cb:focus-visible,.student-reg:focus-visible,.swara-close:focus-visible,
-.nav-theme:focus-visible,.theme-btn:focus-visible,.to-top:focus-visible{border-radius:100px;}
+.btn-fill:focus-visible,.btn-out:focus-visible,
+.show-more-btn:focus-visible,.cb:focus-visible,.swara-close:focus-visible,
+.theme-btn:focus-visible,.to-top:focus-visible{border-radius:100px;}
 
 /* ════════════════════════════════════════════════════════════════
    RESPONSIVE
@@ -529,7 +513,6 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
   .subj-grid{grid-template-columns:1fr;}
   .tut-facts{grid-template-columns:repeat(2,1fr);}
   .li-grid{grid-template-columns:1fr;}
-  .agrid{grid-template-columns:repeat(2,1fr);}
   .cgrid{grid-template-columns:repeat(2,1fr);}
   .press-grid{grid-template-columns:1fr;}
   #findus .map-panel{grid-template-columns:1fr;}
@@ -538,13 +521,12 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
 }
 @media(max-width:900px){
   #nav{padding:16px 22px;justify-content:flex-start;gap:16px;}
-  #nav.scrolled{padding:12px 22px;}
   .nav-links{display:none;}
   #hero{padding:130px 22px 90px;}
   .sw{padding:88px 22px;}
   #findus .map-panel{padding:0 22px 88px;}
   .al{grid-template-columns:1fr;gap:36px;}
-  .agrid,.cgrid,.tut-facts{grid-template-columns:1fr;}
+  .cgrid,.tut-facts{grid-template-columns:1fr;}
   #contact .cc{padding:88px 22px;}
   footer{padding:44px 22px 24px;}
   .foot-top{grid-template-columns:1fr;gap:32px;}
@@ -565,8 +547,6 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
   html,body{max-width:100%;}
   .map-embed iframe,.li-grid iframe{max-width:100%;}
 
-  /* Show the compact theme toggle in the nav on mobile */
-  .nav-theme{display:inline-flex;}
 
   /* Mobile entrance: one gentle 2D fade — no 3D transform, no stagger.
      The heavy perspective/rotateX reveal double-paints on mobile GPUs
@@ -811,11 +791,6 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
   margin-bottom: 24px;
   letter-spacing: -0.01em;
 }
-.merged-col .agrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
 .merged-col .cgrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -823,9 +798,6 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
 }
 
 @media (max-width: 1024px) {
-  .merged-col .agrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .merged-col .cgrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -834,9 +806,6 @@ body.using-mouse :focus:not(:focus-visible){outline:none;}
 @media (max-width: 640px) {
   .merged-grid {
     gap: 40px;
-  }
-  .merged-col .agrid {
-    grid-template-columns: 1fr;
   }
   .merged-col .cgrid {
     grid-template-columns: 1fr;
@@ -910,22 +879,10 @@ body::before{
 }
 .subj-card:hover::before{transform:scaleX(1);}
 
-/* ── Award cards ─────────────────────────────────────────────────
-   Same hairline-rule treatment as the subject cards, in the house
-   blue. (An amber second accent was trialled here and rejected —
-   Bhanu wants the existing palette.) */
-.acard{position:relative;overflow:hidden;}
-.acard::before{
-  content:"";position:absolute;top:0;left:0;right:0;height:2px;
-  background:var(--skyg);transform:scaleX(0);transform-origin:0 50%;
-  transition:transform .55s cubic-bezier(.16,1,.3,1);
-}
-.acard:hover::before{transform:scaleX(1);}
-
 /* ── Typography polish ────────────────────────────────────────────
    Large display type wraps badly by default; balance stops the lonely
    trailing word. Optical sizing tightens the very large sizes. */
-.h1,.sh,.atitle,.ctitle{text-wrap:balance;}
+.h1,.sh{text-wrap:balance;}
 .h1{letter-spacing:-.035em;}
 .sh{letter-spacing:-.028em;}
 .atext{max-width:64ch;}
@@ -1136,8 +1093,8 @@ body::before{
   will-change:transform;transform-origin:50% 50%;
 }
 #nav.ni .ni-rail a.ni-link:hover,
-#nav.ni .ni-rail a.ni-link[aria-current="true"]{opacity:1;color:var(--sky);}
-#nav.ni.ni-deep .ni-rail a.ni-link[aria-current="true"]{color:var(--sky2);}
+#nav.ni .ni-rail a.ni-link[aria-current]{opacity:1;color:var(--sky);}
+#nav.ni.ni-deep .ni-rail a.ni-link[aria-current]{color:var(--sky2);}
 
 /* ── 3. Actions ─────────────────────────────────────────────────────── */
 #nav.ni .ni-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
@@ -1203,7 +1160,7 @@ body::before{
   transition:background .2s ease,opacity .2s ease,color .2s ease;
 }
 #nav.ni .ni-sheet a:hover,
-#nav.ni .ni-sheet a[aria-current="true"]{background:var(--pill-bg);color:var(--sky);opacity:1;}
+#nav.ni .ni-sheet a[aria-current]{background:var(--pill-bg);color:var(--sky);opacity:1;}
 #nav.ni .ni-sheet a.ni-sheet-cta{
   margin-top:6px;background:var(--cta-fill);color:var(--cta-ink);font-weight:700;opacity:1;text-align:center;
 }
@@ -1297,13 +1254,16 @@ section{scroll-margin-top:96px;}
 }
 .foot-link{font-size:13px;}
 
-/* The strip. Full-bleed via the margin trick — body already clips
-   overflow-x, so the 100vw does not introduce a scrollbar. Each cell
-   fills from the bottom on hover, which is why the label needs its own
-   stacking context above the wash. */
+/* The strip. Full-bleed by cancelling the footer's own side padding (56px
+   here, 22px below 900px) — NOT with 100vw. 100vw includes the vertical
+   scrollbar, so on any desktop with classic scrollbars the strip ran ~9px
+   past the layout width: the document became wider than the viewport, and
+   although body clips overflow-x, scrollIntoView / keyboard focus on the
+   last cell could still shove the whole page 5px sideways with no way for
+   the visitor to scroll it back. Each cell fills from the bottom on hover,
+   which is why the label needs its own stacking context above the wash. */
 .foot-strip{
-  margin:56px calc(50% - 50vw) 0;
-  width:100vw;
+  margin:56px -56px 0;
   display:grid;grid-template-columns:repeat(4,1fr);
   border-top:1px solid var(--line);
 }
@@ -1346,7 +1306,7 @@ section{scroll-margin-top:96px;}
 @media (max-width:900px){
   .foot-top{grid-template-columns:1fr 1fr;gap:34px;}
   .foot-brand{grid-column:1 / -1;}
-  .foot-strip{grid-template-columns:repeat(2,1fr);margin-top:42px;}
+  .foot-strip{grid-template-columns:repeat(2,1fr);margin:42px -22px 0;}
   .foot-strip-cell{min-height:86px;}
   .foot-strip-cell:nth-child(2n){border-right:0;}
   .foot-strip-cell:nth-child(-n+2){border-bottom:1px solid var(--line);}
@@ -1365,46 +1325,6 @@ footer{padding-bottom:0;}
 body.at-end .sidebar-right,
 body.at-end .sidebar-left{opacity:0;pointer-events:none;transition:opacity .35s ease;}
 .sidebar-right,.sidebar-left{transition:opacity .35s ease;}
-
-/* Awards icons: line art, not emoji. Emoji render as full-colour raster
-   glyphs that differ per OS and sit at a different optical weight to the
-   rest of the page — and the Credentials grid directly below this one was
-   already using stroked SVGs, so the two halves of the section disagreed.
-   Stroke width is 1.9 against .cico's 1.8 because this tile is 46px to
-   its 40px: the same visual weight needs slightly more line at size. */
-.amed svg{width:20px;height:20px;stroke:var(--sky);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
-.acard:hover .amed{background:var(--card-hbg);border-color:var(--card-hb);}
-.amed{transition:background .25s ease,border-color .25s ease;}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   THE WHITEBOARD  ·  a section that performs instead of describing
-   ═══════════════════════════════════════════════════════════════════════
-   The tutoring section used to be a heading, a paragraph and three
-   identical cards — the shape that made it read as generated no matter
-   how the copy was written. It is now a pinned stage: a visual proof of
-   Pythagoras draws itself across the scroll, and each subject note lands
-   on the stage that earns it.
-
-   Pinned with position:sticky inside a tall parent, and every step driven
-   by ONE view() timeline on that parent. No JS, no scroll listener, and
-   bidirectional for free — scroll back up and the proof un-draws itself.
-
-   The resting state (no scroll-timeline support, or reduced motion) is
-   the FINISHED diagram, fully drawn and fully legible. Nothing here can
-   fail into an empty box.
-   ═══════════════════════════════════════════════════════════════════════ */
-
-
-/* Pinned stages. `contain` is exactly the window where the tall parent
-   fully covers the viewport, which is exactly how long the sticky child
-   stays pinned — so the proof's timeline and the pin are the same thing. */
-@supports (animation-timeline: view()){
-  @media (prefers-reduced-motion: no-preference) and (min-width: 901px){
-
-    /* Each note arrives with the square it belongs to. */
-
-  }
-}
 
 /* ═══════════════════════════════════════════════════════════════════════
    PALMARES  ·  a results record, not a card grid
@@ -1472,23 +1392,59 @@ body.at-end .sidebar-left{opacity:0;pointer-events:none;transition:opacity .35s 
   .pal-place{grid-column:2;grid-row:2;}
   .pal-field{grid-column:2;grid-row:3;margin-top:4px;}
 }
-@media (max-width:900px){
-  /* Stacked: the field becomes a backdrop the content sits on, which is
-     the only way both stay legible at this width. */
-
-}
-
-/* With a real galaxy behind it the canvas is the interactive overlay,
-   not the whole picture: fewer, brighter stars so the two layers read as
-   one field instead of competing. */
-
-
-@media (prefers-reduced-motion: reduce){
-  /* No scrubbing: the video holds one frame and the still carries it. */
-
-}
-
-/* The law caption was landing right on top of the class-detail tabs
-   below it. They are separate thoughts and need to read that way. */
-
+/* Breathing room between the subject cards and the class-detail chips. */
 .tut-facts{margin-top:clamp(40px,6vh,84px);}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AUDIT FIXES · 2026-09                                        (appended)
+   Each rule below corrects a measured defect and changes nothing else.
+   Appended for the same reason as the blocks above: the base rules stay
+   untouched and every fallback path keeps working.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Count-up numbers ────────────────────────────────────────────────
+   Counter.tsx server-renders the FINAL value so that crawlers, no-JS
+   visitors and screen readers never read "0+". When JavaScript is running
+   (data-js is stamped pre-paint in layout.tsx) the number is held invisible
+   — box and all, so nothing shifts — until Counter resets it to zero and
+   marks it live. The 4s failsafe reveals the real number anyway if
+   hydration never arrives. Without JS neither rule applies and the final
+   value simply shows. */
+html[data-js] .ctr:not([data-live]){visibility:hidden;animation:ctrFailsafe 0s linear 4s forwards;}
+@keyframes ctrFailsafe{to{visibility:visible;}}
+
+/* ── Timeline years for assistive tech ───────────────────────────────
+   On desktop the year is carried by the decorative ghost numeral, which is
+   aria-hidden, while .tl-year was display:none — so a screen-reader user
+   got thirteen milestones with no dates at all. Visually hidden instead of
+   removed: identical on screen, present in the accessibility tree. Below
+   900px the base rule already shows it normally. */
+@media (min-width:901px){
+  .tl-year{display:block;position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0;}
+}
+
+/* ── Ledger header contrast (light theme) ────────────────────────────
+   --sky at .8 opacity over --surface-alt measures 3.80:1. These labels are
+   10px, so they need 4.5:1; at full opacity the same colour is 5.62:1. The
+   dark theme already passes (and keeps its softer .8). */
+:root:not(.dark) .pal thead th{opacity:1;}
+
+/* ── 320px: the map card ─────────────────────────────────────────────
+   A grid item will not shrink below its min-content, and this one's is a
+   nowrap button plus 96px of side padding = 325px. On a 320px screen that
+   pushed the whole document 27px wide — and the fixed nav island with it.
+   Scoped to the narrowest phones only; nothing changes from 341px up. */
+@media (max-width:340px){
+  .map-info{min-width:0;padding:40px 22px;}
+  .map-embed{min-width:0;}
+}
+
+/* ── Touch targets ───────────────────────────────────────────────────
+   Hit areas only — nothing here paints. The logo link was 13px tall; the
+   padding fits inside the island's existing height (its buttons are 36px),
+   so the shell does not grow. The gallery dots are 7px and stay 7px: the
+   pseudo-element widens what a finger can land on, stopping 1px short of
+   the neighbouring dot. */
+#nav.ni .ni-logo{padding-block:11px;}
+.cf-dot{position:relative;}
+.cf-dot::before{content:"";position:absolute;inset:-10px -3px;}

@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -62,7 +68,7 @@ export default function NavIsland({
   const [scrolled, setScrolled] = useState(false);
 
   const railRef = useRef<HTMLUListElement | null>(null);
-  const pillRef = useRef<HTMLSpanElement | null>(null);
+  const pillRef = useRef<HTMLLIElement | null>(null);
   const linkRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
   const sheetRef = useRef<HTMLDivElement | null>(null);
   const toggleRef = useRef<HTMLButtonElement | null>(null);
@@ -79,7 +85,10 @@ export default function NavIsland({
   }, []);
 
   // ── The spring loop ────────────────────────────────────────────────
-  const tick = useCallback(() => {
+  //    A named function expression so the loop can re-queue itself by its own
+  //    name. Re-queueing `tick` from inside its own initialiser read the const
+  //    before it was declared, which the React compiler rules reject.
+  const tick = useCallback(function step() {
     const s = spring.current;
     const pill = pillRef.current;
     if (!pill) { running.current = false; return; }
@@ -107,7 +116,7 @@ export default function NavIsland({
       running.current = false;
       return;
     }
-    raf.current = requestAnimationFrame(tick);
+    raf.current = requestAnimationFrame(step);
   }, []);
 
   const start = useCallback(() => {
@@ -150,27 +159,51 @@ export default function NavIsland({
   // ── Scroll spy. An observer, not a scroll handler: the existing scroll
   //    listener in SiteChrome is already doing per-frame work and this does
   //    not need to join it. ──
+  //
+  //    The root is collapsed to a single horizontal LINE, 35% down the
+  //    viewport (top margin -35%, bottom -65%). A section is "current" exactly
+  //    while it spans that line, which makes the test independent of how tall
+  //    the section is. The previous version compared intersectionRatio against
+  //    0.08 — but ratio is measured against the TARGET's height, and the pinned
+  //    #exp rail is 6.2 viewports tall, so the most it could ever score was
+  //    0.06. "Experience" could not light up at all, on any desktop.
+  //
+  //    Every section is observed, not just the four with a nav item, and each
+  //    one belongs to the nav item at or before it in page order: Tutoring,
+  //    Ethos, Skills and Press read as About; LinkedIn and Memories as
+  //    Experience; Find Us as Contact. Without that the nav went blank in
+  //    eight of the twelve sections and looked as though it had stopped
+  //    tracking. Only the hero, which precedes them all, shows nothing.
   useEffect(() => {
     if (!home) return;
-    const ids = ITEMS.map((i) => i.id);
-    const seen = new Map<string, number>();
+    const ids: readonly string[] = ITEMS.map((i) => i.id);
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section[id]"));
+    if (!sections.length) return;
+
+    const owner = new Map<Element, string | null>();
+    let chapter: string | null = null;
+    for (const s of sections) {
+      if (ids.includes(s.id)) chapter = s.id;
+      owner.set(s, chapter);
+    }
+
+    const onLine = new Set<Element>();
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) seen.set(e.target.id, e.intersectionRatio);
-        let best: string | null = null, bestRatio = 0;
-        for (const id of ids) {
-          const r = seen.get(id) ?? 0;
-          if (r > bestRatio) { bestRatio = r; best = id; }
+        for (const e of entries) {
+          if (e.isIntersecting) onLine.add(e.target);
+          else onLine.delete(e.target);
         }
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setActive(bestRatio > 0.08 ? best : null);
+        // On a boundary two neighbours touch the line at once: the later one
+        // wins. With nothing on it (the line is over the footer) the last
+        // answer stands — leaving the page's final chapter lit, not blank.
+        let last: Element | null = null;
+        for (const s of sections) if (onLine.has(s)) last = s;
+        if (last) setActive(owner.get(last) ?? null);
       },
-      { threshold: [0, 0.08, 0.25, 0.5, 0.75, 1], rootMargin: "-18% 0px -45% 0px" }
+      { threshold: 0, rootMargin: "-35% 0px -65% 0px" }
     );
-    for (const id of ids) {
-      const el = document.getElementById(id);
-      if (el) io.observe(el);
-    }
+    for (const s of sections) io.observe(s);
     return () => io.disconnect();
   }, [home]);
 
@@ -183,17 +216,22 @@ export default function NavIsland({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Park the indicator on the active link whenever it changes, and keep it
+  // Where the visitor is: the spied chapter on the homepage, and the route
+  // itself everywhere else — /timeline used to show no current item at all,
+  // and its burger just read "Menu".
+  const current = home ? active : "timeline";
+
+  // Park the indicator on the current link whenever it changes, and keep it
   // correct across resizes and font-load reflow.
-  useEffect(() => { target(active); }, [active, target]);
+  useEffect(() => { target(current); }, [current, target]);
 
   useEffect(() => {
-    const onResize = () => target(active, false);
+    const onResize = () => target(current, false);
     window.addEventListener("resize", onResize);
     const f = (document as Document & { fonts?: FontFaceSet }).fonts;
-    f?.ready.then(() => target(active, false)).catch(() => {});
+    f?.ready.then(() => target(current, false)).catch(() => {});
     return () => window.removeEventListener("resize", onResize);
-  }, [active, target]);
+  }, [current, target]);
 
   // ── Dock magnification ─────────────────────────────────────────────
   useEffect(() => {
@@ -261,7 +299,8 @@ export default function NavIsland({
   }, [open]);
 
   const to = (hash: string) => (home ? hash : `/${hash}`);
-  const activeLabel = ITEMS.find((i) => i.id === active)?.label ?? "Menu";
+  const activeLabel =
+    current === "timeline" ? "Timeline" : ITEMS.find((i) => i.id === current)?.label ?? "Menu";
 
   return (
     <>
@@ -276,17 +315,20 @@ export default function NavIsland({
           <span className="logo-text sinhala">භානු මෙන්ඩිස්</span>
         </a>
 
-        <ul className="ni-rail nav-links" role="list" ref={railRef}>
+        <ul className="ni-rail nav-links" role="list" ref={railRef} onPointerLeave={() => target(current)}>
           {/* The indicator sits behind the links and is purely decorative —
-              the active link already carries aria-current. */}
-          <span className="ni-pill" ref={pillRef} data-on="false" aria-hidden="true" />
+              the active link already carries aria-current. It is an <li>
+              because <ul> may only contain list items: as a <span> this was
+              invalid markup. Absolutely positioned, so it takes no part in
+              the rail's flex layout either way. */}
+          <li className="ni-pill" ref={pillRef} data-on="false" aria-hidden="true" />
           {ITEMS.map((it) => (
             <li key={it.id}>
               <a
                 href={to(it.hash)}
                 ref={setLinkRef(it.id)}
                 className="ni-link"
-                aria-current={active === it.id ? "true" : undefined}
+                aria-current={current === it.id ? "true" : undefined}
                 onPointerEnter={() => target(it.id)}
                 onFocus={() => target(it.id)}
               >
@@ -295,7 +337,7 @@ export default function NavIsland({
             </li>
           ))}
           <li>
-            <a href="/timeline" ref={setLinkRef("timeline")} className="ni-link" onPointerEnter={() => target("timeline")} onFocus={() => target("timeline")}>
+            <a href="/timeline" ref={setLinkRef("timeline")} className="ni-link" aria-current={current === "timeline" ? "page" : undefined} onPointerEnter={() => target("timeline")} onFocus={() => target("timeline")}>
               Timeline
             </a>
           </li>
@@ -334,12 +376,12 @@ export default function NavIsland({
         <ul role="list">
           {ITEMS.map((it) => (
             <li key={it.id}>
-              <a href={to(it.hash)} onClick={() => setOpen(false)} aria-current={active === it.id ? "true" : undefined}>
+              <a href={to(it.hash)} onClick={() => setOpen(false)} aria-current={current === it.id ? "true" : undefined}>
                 {it.label}
               </a>
             </li>
           ))}
-          <li><a href="/timeline" onClick={() => setOpen(false)}>Timeline</a></li>
+          <li><a href="/timeline" onClick={() => setOpen(false)} aria-current={current === "timeline" ? "page" : undefined}>Timeline</a></li>
           <li>
             <a className="ni-sheet-cta" href={LMS_URL} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
               Student Portal

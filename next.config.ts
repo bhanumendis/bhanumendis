@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -15,7 +21,7 @@ const nextConfig: NextConfig = {
       },
       {
         // Favicon may be replaced in place — cache for 30 days, not immutable.
-        source: "/favicon.png",
+        source: "/:icon(favicon\\.png|favicon\\.ico)",
         headers: [{ key: "Cache-Control", value: "public, max-age=2592000" }],
       },
       {
@@ -46,7 +52,11 @@ const nextConfig: NextConfig = {
               // Inline styles are set at runtime by the cursor, parallax, ripple
               // and magnetic-button effects, so 'unsafe-inline' stays for styles.
               "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https://www.google.com https://t2.gstatic.com",
+              // The press-card favicon fallback (google.com/s2/favicons) 302s to a
+              // load-balanced gstatic shard — t0 through t3, not always t2. Listing
+              // only t2 meant the image was CSP-blocked three times out of four and
+              // logged a violation to the console each time.
+              "img-src 'self' data: blob: https://www.google.com https://t0.gstatic.com https://t1.gstatic.com https://t2.gstatic.com https://t3.gstatic.com",
               "font-src 'self'",
               "frame-src https://www.linkedin.com https://maps.google.com https://www.google.com https://maps.gstatic.com",
               // Nobody may frame this site (defense-in-depth alongside X-Frame-Options).

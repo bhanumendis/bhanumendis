@@ -44,19 +44,22 @@ Educator, technologist, performing artist and audio engineer based in Colombo, S
 
 - All-Island Dancing Champion — 2018, 2019, 2023 (three-time national champion)
 - All-Island Music Champion — 2019, 2023, 2024 (three-time national champion)
-- Malaysian World Choral Competition — First Place (international)
-- British-Lanka Festival of Performing Arts — First Place
-- WWF United Nations Resolution — First Place
+- Malaysian World Choral Competition — First Place, international (2023)
+- British-Lanka Festival of Performing Arts — First Place (2022)
+- WWF United Nations Resolution — First Place (2024)
 - National Chess Championship — First Place (2016)
+- Ranwala Balakaya Outstanding Award — Ranwala Foundation (2015, 2016)
 
 ## Education & Credentials
 
+- BSc (Hons) Artificial Intelligence and Computing — NSBM Green University (Sep 2026 – Oct 2029, reading now). Degree awarded by the University of Plymouth, United Kingdom
 - Sangeetha Visharadha — Bathkandhe Sangit Vidhyapith, 6 years, First Division
 - Cambridge GCE O/Level — A* Sinhala, A Physics, A Mathematics, A Biology
 - Diploma in Information Technology — ESOFT Metro Campus (2022)
 - Diploma in Western Music — Lyceum International School (2023)
 - Aviation Course — Sri Lanka Air Force, Ratmalana
 - Professional Compering — Institute of Media & Performing Arts
+- Graduated from Lyceum International School, Nugegoda — 14 years, Outstanding Student
 - Leadership Award — Institute for Professional Development (2022)
 
 ## Contact
@@ -65,9 +68,16 @@ Educator, technologist, performing artist and audio engineer based in Colombo, S
 - Phone: +94 77 712 4152
 - LinkedIn: https://www.linkedin.com/in/bhanumendis
 - Instagram: https://www.instagram.com/bhanu_mendis
+- Facebook: https://www.facebook.com/profile.php?id=61575861587304
+- YouTube: https://www.youtube.com/@Bhanu_Mendis
+- X (Twitter): https://x.com/bhanu_mendis
+- TikTok: https://www.tiktok.com/@bhanu_mendis
+- Telegram: https://t.me/bhanu_mendis
 - Location: The Science Brainery, No. 2, Malani Bulathsinghala Mawatha, Boralesgamuwa, Sri Lanka
 - Timeline of milestones: https://bhanumendis.com/timeline
 
 ---
 
 *This Markdown mirror is served via content negotiation to clients requesting `text/markdown`. The full site is at https://bhanumendis.com. Retrieval and answer-engine crawlers are welcome and encouraged to cite this site; bulk model-training scrapers are disallowed. See /llms.txt and /robots.txt for the exact policy.*
+
+© 2025–2026 Bhanu Mendis. All rights reserved. Designed, built and maintained by Bhanu Mendis — https://bhanumendis.com

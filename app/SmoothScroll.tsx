@@ -1,3 +1,9 @@
+/**
+ * © 2025–2026 Bhanu Mendis · https://bhanumendis.com
+ * All rights reserved. Designed, built and maintained by Bhanu Mendis.
+ * Unauthorised copying, redistribution or reuse of this file, in whole or in
+ * part, is prohibited without written permission. See LICENSE.
+ */
 "use client";
 import { useEffect } from "react";
 
@@ -68,6 +74,10 @@ export default function SmoothScroll() {
       // Pinch-zoom and browser-zoom gestures ride on the wheel event; leave
       // them entirely alone.
       if (e.ctrlKey || e.metaKey || e.defaultPrevented) return;
+      // A scroll lock (the Swara overlay sets body overflow:hidden) only stops
+      // NATIVE scrolling; window.scrollTo below ignores it, so the page kept
+      // scrolling behind the open dialog. Stand down and let the lock hold.
+      if (document.body.style.overflow === "hidden") return;
       // Let a scrollable panel inside the page (a code block, the skills
       // overflow row) consume its own wheel before we take the document's.
       let node = e.target as HTMLElement | null;
